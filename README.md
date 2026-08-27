@@ -301,7 +301,9 @@ When a payment settles, ClusterPay sends an HTTP POST request to your `callback_
 * `X-ClusterPay-Idempotency-Key`: `evt_{session_id}_{event}_{timestamp}`
 
 ### Signature Formula:
-$$\text{Signature} = \text{HMAC-SHA256}(\text{Timestamp} + "." + \text{Nonce} + "." + \text{RawBodyBytes}, \text{API\_KEY})$$
+```text
+Signature = HMAC_SHA256(Timestamp + "." + Nonce + "." + RawBodyBytes, API_KEY)
+```
 
 ---
 
