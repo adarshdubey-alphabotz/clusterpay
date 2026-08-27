@@ -28,6 +28,35 @@ async def create_checkout_session(req: GatewayCheckoutRequest, request: Request,
     if req.surcharge_percent and req.surcharge_percent > 0:
         base_usd = round(base_usd * (1 + req.surcharge_percent / 100.0), 2)
 
+    # Ensure at least 1 valid destination crypto wallet address is provided
+    wallets = req.wallets or {}
+    has_wallet = any(
+        isinstance(v, str) and len(v.strip()) > 8
+        for v in [
+            wallets.get("bep20"),
+            wallets.get("trc20"),
+            wallets.get("poly"),
+            wallets.get("arb"),
+            wallets.get("ton"),
+            wallets.get("ltc"),
+            wallets.get("btc"),
+            wallets.get("pol"),
+            settings.DEFAULT_USDT_BEP20_WALLET,
+            settings.DEFAULT_USDT_TRC20_WALLET,
+            settings.DEFAULT_USDT_POLY_WALLET,
+            settings.DEFAULT_USDT_ARB_WALLET,
+            settings.DEFAULT_TON_WALLET,
+            settings.DEFAULT_LTC_WALLET,
+            settings.DEFAULT_BTC_WALLET,
+            settings.DEFAULT_POL_WALLET,
+        ]
+    )
+    if not has_wallet:
+        raise HTTPException(
+            status_code=400,
+            detail="At least 1 destination crypto wallet address is required before creating a checkout session (e.g. wallets={'bep20': '0x...'} or wallets={'trc20': 'T...'})."
+        )
+
     # 4-decimal anti-theft micro-offset
     effective_amount = generate_micro_offset_amount(base_usd)
 
