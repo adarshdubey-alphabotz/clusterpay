@@ -14,8 +14,8 @@ async def init_db():
     
     # Create indexes for high performance & anti-theft uniqueness
     try:
-        # Prevent double-spending / replay attacks
-        await db.payment_tx_claims.create_index("txid", unique=True)
+        # Prevent double-spending / multi-chain replay attacks
+        await db.payment_tx_claims.create_index([("network", 1), ("txid", 1)], unique=True)
         # Fast query for sessions
         await db.payment_sessions.create_index("session_id", unique=True)
         await db.payment_sessions.create_index("merchant_id")

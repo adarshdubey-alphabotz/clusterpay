@@ -80,18 +80,25 @@ async def dispatch_signed_webhook(session: dict, merchant: dict, event: str = "p
             await asyncio.sleep(2 ** attempt)
 
     db = get_db()
-    if db:
-        await db.webhook_logs.insert_one({
-            "session_id": session.get("session_id"),
-            "merchant_id": merchant.get("telegram_id") or merchant.get("merchant_id"),
-            "callback_url": callback_url,
-            "idempotency_key": idempotency_key,
-            "timestamp": timestamp,
-            "nonce": nonce,
-            "success": success,
-            "error": last_error,
-            "signature": signature,
-            "created_at": datetime.utcnow()
-        })
+    if db is not None:
+        try:
+            await db.webhook_logs.insert_one({
+                "session_id": session.get("session_id"),
+                "merchant_id": merchant.get("telegram_id") or merchant.get("merchant_id"),
+                "callback_url": callback_url,
+                "idempotency_key": idempotency_key,
+                "timestamp": timestamp,
+                "nonce": nonce,
+                "success": success,
+                "error": last_error,
+                "signature": signature,
+                "created_at": datetime.utcnow()
+            })
+        except Exception as e:
+            logger.warning(f"Failed to log webhook event: {e}")
 
     return success
+
+async def dispatch_webhook(session: dict, api_key: str = "", event: str = "payment.settled") -> bool:
+    merchant = {"api_key": api_key, "merchant_id": session.get("merchant_id")}
+    return await dispatch_signed_webhook(session, merchant, event)
