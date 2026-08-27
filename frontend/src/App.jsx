@@ -190,7 +190,7 @@ export default function App() {
     USDT: { 
       name: 'USDT (BEP-20)', 
       network: 'BEP-20 (BSC network)', 
-      address: window.paymentData?.USDT_WALLET_BEP20 || '0x4288f46725514671d3CA0974A4869d88ecbCE150', 
+      address: window.paymentData?.USDT_WALLET_BEP20 || '', 
       img: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/usdt.svg', 
       instant: 'Yes',
       fees: '0.1-0.3%',
@@ -201,7 +201,7 @@ export default function App() {
     USDT_TRC20: { 
       name: 'USDT (TRC-20)', 
       network: 'TRC-20 (Tron network)', 
-      address: window.paymentData?.USDT_WALLET_TRC20 || 'TZE6RPaSQkECYpPkqKgE4DTTcjyneMCXpw', 
+      address: window.paymentData?.USDT_WALLET_TRC20 || '', 
       img: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/usdt.svg', 
       instant: 'Yes',
       fees: 'Network Fee',
@@ -234,7 +234,7 @@ export default function App() {
     BNB: { 
       name: 'BNB', 
       network: 'BEP-20 (BSC network)', 
-      address: window.paymentData?.USDT_WALLET_BEP20 || '0x4288f46725514671d3CA0974A4869d88ecbCE150', 
+      address: window.paymentData?.USDT_WALLET_BEP20 || '', 
       img: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/svg/color/bnb.svg', 
       instant: 'Yes',
       fees: '0.1-0.2%',
