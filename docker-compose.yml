@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  clusterpay-gateway:
+    build: .
+    container_name: clusterpay-gateway
+    restart: always
+    ports:
+      - "127.0.0.1:8085:8085"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8085
+      - MONGO_URI=mongodb://clusterpay-mongo:27017
+      - MONGO_DB_NAME=clusterpay_db
+    depends_on:
+      - clusterpay-mongo
+    networks:
+      - clusterpay-network
+
+  clusterpay-mongo:
+    image: mongo:6.0
+    container_name: clusterpay-mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - clusterpay-network
+
+volumes:
+  mongo_data:
+
+networks:
+  clusterpay-network:
+    driver: bridge

@@ -1,0 +1,9 @@
+{
+  "name": "clusterpay-nodejs-example",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "express": "^4.19.2"
+  }
+}

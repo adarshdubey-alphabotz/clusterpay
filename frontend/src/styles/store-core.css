@@ -1,0 +1,1585 @@
+/* ═══════════════════════════════════════════════
+   TMA STORE FRONT DESIGN SYSTEM
+   ═══════════════════════════════════════════════ */
+
+
+.tma-app {
+  --tma-bg: #121620;                  /* Soft dark grey background */
+  --tma-card-bg: #1C2333;             /* Softer slate card background */
+  --tma-text: #E2E8F0;                /* Softer off-white primary text */
+  --tma-text-muted: #94A3B8;          /* High contrast muted text */
+  --tma-text-dim: #475569;            /* Low contrast dim text */
+  --tma-accent: #00C4AC;              /* Soft teal primary accent */
+  --tma-accent-light: #00D2B8;        /* Soft teal highlight */
+  --tma-border: rgba(255, 255, 255, 0.05); /* Clean soft border */
+  --tma-green: #10B981;
+  --tma-orange: #F59E0B;
+  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: var(--tma-bg);
+  color: var(--tma-text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tma-app * {
+  box-sizing: border-box;
+}
+
+/* Glassmorphism helpers */
+.tma-glass {
+  background: rgba(17, 26, 46, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--tma-border);
+}
+
+/* Common Layout */
+.tma-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.tma-scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 90px;
+}
+
+/* Hide scrollbar */
+.tma-scroll-body::-webkit-scrollbar,
+.tma-categories-scroll::-webkit-scrollbar,
+.tma-flash-row::-webkit-scrollbar,
+.tma-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* Headers & AppBars */
+.tma-appbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: rgba(9, 13, 22, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--tma-border);
+  z-index: 20;
+}
+
+.tma-appbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tma-logo {
+  background: linear-gradient(135deg, var(--tma-accent), var(--tma-accent-light));
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25);
+}
+
+.tma-appbar-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--tma-text);
+  letter-spacing: -0.02em;
+}
+
+.tma-appbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tma-icon-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--tma-border);
+  color: var(--tma-text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.tma-icon-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.95);
+}
+
+.tma-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--tma-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Search Box (Clean, Spaced) */
+.tma-search-container {
+  padding: 12px 16px;
+  background: var(--tma-bg);
+  z-index: 10;
+}
+
+.tma-search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #151E33;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 10px 16px;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.tma-search-input-wrapper:focus-within {
+  border-color: var(--tma-accent);
+  box-shadow: 0 0 0 2px rgba(0, 230, 200, 0.15);
+}
+
+.tma-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--tma-text);
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+
+/* Category horizontal chips scroll */
+.tma-categories-scroll {
+  display: flex;
+  gap: 8px;
+  padding: 6px 16px 14px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.tma-category-chip {
+  background: #151E33;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--tma-text-muted);
+  border-radius: 16px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tma-category-chip.active {
+  background: var(--tma-accent);
+  color: #0A0F1C;
+  border-color: var(--tma-accent);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 230, 200, 0.25);
+}
+
+.tma-category-chip:active {
+  transform: scale(0.95);
+}
+
+/* ── Pinned Collections Row (Gemini + ChatGPT) ── */
+.tma-pinned-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 4px 16px 10px;
+}
+
+.tma-pinned-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 12px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, #151E33 0%, #1a2540 100%);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.tma-pinned-emoji {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.tma-pinned-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tma-text);
+  letter-spacing: 0.01em;
+}
+
+.tma-pinned-chip.active {
+  background: linear-gradient(135deg, rgba(0,230,200,0.18) 0%, rgba(37,99,235,0.22) 100%);
+  border-color: var(--tma-accent);
+  box-shadow: 0 0 16px rgba(0, 230, 200, 0.18);
+}
+
+.tma-pinned-chip.active .tma-pinned-label {
+  color: var(--tma-accent);
+}
+
+.tma-pinned-chip:active {
+  transform: scale(0.97);
+}
+
+/* Hero Promo Banner */
+.tma-hero {
+  margin: 0 16px 20px 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  position: relative;
+  background: linear-gradient(135deg, #1C2333 0%, #151E33 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tma-hero-content {
+  flex: 1.3;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 5;
+}
+
+.tma-hero-badge {
+  align-self: flex-start;
+  background: rgba(20, 184, 166, 0.15);
+  color: var(--tma-accent-light);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.tma-hero-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.tma-hero-subtitle {
+  font-size: 11px;
+  color: var(--tma-text-muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.tma-hero-price {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--tma-accent);
+}
+
+.tma-hero-btn {
+  background: #fff;
+  color: #0b0f19;
+  border: none;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.tma-hero-image-wrapper {
+  flex: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.tma-hero-img-obj {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tma-hero-emoji {
+  font-size: 56px;
+}
+
+/* Section Header */
+.tma-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.tma-section-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--tma-text);
+  letter-spacing: -0.01em;
+}
+
+.tma-timer {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--tma-orange);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.tma-timer-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tma-timer-block {
+  background: #151E33;
+  color: var(--tma-accent);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  min-width: 24px;
+  text-align: center;
+}
+
+.tma-timer-colon {
+  color: var(--tma-text-muted);
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.tma-link {
+  color: var(--tma-accent-light);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Flash sale horizontal row */
+.tma-flash-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 16px 16px;
+}
+
+.tma-flash-card {
+  width: 120px;
+  flex-shrink: 0;
+  background: var(--tma-card-bg);
+  border: 1px solid var(--tma-border);
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.tma-flash-card:active {
+  transform: scale(0.97);
+}
+
+.tma-flash-img {
+  width: 100%;
+  height: 80px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tma-flash-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin: 6px 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tma-flash-rating {
+  font-size: 10px;
+  color: var(--tma-orange);
+  font-weight: 700;
+}
+
+.tma-flash-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 4px;
+}
+
+.tma-flash-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tma-green);
+}
+
+.tma-flash-old-price {
+  font-size: 10px;
+  color: var(--tma-text-dim);
+  text-decoration: line-through;
+}
+
+/* Products Grid V2 (Unified design) */
+.tma-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Product Card */
+.tma-product-card {
+  background: var(--tma-card-bg);
+  border: 1px solid var(--tma-border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tma-product-card:active {
+  transform: scale(0.97);
+  border-color: var(--tma-accent);
+  box-shadow: 0 8px 24px rgba(0, 230, 200, 0.1);
+}
+
+.tma-product-img-wrapper {
+  height: 125px;
+  position: relative;
+  background: rgba(255,255,255,0.01);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--tma-border);
+}
+
+.tma-wish-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.15s;
+}
+
+.tma-wish-btn:active {
+  transform: scale(0.85);
+}
+
+.tma-stock-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(10, 15, 28, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 5;
+}
+
+.tma-stock-badge.out {
+  background: rgba(239, 68, 68, 0.85);
+  color: #fff;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.tma-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+}
+
+.tma-card-emoji-placeholder {
+  font-size: 40px;
+}
+
+.tma-card-info {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.tma-card-brand {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--tma-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.tma-product-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tma-text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.tma-product-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tma-orange);
+  margin-top: 4px;
+}
+
+.tma-product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.tma-product-price {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--tma-accent);
+}
+
+.tma-icon-action {
+  background: var(--tma-green);
+  color: #0A0F1C;
+  border: none;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.tma-icon-action::after {
+  content: 'Cart';
+}
+
+.tma-icon-action svg {
+  margin-right: 2px;
+}
+
+.tma-icon-action:active {
+  background: var(--tma-accent);
+  transform: scale(0.95);
+}
+
+/* Discover Tabs */
+.tma-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--tma-border);
+  overflow-x: auto;
+}
+
+.tma-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px 10px;
+  color: var(--tma-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+
+.tma-tab.active {
+  color: var(--tma-accent-light);
+}
+
+.tma-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  right: 15%;
+  height: 2.5px;
+  background: var(--tma-accent-light);
+  border-radius: 2px;
+}
+
+/* Product Details Page */
+.tma-product-page {
+  background: var(--tma-bg);
+}
+
+.tma-product-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--tma-border);
+  background: rgba(9, 13, 22, 0.9);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.tma-product-header-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--tma-border);
+  color: var(--tma-text);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tma-product-header-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--tma-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 10px;
+}
+
+.tma-product-gallery {
+  width: 100%;
+  height: 240px;
+  position: relative;
+  background: #111726;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--tma-border);
+}
+
+.tma-gallery-img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.tma-gallery-emoji {
+  font-size: 88px;
+}
+
+.tma-product-details {
+  padding: 20px 16px;
+}
+
+.tma-product-title-lg {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--tma-text);
+  line-height: 1.3;
+  margin: 0 0 6px 0;
+}
+
+.tma-product-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--tma-text-muted);
+}
+
+.tma-product-price-section {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.tma-product-price-lg {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--tma-green);
+}
+
+.tma-product-price-old {
+  font-size: 14px;
+  color: var(--tma-text-dim);
+  text-decoration: line-through;
+}
+
+.tma-discount-badge {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--tma-orange);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.tma-badges-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.tma-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--tma-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--tma-text-muted);
+  font-weight: 600;
+}
+
+.divider {
+  height: 1px;
+  background: var(--tma-border);
+  margin: 18px 0;
+}
+
+.tma-section-title-sm {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tma-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.tma-description {
+  font-size: 13.5px;
+  color: var(--tma-text-muted);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* Specs horizontal card style */
+.tma-specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--tma-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tma-specs-table tr {
+  border-bottom: 1px solid var(--tma-border);
+}
+
+.tma-specs-table tr:last-child {
+  border-bottom: none;
+}
+
+.tma-specs-table td {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.tma-specs-table td:first-child {
+  color: var(--tma-text-muted);
+  width: 40%;
+}
+
+.tma-specs-table td:last-child {
+  font-weight: 700;
+  color: var(--tma-text);
+  text-align: right;
+}
+
+/* Quantity Selection Presets */
+.tma-qty-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--tma-border);
+  color: var(--tma-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tma-qty-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.92);
+}
+
+.tma-qty-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Sticky Bottom Action bar */
+.tma-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(9, 13, 22, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--tma-border);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 50;
+}
+
+.tma-btn-icon-lg {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--tma-border);
+  color: var(--tma-text-muted);
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.tma-btn-icon-lg:active {
+  transform: scale(0.9);
+}
+
+.tma-btn-primary {
+  flex: 1;
+  background: var(--tma-accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+}
+
+.tma-btn-primary:active {
+  transform: scale(0.98);
+  background: var(--tma-accent-light);
+}
+
+.tma-btn-primary:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--tma-text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Modals & Overlays */
+.tma-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 13, 22, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.tma-modal-card {
+  background: var(--tma-card-bg);
+  border: 1px solid var(--tma-border);
+  border-radius: 18px;
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+}
+
+.tma-textarea-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--tma-border);
+  border-radius: 10px;
+  padding: 10px;
+  color: var(--tma-text);
+  outline: none;
+  font-size: 13px;
+  resize: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.tma-textarea-input:focus {
+  border-color: var(--tma-accent-light);
+}
+
+/* Wallet Page */
+.tma-wallet-card {
+  background: linear-gradient(135deg, #0d5e5c 0%, #112d4e 100%);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 18px;
+  padding: 22px 18px;
+  margin: 16px;
+  box-shadow: 0 10px 25px -4px rgba(13, 148, 136, 0.25);
+}
+
+.tma-wallet-balance-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+}
+
+.tma-wallet-balance {
+  font-size: 32px;
+  font-weight: 900;
+  color: #fff;
+  margin: 6px 0 14px 0;
+  letter-spacing: -0.02em;
+}
+
+.tma-wallet-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.tma-wallet-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tma-wallet-btn:active {
+  transform: scale(0.95);
+}
+
+.tma-wallet-btn.primary {
+  background: #fff;
+  color: #0f766e;
+  border: none;
+}
+
+.tma-deposit-presets {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 14px;
+}
+
+.tma-preset-btn {
+  flex: 1;
+  background: var(--tma-card-bg);
+  border: 1px solid var(--tma-border);
+  padding: 10px 0;
+  border-radius: 10px;
+  color: var(--tma-text);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tma-preset-btn.active {
+  background: var(--tma-accent);
+  border-color: var(--tma-accent);
+  color: #fff;
+}
+
+.tma-deposit-custom-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tma-text);
+}
+
+/* Recent Transactions */
+.tma-tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tma-tx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--tma-card-bg);
+  border: 1px solid var(--tma-border);
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.tma-tx-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.tma-tx-details {
+  flex: 1;
+}
+
+.tma-tx-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+}
+
+.tma-tx-date {
+  font-size: 11px;
+  color: var(--tma-text-dim);
+}
+
+.tma-tx-amount {
+  font-size: 14px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.tma-tx-amount.positive {
+  color: var(--tma-green);
+}
+
+.tma-tx-amount.negative {
+  color: var(--tma-text);
+}
+
+.tma-tx-status {
+  font-size: 10px;
+  color: var(--tma-text-dim);
+  text-align: right;
+  margin-top: 2px;
+}
+
+/* Orders List */
+.tma-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 24px;
+}
+
+.tma-order-card {
+  background: var(--tma-card-bg);
+  border: 1px solid var(--tma-border);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.tma-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--tma-border);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.tma-order-id {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tma-text);
+}
+
+.tma-order-date {
+  font-size: 11px;
+  color: var(--tma-text-dim);
+  margin-top: 2px;
+}
+
+.tma-order-status {
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tma-order-status.completed {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--tma-green);
+}
+
+.tma-order-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tma-order-img {
+  width: 42px;
+  height: 42px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.tma-order-info {
+  flex: 1;
+}
+
+.tma-order-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tma-order-qty {
+  font-size: 11px;
+  color: var(--tma-text-dim);
+  margin-top: 2px;
+}
+
+.tma-order-price {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.tma-order-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--tma-border);
+  color: var(--tma-text);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.15s;
+}
+
+.tma-order-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Horizontal swipe product row */
+.tma-hscroll-row {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 8px 16px 12px 16px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.tma-hscroll-row::-webkit-scrollbar { display: none; }
+
+.tma-hscroll-card {
+  flex: 0 0 160px;
+  scroll-snap-align: start;
+}
+
+/* Carousel dots */
+.tma-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 0 16px;
+}
+
+.tma-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.tma-carousel-dot.active {
+  width: 20px;
+  border-radius: 3px;
+  background: var(--tma-accent);
+}
+
+/* Product detail stock badge below image */
+.tma-product-stock-badge.in {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.tma-product-stock-badge.out {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Bottom Nav bar */
+.tma-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  background: rgba(18, 22, 32, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--tma-border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 90;
+}
+
+.tma-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--tma-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 64px;
+  padding: 6px 12px;
+  border-radius: 12px;
+}
+
+.tma-nav-item.active {
+  color: var(--tma-accent);
+  background: rgba(0, 196, 172, 0.08);
+}
+
+.tma-nav-icon {
+  font-size: 19px;
+  transition: transform 0.2s ease;
+}
+
+.tma-nav-item.active .tma-nav-icon {
+  transform: translateY(-2px);
+}
+
+.tma-nav-label {
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+/* Shimmer Skeletal layout animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.skeleton {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* ═══════════════════════════════════════════════
+   TOP ANNOUNCEMENT & MAIN HEADER (Huel Inspired UI)
+   ═══════════════════════════════════════════════ */
+
+.tma-top-announcement {
+  background: linear-gradient(90deg, #15803d, #166534);
+  color: #ffffff;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 95;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.tma-main-header {
+  height: 54px;
+  background: #0d0d0d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: sticky;
+  top: 28px;
+  z-index: 90;
+}
+
+.tma-menu-hamburger {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tma-menu-hamburger:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.tma-header-title-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.tma-brand-logo-text {
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #f1f5f9;
+  line-height: 1;
+}
+
+.tma-brand-sub-text {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #22c55e;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.tma-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ═══════════════════════════════════════════════
+   SLIDE-OVER MENU DRAWER (Huel Inspired Navigation)
+   ═══════════════════════════════════════════════ */
+
+.tma-menu-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+}
+
+.tma-menu-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 82vw;
+  background: #121620;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  z-index: 201;
+  overflow-y: auto;
+}
+
+.tma-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+}
+
+.tma-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tma-logo-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #22c55e);
+  color: #ffffff;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.tma-drawer-close {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tma-drawer-user-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.tma-drawer-add-btn {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.tma-drawer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tma-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #f1f5f9;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tma-drawer-item:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.98);
+}
+
+.tma-drawer-item.otp-highlight {
+  background: linear-gradient(135deg, rgba(0, 230, 200, 0.15), rgba(37, 99, 235, 0.15));
+  border: 1px solid rgba(0, 230, 200, 0.3);
+  color: #ffffff;
+}
+
+.drawer-badge {
+  margin-left: auto;
+  background: #00e6c8;
+  color: #0d0d0d;
+  font-size: 9.5px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 6px;
+}

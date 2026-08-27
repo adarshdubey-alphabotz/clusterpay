@@ -1,0 +1,425 @@
+/* ═══════════════════════════════════════════════
+   OTP PANEL (SMM / PHP VERIFICATION PANEL STYLE)
+   ═══════════════════════════════════════════════ */
+
+.tma-otp-panel {
+  padding: 16px;
+  padding-bottom: 90px;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.tma-otp-header {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(0, 230, 200, 0.08));
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.tma-otp-icon-bg {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #00e6c8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+}
+
+.tma-otp-balance-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+.tma-otp-guarantee-banner {
+  background: rgba(0, 230, 200, 0.08);
+  border: 1px solid rgba(0, 230, 200, 0.2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.tma-otp-card {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.tma-otp-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tma-otp-select {
+  width: 100%;
+  background: #0d0d0d;
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  outline: none;
+}
+
+.tma-otp-select option {
+  background: #1a1a1a;
+  color: #f1f5f9;
+}
+
+.tma-otp-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin: 12px 0 16px 0;
+  scrollbar-width: none;
+}
+
+.tma-otp-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tma-otp-pill.active {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: #2563eb;
+  color: #38bdf8;
+}
+
+.tma-otp-pill .pill-price {
+  font-size: 10.5px;
+  color: #22c55e;
+  font-weight: 700;
+}
+
+.tma-otp-buy-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.tma-otp-buy-btn:active {
+  transform: scale(0.98);
+}
+
+.tma-otp-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tma-otp-tab {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px;
+  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.tma-otp-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.tma-otp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tma-otp-item {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tma-otp-item.waiting {
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.tma-otp-item.received {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
+}
+
+.tma-otp-progress-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tma-otp-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316, #22c55e);
+  transition: width 1s linear;
+}
+
+.tma-otp-status-pill {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.tma-otp-status-pill.waiting {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.tma-otp-status-pill.received {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.tma-otp-status-pill.cancelled {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+}
+
+.tma-otp-phone-row {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.tma-otp-phone {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #38bdf8;
+}
+
+.tma-otp-copy-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.tma-otp-code-received-box {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.tma-otp-code-header {
+  font-size: 12px;
+  font-weight: 800;
+  color: #22c55e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tma-otp-code-value {
+  font-family: monospace;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tma-otp-copy-code-btn {
+  background: #22c55e;
+  color: #0d0d0d;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.tma-otp-pwd-value {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #e2e8f0;
+}
+
+.tma-otp-code-waiting-box {
+  background: rgba(249, 115, 22, 0.05);
+  border: 1px dashed rgba(249, 115, 22, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #cbd5e1;
+  margin-top: 10px;
+}
+
+.tma-otp-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.tma-otp-btn-get {
+  flex: 1;
+  background: rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(37, 99, 235, 0.4);
+  color: #60a5fa;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.tma-otp-btn-cancel {
+  flex: 1;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.tma-otp-toast {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.tma-otp-toast.success {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+}
+
+.tma-otp-toast.error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.tma-otp-toast.info {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+
+.tma-otp-empty {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.tma-otp-empty h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0 0 6px 0;
+}
+
+.tma-otp-empty p {
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+}
+
