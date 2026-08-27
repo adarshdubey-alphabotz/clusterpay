@@ -171,7 +171,7 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
     btc = wallets.get("btc", settings.DEFAULT_BTC_WALLET)
     pol = wallets.get("pol", settings.DEFAULT_POL_WALLET)
     
-    html = html.replace("{amount}", f"{session.get('amount', 0.0):.4f}")
+    html = html.replace("{amount}", f"{session.get('amount', 0.0):.6f}")
     html = html.replace("{session_id}", session_id)
     html = html.replace("{time_left}", str(time_left))
     
