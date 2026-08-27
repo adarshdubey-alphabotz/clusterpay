@@ -1,21 +1,20 @@
 import os
-from pydantic_settings import BaseSettings
 
-class Settings(BaseSettings):
-    HOST: str = "0.0.0.0"
-    PORT: int = 8085
-    BASE_URL: str = os.getenv("BASE_URL", "https://pay.rapidx.me")
-    ENVIRONMENT: str = "production"
-    DEBUG: bool = False
+class Settings:
+    HOST: str = os.getenv("HOST", "0.0.0.0")
+    PORT: int = int(os.getenv("PORT", "8085"))
+    BASE_URL: str = os.getenv("BASE_URL", "https://pay.rapidx.me").rstrip("/")
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "production")
+    DEBUG: bool = os.getenv("DEBUG", "false").lower() == "true"
 
     # MongoDB
     MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
     MONGO_DB_NAME: str = os.getenv("MONGO_DB_NAME", "clusterpay_db")
 
     # Anti-theft & Invoicing
-    INVOICE_EXPIRATION_MINUTES: int = 15
-    MAX_TX_AGE_SECONDS: int = 7200
-    RATE_LIMIT_PER_MINUTE: int = 60
+    INVOICE_EXPIRATION_MINUTES: int = int(os.getenv("INVOICE_EXPIRATION_MINUTES", "15"))
+    MAX_TX_AGE_SECONDS: int = int(os.getenv("MAX_TX_AGE_SECONDS", "7200"))
+    RATE_LIMIT_PER_MINUTE: int = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
 
     # Default Wallets (Configured via .env or per-checkout request)
     DEFAULT_USDT_BEP20_WALLET: str = os.getenv("DEFAULT_USDT_BEP20_WALLET", "")
@@ -26,9 +25,5 @@ class Settings(BaseSettings):
     DEFAULT_LTC_WALLET: str = os.getenv("DEFAULT_LTC_WALLET", "")
     DEFAULT_BTC_WALLET: str = os.getenv("DEFAULT_BTC_WALLET", "")
     DEFAULT_POL_WALLET: str = os.getenv("DEFAULT_POL_WALLET", "")
-
-    class Config:
-        env_file = ".env"
-        extra = "allow"
 
 settings = Settings()
