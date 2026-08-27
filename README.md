@@ -259,33 +259,114 @@ curl -X GET https://pay.yourstore.com/api/v1/status/cpay_982f1b63e91a4b82c091 \
 
 ---
 
-## 🖼️ Embedded Modal (JavaScript SDK)
+## 📱 In-App, Mobile & Web Checkout SDKs
 
-Embed the checkout directly into your existing website without redirecting users away:
+ClusterPay provides enterprise-grade SDKs designed for web storefronts, mobile apps, WebViews, Telegram Mini Apps, and backend automation:
 
+### 1. 🟨 JavaScript / TypeScript SDK (`sdk/js/clusterpay.js`)
+
+#### A. In-App Overlay Modal (Mobile WebViews, React Native, Desktop)
+Opens a responsive glassmorphism popup modal with automatic backdrop blur, mobile viewport auto-fit, and escape key listener:
+
+```javascript
+// Include SDK: <script src="https://pay.yourstore.com/js/v1/clusterpay.js"></script>
+
+const cp = ClusterPay({ baseUrl: 'https://pay.yourstore.com' });
+
+const modal = cp.openModal({
+  session_id: 'cpay_982f1b63e91a4b82c091',
+  maxWidth: '440px',
+  onSuccess: function(payload) {
+    console.log('Payment Verified!', payload);
+    window.location.href = '/orders/success';
+  },
+  onExpire: function() {
+    alert('Checkout session expired.');
+  },
+  onClose: function() {
+    console.log('Modal dismissed by user.');
+  }
+});
+```
+
+#### B. Telegram Mini Apps & WebApps (`openInTelegram`)
+Automatically triggers Telegram viewport expansion and native haptic feedback:
+```javascript
+const cp = ClusterPay();
+cp.openInTelegram({
+  session_id: 'cpay_982f1b63e91a4b82c091',
+  onSuccess: (payload) => {
+    Telegram.WebApp.showAlert('Payment confirmed!');
+    Telegram.WebApp.close();
+  }
+});
+```
+
+#### C. Inline Container Mount (React / Vue / Next.js)
 ```html
-<!-- 1. Include the ClusterPay SDK -->
-<script src="https://pay.yourstore.com/js/v1/clusterpay.js"></script>
+<div id="crypto-checkout-container"></div>
 
-<!-- 2. Target Container -->
-<div id="clusterpay-modal"></div>
-
-<!-- 3. Mount Modal -->
 <script>
   const cp = ClusterPay();
-  cp.mount('#clusterpay-modal', {
+  cp.mount('#crypto-checkout-container', {
     session_id: 'cpay_982f1b63e91a4b82c091',
-    baseUrl: 'https://pay.yourstore.com',
     height: 680,
-    onSuccess: function(payload) {
-      console.log('Payment Confirmed!', payload);
-      window.location.href = '/orders/thank-you';
-    },
-    onExpire: function() {
-      alert('Invoice expired. Please re-generate checkout.');
-    }
+    borderRadius: '20px',
+    onSuccess: (payload) => window.location.reload()
   });
 </script>
+```
+
+---
+
+### 2. 🐍 Python SDK (`sdk/python/`)
+
+Supports both synchronous & asynchronous workflows for Telegram bots (aiogram / PTB) and FastAPI backends:
+
+```python
+from clusterpay import ClusterPay, verify_webhook_signature
+
+client = ClusterPay(
+    api_key="CS_key_104928_8f9a2e3b7c1d4a0e...",
+    base_url="https://pay.yourstore.com"
+)
+
+# Create Checkout (Async / Fast)
+invoice = await client.create_checkout_async(
+    amount=25.00,
+    currency="USD",
+    callback_url="https://yourstore.com/api/webhook",
+    custom_id="ORDER_991",
+    allowed_origins=["https://yourstore.com"],
+    wallets={"bep20": "0x4288f46725514671d3CA0974A4869d88ecbCE150"}
+)
+
+print("Customer Payment Link:", invoice["payment_url"])
+```
+
+---
+
+### 3. 🐘 PHP & WooCommerce SDK (`sdk/php/`)
+
+Full PSR-compatible PHP client for WooCommerce, WordPress, and custom PHP platforms:
+
+```php
+use ClusterPay\Client;
+
+$cp = new Client("CS_key_104928_8f9a2e3b7c1d4a0e...", "https://pay.yourstore.com");
+
+// Create Checkout
+$invoice = $cp->createCheckout([
+    "amount" => 19.99,
+    "currency" => "EUR",
+    "callback_url" => "https://yourshop.com/webhook.php",
+    "custom_id" => "WOO_ORDER_1048",
+    "wallets" => [
+        "trc20" => "TZE6RPaSQkECYpPkqKgE4DTTcjyneMCXpw"
+    ]
+]);
+
+header("Location: " . $invoice["payment_url"]);
 ```
 
 ---
