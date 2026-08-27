@@ -11,9 +11,8 @@ class Settings:
     MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
     MONGO_DB_NAME: str = os.getenv("MONGO_DB_NAME", "clusterpay_db")
 
-    # Anti-theft & Invoicing
-    INVOICE_EXPIRATION_MINUTES: int = int(os.getenv("INVOICE_EXPIRATION_MINUTES", "15"))
-    MAX_TX_AGE_SECONDS: int = int(os.getenv("MAX_TX_AGE_SECONDS", "7200"))
+    # Security & Admin Authentication
+    ADMIN_MASTER_KEY: str = os.getenv("ADMIN_MASTER_KEY", "cpay_master_admin_secret_key_change_me")
     RATE_LIMIT_PER_MINUTE: int = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
 
     # Default Wallets (Configured via .env or per-checkout request)
