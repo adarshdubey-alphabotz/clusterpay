@@ -15,8 +15,8 @@ class GatewayCheckoutRequest(BaseModel):
     merchant_name: Optional[str] = Field(None, description="Merchant display title")
     merchant_url: Optional[str] = Field(None, description="Back link to merchant website")
     redirect_url: Optional[str] = Field(None, description="Customer redirection URL after successful payment")
-    mode: Optional[str] = Field("hosted", description="Checkout mode: 'hosted' (default) or 'embedded'")
-    allowed_origins: Optional[List[str]] = Field(default_factory=list, description="Origins allowed for iframe embedding")
+    allowed_origins: Optional[List[str]] = Field(default_factory=list, description="Origins allowed for iframe embedding (e.g. ['https://myshop.com'])")
+    allowed_ips: Optional[List[str]] = Field(default_factory=list, description="IP whitelist for API requests and webhook verification (e.g. ['1.2.3.4'])")
     wallets: Optional[Dict[str, str]] = Field(default_factory=dict, description="Custom wallet overrides for this session")
 
 class SessionStatusResponse(BaseModel):
