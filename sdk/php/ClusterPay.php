@@ -6,7 +6,7 @@ class ClusterPay {
     private string $apiKey;
     private string $baseUrl;
 
-    public function __construct(string $apiKey, string $baseUrl = "https://pay.rapidx.me") {
+    public function __construct(string $apiKey, string $baseUrl = "http://localhost:8085") {
         $this->apiKey = $apiKey;
         $this->baseUrl = rtrim($baseUrl, '/');
     }
@@ -26,8 +26,12 @@ class ClusterPay {
         return json_decode($response, true) ?: [];
     }
 
-    public static function verifyWebhook(string $rawBody, string $signature, string $apiKey): bool {
-        $expected = hash_hmac('sha256', $rawBody, $apiKey);
+    public static function verifyWebhook(string $rawBody, string $signature, string $timestamp, string $nonce, string $apiKey, int $maxDrift = 300): bool {
+        if (!empty($timestamp) && abs(time() - intval($timestamp)) > $maxDrift) {
+            return false;
+        }
+        $payload = (!empty($timestamp) && !empty($nonce)) ? ($timestamp . "." . $nonce . "." . $rawBody) : $rawBody;
+        $expected = hash_hmac('sha256', $payload, $apiKey);
         return hash_equals($expected, $signature);
     }
 }

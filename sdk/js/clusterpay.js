@@ -4,7 +4,7 @@
  */
 (function(window) {
   window.ClusterPay = function(config) {
-    var defaultBaseUrl = 'https://pay.rapidx.me';
+    var defaultBaseUrl = window.location.origin;
     var baseUrl = (config && config.baseUrl) || defaultBaseUrl;
 
     return {
