@@ -9,9 +9,9 @@ import {
   ShieldCheck, 
   RefreshCw, 
   AlertCircle, 
-  HelpCircle,
   Lock,
-  ChevronRight
+  Radio,
+  Zap
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import StoreApp from './StoreApp';
@@ -188,16 +188,14 @@ export default function App() {
 
   // Filter available coins that have non-empty address
   const activeCoins = rawCoins.filter(c => c.address && c.address.trim().length > 5);
-  const availableCoins = activeCoins.length > 0 ? activeCoins : [rawCoins[0]]; // fallback to first
+  const availableCoins = activeCoins.length > 0 ? activeCoins : [rawCoins[0]]; // fallback
 
   const [selectedCoin, setSelectedCoin] = useState(availableCoins[0]);
   const [timeLeft, setTimeLeft] = useState(parseInt(pData.time_left || '900', 10) || 900);
   const [copied, setCopied] = useState(false);
-  const [status, setStatus] = useState('pending'); // 'pending' | 'verifying' | 'paid' | 'expired' | 'underpaid'
+  const [status, setStatus] = useState('pending'); // 'pending' | 'verifying' | 'paid' | 'expired'
   const [txDetails, setTxDetails] = useState({ txid: '', amount_received: 0 });
-  const [manualTxid, setManualTxid] = useState('');
-  const [isVerifyingManual, setIsVerifyingManual] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [isManualChecking, setIsManualChecking] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(5);
 
   // Countdown timer effect
@@ -222,34 +220,34 @@ export default function App() {
     return () => clearInterval(timer);
   }, [timeLeft, status]);
 
-  // Background Auto-Polling for Payment Status
+  // Background 100% Automated Multi-RPC Polling
+  const checkPaymentStatus = async () => {
+    if (!sessionId || sessionId.includes('sandbox')) return;
+    try {
+      const res = await fetch(`/api/v1/gateway/status/${sessionId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === 'paid') {
+          setStatus('paid');
+          setTxDetails({
+            txid: data.txid || '0xOnChainVerified',
+            amount_received: data.amount_received || initialAmount
+          });
+          if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.HapticFeedback?.notificationOccurred('success');
+          }
+        } else if (data.status === 'expired') {
+          setStatus('expired');
+        }
+      }
+    } catch (err) {
+      // silent background check
+    }
+  };
+
   useEffect(() => {
     if (status === 'paid' || status === 'expired') return;
-    if (!sessionId || sessionId.includes('sandbox')) return;
-
-    const pollInterval = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/v1/gateway/status/${sessionId}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.status === 'paid') {
-            setStatus('paid');
-            setTxDetails({
-              txid: data.txid || '0xOnChainVerified',
-              amount_received: data.amount_received || initialAmount
-            });
-            if (window.Telegram?.WebApp) {
-              window.Telegram.WebApp.HapticFeedback?.notificationOccurred('success');
-            }
-          } else if (data.status === 'expired') {
-            setStatus('expired');
-          }
-        }
-      } catch (err) {
-        // quiet fallback
-      }
-    }, 4000);
-
+    const pollInterval = setInterval(checkPaymentStatus, 3500);
     return () => clearInterval(pollInterval);
   }, [sessionId, status, initialAmount]);
 
@@ -278,39 +276,10 @@ export default function App() {
     }
   };
 
-  const handleManualVerify = async () => {
-    if (!manualTxid.trim()) {
-      setErrorMsg('Please enter your transaction hash / TxID.');
-      return;
-    }
-    setErrorMsg('');
-    setIsVerifyingManual(true);
-
-    try {
-      const res = await fetch('/api/v1/gateway/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: sessionId,
-          txid: manualTxid.trim(),
-          coin: selectedCoin.id
-        })
-      });
-      const data = await res.json();
-      if (data.success || data.status === 'paid') {
-        setStatus('paid');
-        setTxDetails({
-          txid: data.txid || manualTxid.trim(),
-          amount_received: data.amount_received || initialAmount
-        });
-      } else {
-        setErrorMsg(data.message || 'Transaction not found or not confirmed yet. Please allow a few seconds for blockchain confirmation.');
-      }
-    } catch (e) {
-      setErrorMsg('Unable to verify at this moment. Our node is continuing to scan automatically.');
-    } finally {
-      setIsVerifyingManual(false);
-    }
+  const handleCheckNow = async () => {
+    setIsManualChecking(true);
+    await checkPaymentStatus();
+    setTimeout(() => setIsManualChecking(false), 1500);
   };
 
   const formatTimer = (seconds) => {
@@ -441,37 +410,31 @@ export default function App() {
               </div>
             </div>
 
-            {/* Manual TxID Verification Accordion */}
+            {/* 100% AUTOMATED OBSERVATION RADAR */}
             <div className="pt-2 border-t border-zinc-100 space-y-3">
-              <div className="text-[11px] font-mono text-zinc-500">
-                Transferred funds? Paste TxID to expedite verification:
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Paste 0x... or TxID hash"
-                  value={manualTxid}
-                  onChange={(e) => setManualTxid(e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-50 border border-zinc-200 text-xs font-mono text-black focus:outline-none focus:border-black"
-                />
+              <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#26A17B] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#26A17B]"></span>
+                  </span>
+                  <div className="text-[11px] font-mono text-zinc-600">
+                    Auto-detecting transfer on-chain...
+                  </div>
+                </div>
                 <button
-                  onClick={handleManualVerify}
-                  disabled={isVerifyingManual}
-                  className="px-4 py-2 rounded-xl bg-black text-white text-xs font-semibold font-mono flex items-center gap-1.5 hover:bg-zinc-800 disabled:opacity-50 transition-all shadow-2xs shrink-0"
+                  onClick={handleCheckNow}
+                  disabled={isManualChecking}
+                  className="px-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-xs font-semibold font-mono text-zinc-800 hover:bg-zinc-100 flex items-center gap-1.5 shadow-2xs transition-all disabled:opacity-50"
                 >
-                  {isVerifyingManual ? (
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" strokeWidth={1.5} />
-                  ) : (
-                    <span>Verify</span>
-                  )}
+                  <RefreshCw className={`w-3 h-3 text-zinc-500 ${isManualChecking ? 'animate-spin text-black' : ''}`} strokeWidth={1.5} />
+                  <span>{isManualChecking ? 'Scanning...' : 'Check Status'}</span>
                 </button>
               </div>
-              {errorMsg && (
-                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] font-mono text-amber-800 flex items-start gap-1.5">
-                  <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" strokeWidth={1.5} />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
+
+              <div className="text-[10px] font-mono text-zinc-400 text-center">
+                Send the exact amount above. The gateway verifies automatically without requiring a TxID.
+              </div>
             </div>
 
           </div>
