@@ -127,3 +127,80 @@ async def get_mobile_docs():
 </body>
 </html>"""
     return HTMLResponse(content=html_content)
+
+# ═══════════════════════════════════════════════
+#             CHECKOUT FRONTEND PAGE
+# ═══════════════════════════════════════════════
+
+import os
+from datetime import datetime
+from fastapi.staticfiles import StaticFiles
+from src.config import settings
+from src.database import get_db
+
+DIST_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+if os.path.exists(os.path.join(DIST_DIR, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(DIST_DIR, "assets")), name="assets")
+
+@app.get("/gateway/pay/{session_id}", include_in_schema=False)
+@app.get("/pay/{session_id}", include_in_schema=False)
+async def serve_checkout_page(session_id: str, embed: bool = False):
+    db = get_db()
+    session = await db.payment_sessions.find_one({"session_id": session_id})
+    if not session:
+        return HTMLResponse("<div style='font-family:sans-serif;text-align:center;padding:50px;'><h2>404 - Payment Session Not Found or Expired</h2></div>", status_code=404)
+        
+    index_file = os.path.join(DIST_DIR, "index.html")
+    if not os.path.exists(index_file):
+        return HTMLResponse("<div style='font-family:sans-serif;text-align:center;padding:50px;'><h2>Checkout bundle missing. Please run 'npm run build' in frontend/</h2></div>", status_code=500)
+        
+    with open(index_file, "r", encoding="utf-8") as f:
+        html = f.read()
+        
+    now = datetime.utcnow()
+    expires_at = session.get("expires_at", now)
+    time_left = max(0, int((expires_at - now).total_seconds()))
+    
+    wallets = session.get("wallets", {})
+    bep20 = wallets.get("bep20", settings.DEFAULT_USDT_BEP20_WALLET)
+    trc20 = wallets.get("trc20", settings.DEFAULT_USDT_TRC20_WALLET)
+    poly = wallets.get("poly", settings.DEFAULT_USDT_POLY_WALLET)
+    arb = wallets.get("arb", settings.DEFAULT_USDT_ARB_WALLET)
+    ton = wallets.get("ton", settings.DEFAULT_TON_WALLET)
+    ltc = wallets.get("ltc", settings.DEFAULT_LTC_WALLET)
+    btc = wallets.get("btc", settings.DEFAULT_BTC_WALLET)
+    pol = wallets.get("pol", settings.DEFAULT_POL_WALLET)
+    
+    html = html.replace("{amount}", f"{session.get('amount', 0.0):.4f}")
+    html = html.replace("{session_id}", session_id)
+    html = html.replace("{time_left}", str(time_left))
+    
+    inject_data = (
+        f'time_left: "{time_left}", '
+        f'USDT_WALLET_BEP20: "{bep20}", '
+        f'USDT_WALLET_TRC20: "{trc20}", '
+        f'USDT_WALLET_POLY: "{poly}", '
+        f'USDT_WALLET_ARBITRUM: "{arb}", '
+        f'TON_WALLET: "{ton}", '
+        f'LTC_WALLET: "{ltc}", '
+        f'BTC_WALLET: "{btc}", '
+        f'POL_WALLET: "{pol}", '
+        f'BINANCE_ID: "", '
+        f'is_gateway: "true", '
+        f'logo_url: "{session.get("logo_url", "")}", '
+        f'theme_color: "{session.get("theme_color", "")}", '
+        f'merchant_name: "{session.get("merchant_name", "")}", '
+        f'merchant_url: "{session.get("merchant_url", "")}", '
+        f'redirect_url: "{session.get("redirect_url", "")}", '
+        f'custom_id: "{session.get("custom_id", "")}", '
+        f'embed: "{"true" if embed else "false"}"'
+    )
+    html = html.replace(f'time_left: "{time_left}"', inject_data)
+    
+    origins = " ".join(session.get("allowed_origins", []))
+    frame_ancestors = f"'self' {origins}" if origins else "*"
+    headers = {
+        "Content-Security-Policy": f"frame-ancestors {frame_ancestors}",
+        "X-Frame-Options": "ALLOWALL"
+    }
+    return HTMLResponse(html, headers=headers)
