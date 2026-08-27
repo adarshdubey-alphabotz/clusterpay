@@ -120,6 +120,43 @@ Your gateway is now live at `http://localhost:8085` (or behind your Nginx revers
 
 ---
 
+## 🔑 Generating Merchant API Keys (`CS_key_...`)
+
+ClusterPay includes a built-in CLI to securely issue and manage 256-bit entropy API keys directly on your server:
+
+```bash
+# If running locally with Python:
+python3 -m src.cli create-merchant --name "My Store Name"
+
+# Or if running inside Docker Compose:
+docker compose exec app python3 -m src.cli create-merchant --name "My Store Name"
+```
+
+#### Terminal Output:
+```text
+✅ Merchant Created Successfully!
+==================================================
+Merchant ID: 104928
+Name:        My Store Name
+API Key:     CS_key_104928_8f9a2e3b7c1d4a0e9f2b1a8c3d7e4a1f
+Allowed IPs: All (No IP restriction)
+==================================================
+```
+
+#### Additional Management Commands:
+```bash
+# 1. Generate key restricted to specific server IPs (Anti-leaking protection):
+python3 -m src.cli create-merchant --name "My Store" --ips "142.250.190.46,54.210.12.8"
+
+# 2. List all registered merchants and active keys:
+python3 -m src.cli list-merchants
+
+# 3. Instantly revoke a compromised key:
+python3 -m src.cli revoke-merchant --key "CS_key_104928_8f9a2e3b7c1d4a0e9f2b1a8c3d7e4a1f"
+```
+
+---
+
 ## 📖 API Documentation & Integration
 
 ### Authentication
