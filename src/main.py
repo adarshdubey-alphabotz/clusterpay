@@ -37,11 +37,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from src.api.admin import router as admin_api_router
+from src.api.admin_ui import router as admin_ui_router
+
 # Mount API Routers
 app.include_router(checkout_router, prefix="/api/v1", tags=["Merchant Checkout"])
 app.include_router(status_router, prefix="/api/v1", tags=["Payment Verification"])
 app.include_router(sessions_router, prefix="/api/v1", tags=["Merchant Sessions"])
 app.include_router(webhooks_router, prefix="/api/v1", tags=["Webhooks"])
+app.include_router(admin_api_router, prefix="/api/v1", tags=["Admin Operations"])
+app.include_router(admin_ui_router, tags=["Admin Portal"])
 
 @app.get("/health", tags=["System"])
 async def health_check():
