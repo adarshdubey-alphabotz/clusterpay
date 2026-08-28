@@ -18,11 +18,14 @@ class Settings:
     # ADMIN_TOTP_SECRET = "" means 2FA is bypassed (development mode only).
     # In production always set this: python scripts/generate_secrets.py
 
-    # Rate limiting — use Redis in production for multi-worker accuracy
-    RATE_LIMIT_PER_MINUTE: int = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
-    REDIS_URL: str = os.getenv("REDIS_URL", "")
-    # Set REDIS_URL=redis://localhost:6379 to enable Redis-backed rate limiting.
-    # Without it, limits are per-process only (fine for single-worker, not for multi-worker).
-
+    # Default Fallback Wallets
+    DEFAULT_USDT_BEP20_WALLET: str = os.getenv("DEFAULT_USDT_BEP20_WALLET", "")
+    DEFAULT_USDT_TRC20_WALLET: str = os.getenv("DEFAULT_USDT_TRC20_WALLET", "")
+    DEFAULT_USDT_POLY_WALLET: str = os.getenv("DEFAULT_USDT_POLY_WALLET", "")
+    DEFAULT_USDT_ARB_WALLET: str = os.getenv("DEFAULT_USDT_ARB_WALLET", "")
+    DEFAULT_TON_WALLET: str = os.getenv("DEFAULT_TON_WALLET", "")
+    DEFAULT_LTC_WALLET: str = os.getenv("DEFAULT_LTC_WALLET", "")
+    DEFAULT_BTC_WALLET: str = os.getenv("DEFAULT_BTC_WALLET", "")
+    DEFAULT_POL_WALLET: str = os.getenv("DEFAULT_POL_WALLET", "")
 
 settings = Settings()

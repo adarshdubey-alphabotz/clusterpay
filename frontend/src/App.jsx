@@ -173,13 +173,6 @@ export default function App() {
   const [copiedAmount, setCopiedAmount] = useState(false);
   const [status, setStatus] = useState('pending'); // 'pending' | 'verifying' | 'paid' | 'expired'
   const [txDetails, setTxDetails] = useState({ txid: '', amount_received: 0, paid_at: '' });
-  
-  // Manual Verification States
-  const [txidInput, setTxidInput] = useState('');
-  const [isVerifyingManual, setIsVerifyingManual] = useState(false);
-  const [verifyError, setVerifyError] = useState('');
-  const [isManualExpanded, setIsManualExpanded] = useState(false);
-  
   const [redirectCountdown, setRedirectCountdown] = useState(5);
 
   // 15-Minute Countdown Timer
@@ -276,45 +269,6 @@ export default function App() {
       navigator.clipboard.writeText(text);
       setCopiedAmount(true);
       setTimeout(() => setCopiedAmount(false), 2000);
-    }
-  };
-
-  // Manual TxID Verification (Razorpay Style)
-  const handleManualVerify = async (e) => {
-    if (e) e.preventDefault();
-    setVerifyError('');
-    if (!txidInput || txidInput.trim().length < 8) {
-      setVerifyError('Please enter a valid blockchain transaction hash (TxID).');
-      return;
-    }
-
-    setIsVerifyingManual(true);
-    try {
-      const res = await fetch('/api/v1/gateway/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: sessionId,
-          coin: selectedCoin.id,
-          txid: txidInput.trim()
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok && (data.status === 'paid' || data.success)) {
-        setStatus('paid');
-        setTxDetails({
-          txid: data.tx_hash || txidInput.trim(),
-          amount_received: data.amount_received || initialAmount,
-          paid_at: new Date().toISOString()
-        });
-      } else {
-        setVerifyError(data.detail || data.message || 'Transaction not found or still pending in mempool. Please wait 10-15 seconds and retry.');
-      }
-    } catch (err) {
-      setVerifyError('Network error connecting to verification node. Please retry.');
-    } finally {
-      setIsVerifyingManual(false);
     }
   };
 
@@ -536,64 +490,6 @@ export default function App() {
               >
                 <RefreshCw className="w-3.5 h-3.5" />
               </button>
-            </div>
-
-
-            {/* 5. RAZORPAY-STYLE MANUAL TXID ACCELERATION ACCORDION */}
-            <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setIsManualExpanded(!isManualExpanded)}
-                className="w-full px-4 py-2.5 bg-zinc-50/60 hover:bg-zinc-100/60 flex items-center justify-between text-xs font-mono text-zinc-700 transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span className="font-semibold">Paid already? Accelerate with TxID (Optional)</span>
-                </div>
-                {isManualExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
-              </button>
-
-              {isManualExpanded && (
-                <form onSubmit={handleManualVerify} className="p-4 space-y-3 bg-white border-t border-zinc-100">
-                  <p className="text-[11px] text-zinc-600 font-sans leading-relaxed">
-                    If your wallet already submitted the transfer, paste the blockchain Transaction Hash (TxID) to trigger an immediate RPC query.
-                  </p>
-                  
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      type="text"
-                      value={txidInput}
-                      onChange={(e) => setTxidInput(e.target.value)}
-                      placeholder="0x..."
-                      className="flex-1 px-3 py-2 rounded-xl bg-zinc-50 border border-zinc-200 text-xs font-mono text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-zinc-950/20"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isVerifyingManual}
-                      className="px-4 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-mono text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
-                    >
-                      {isVerifyingManual ? (
-                        <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>Verifying...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Verify TxID</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {verifyError && (
-                    <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 font-sans text-xs flex items-start gap-2">
-                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                      <div className="leading-snug">{verifyError}</div>
-                    </div>
-                  )}
-                </form>
-              )}
             </div>
 
           </div>
