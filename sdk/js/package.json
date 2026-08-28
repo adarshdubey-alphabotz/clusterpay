@@ -1,0 +1,55 @@
+{
+  "name": "@clusterpay/sdk",
+  "version": "2.1.0",
+  "description": "Official Node.js, TypeScript & Browser SDK for ClusterPay Non-Custodial Cryptocurrency Gateway",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/clusterpay.browser.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/clusterpay.browser.js",
+      "require": "./dist/clusterpay.browser.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.js",
+    "prepack": "npm run build"
+  },
+  "keywords": [
+    "clusterpay",
+    "crypto",
+    "payments",
+    "checkout",
+    "usdt",
+    "bitcoin",
+    "tron",
+    "polygon",
+    "arbitrum",
+    "bep20",
+    "trc20",
+    "web3",
+    "non-custodial"
+  ],
+  "author": "ClusterPay Technologies <adarsh@clusterpay.cloud>",
+  "license": "MIT",
+  "homepage": "https://clusterpay.cloud",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adarshdubey-alphabotz/clusterpay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adarshdubey-alphabotz/clusterpay/issues"
+  }
+}
