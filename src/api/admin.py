@@ -366,12 +366,8 @@ async def admin_list_sessions(
 async def admin_create_session(req: AdminCreateSessionRequest, _: bool = Depends(verify_admin_token)):
     if req.amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be > 0")
-    if not req.wallets:
-        raise HTTPException(status_code=400, detail="At least one wallet address is required")
-
-    import random
-    micro_offset    = round(random.uniform(0.0001, 0.0099), 4)
-    effective_amount = round(req.amount + micro_offset, 6)
+    from src.core.micro_offset import generate_micro_offset_amount
+    effective_amount = generate_micro_offset_amount(req.amount)
     session_id      = f"cpay_{uuid.uuid4().hex[:16]}"
     now             = datetime.utcnow()
     exp_mins        = max(5, min(req.expiry_minutes or 15, 1440))
