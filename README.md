@@ -228,9 +228,13 @@ function verify($body, $sig, $ts, $nonce, $apiKey) {
 }
 ```
 
----
+## SDKs & In-App Checkout
 
-## SDKs
+<div align="center">
+  <img src="https://raw.githubusercontent.com/adarshdubey-alphabotz/clusterpay/main/frontend/public/assets/checkout-sdk-desktop.png" alt="ClusterPay In-App Checkout SDK Modal" width="850" />
+</div>
+
+<br />
 
 | Language | Import |
 |:---|:---|
@@ -266,6 +270,12 @@ print(invoice["payment_url"])
 ---
 
 ## Admin console
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/adarshdubey-alphabotz/clusterpay/main/frontend/public/assets/admin-console-real.png" alt="ClusterPay Self-Hosted Admin Console" width="850" />
+</div>
+
+<br />
 
 Go to `https://your-domain.com/admin`. Login requires:
 - **Password** — your `ADMIN_MASTER_KEY`
