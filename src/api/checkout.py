@@ -16,7 +16,7 @@ router = APIRouter()
 async def create_checkout_session(req: GatewayCheckoutRequest, request: Request, merchant: dict = Depends(verify_merchant_key)):
     """
     Creates a new high-precision cryptocurrency checkout invoice.
-    Generates a unique 4-decimal anti-theft micro-offset amount.
+    Generates a unique 6-decimal anti-theft micro-offset amount (1,000,000 unique entropy slots).
     """
     merchant_id = merchant.get("telegram_id") or merchant.get("merchant_id")
     check_rate_limit(f"merchant_{merchant_id}")
@@ -49,7 +49,7 @@ async def create_checkout_session(req: GatewayCheckoutRequest, request: Request,
             detail="At least 1 destination merchant wallet address is required in the request payload (e.g. wallets={'bep20': '0x...'} or wallets={'trc20': 'T...'}). ClusterPay is non-custodial and requires explicit merchant recipient addresses."
         )
 
-    # 4-decimal anti-theft micro-offset
+    # 6-decimal anti-theft micro-offset
     effective_amount = generate_micro_offset_amount(base_usd)
 
     session_id = f"cpay_{uuid.uuid4().hex[:20]}"

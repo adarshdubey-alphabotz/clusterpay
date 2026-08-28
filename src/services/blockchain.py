@@ -88,19 +88,19 @@ async def verify_evm_usdt(chain: str, token_key: str, txid: str, recipient: str,
                 raw_val = int(raw_data, 16)
                 amount_found = float(Decimal(raw_val) / Decimal(10 ** decimals))
                 
-                # Verify exact 4-decimal match (tolerance: 0.0001)
-                if abs(amount_found - expected_amount) < 0.0002 or amount_found >= expected_amount:
+                # Verify 6-decimal exact precision match (or overpayment)
+                if abs(amount_found - expected_amount) < 0.000005 or amount_found >= expected_amount:
                     found_valid = True
                     break
 
     if not found_valid:
-        return False, f"Transfer to {recipient} with amount ${expected_amount:.4f} not found in receipt logs", amount_found
+        return False, f"Transfer to {recipient} with amount ${expected_amount:.6f} not found in receipt logs", amount_found
 
     return True, "On-chain transaction verified successfully", amount_found
 
 async def verify_tron_usdt(txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
     """
-    Tron TRC-20 Verification via TronGrid / TronScan.
+    Tron TRC-20 Verification via TronGrid / TronScan with 6-decimal precision.
     """
     urls = [
         f"https://apilist.tronscanapi.com/api/transaction-info?hash={txid}",
@@ -122,7 +122,7 @@ async def verify_tron_usdt(txid: str, recipient: str, expected_amount: float) ->
                         if t.get("to_address", "").lower() == recipient.lower():
                             raw_val = int(t.get("amount_str", 0))
                             amount = float(Decimal(raw_val) / Decimal(10 ** 6))
-                            if abs(amount - expected_amount) < 0.0002 or amount >= expected_amount:
+                            if abs(amount - expected_amount) < 0.000005 or amount >= expected_amount:
                                 return True, "Tron TRC-20 payment verified successfully", amount
                             return False, f"Tron transfer found but amount mismatch: expected {expected_amount}, received {amount}", amount
         except Exception as e:
