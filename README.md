@@ -17,7 +17,6 @@
 
   <p>
     <a href="https://clusterpay.cloud/docs">Documentation</a> ·
-    <a href="https://pay.rapidx.me/admin">Live Demo</a> ·
     <a href="https://clusterpay.cloud/docs/quickstart">Quick Start</a> ·
     <a href="https://github.com/adarshdubey-alphabotz/clusterpay/issues">Report a Bug</a>
   </p>
