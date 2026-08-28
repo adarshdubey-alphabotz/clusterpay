@@ -6,6 +6,9 @@
   "module": "dist/index.esm.js",
   "browser": "dist/clusterpay.browser.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "clusterpay": "bin/clusterpay.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -20,6 +23,7 @@
   },
   "files": [
     "dist",
+    "bin",
     "README.md",
     "LICENSE"
   ],
