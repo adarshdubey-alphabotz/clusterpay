@@ -4,11 +4,12 @@
   <p>Open-source crypto payment gateway. Non-custodial. Self-hosted. No fees.</p>
 
   <p>
+    <a href="https://pypi.org/project/clusterpay/"><img src="https://img.shields.io/pypi/v/clusterpay.svg?style=flat-square&logo=pypi&logoColor=white" alt="PyPI" /></a>
+    <a href="https://www.npmjs.com/package/@clusterpay/sdk"><img src="https://img.shields.io/npm/v/@clusterpay/sdk.svg?style=flat-square&logo=npm&logoColor=white" alt="npm" /></a>
     <a href="https://clusterpay.cloud/docs"><img src="https://img.shields.io/badge/docs-clusterpay.cloud-0f172a?style=flat-square&logo=gitbook&logoColor=white" alt="Docs" /></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="MIT License" /></a>
     <img src="https://img.shields.io/badge/python-3.12-3b82f6?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" />
     <img src="https://img.shields.io/badge/fastapi-latest-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
-    <img src="https://img.shields.io/badge/mongodb-6.0-47a248?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB" />
     <img src="https://img.shields.io/badge/docker-ready-2496ed?style=flat-square&logo=docker&logoColor=white" alt="Docker" />
     <img src="https://img.shields.io/badge/chains-8-f97316?style=flat-square" alt="8 Chains" />
   </p>
@@ -235,11 +236,12 @@ function verify($body, $sig, $ts, $nonce, $apiKey) {
 
 <br />
 
-| Language | Import |
-|:---|:---|
-| JavaScript / TypeScript | `<script src="https://pay.yourstore.com/js/v1/clusterpay.js">` |
-| Python | `from clusterpay import ClusterPay` |
-| PHP | `use ClusterPay\Client` |
+| Ecosystem | Package | Install Command | Link |
+|:---|:---|:---|:---|
+| **Python (PyPI)** | `clusterpay` | `pip install clusterpay` | [![PyPI](https://img.shields.io/pypi/v/clusterpay.svg?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/clusterpay/) |
+| **Node.js (npm)** | `@clusterpay/sdk` | `npm i @clusterpay/sdk` | [![npm](https://img.shields.io/npm/v/@clusterpay/sdk.svg?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/@clusterpay/sdk) |
+| **Browser Script** | Drop-in Modal | `<script src="https://pay.yourstore.com/js/v1/clusterpay.js">` | `ClusterPay()` |
+| **PHP Client** | `ClusterPay\Client` | Manual / Composer | `sdk/php/` |
 
 **JS modal**
 ```js
