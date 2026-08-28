@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="clusterpay",
-    version="2.0.0",
+    version="1.0.0",
     description="Official Python SDK for ClusterPay Cryptocurrency Merchant Gateway",
     author="ClusterPay Technologies",
     packages=find_packages(),

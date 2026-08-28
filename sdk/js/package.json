@@ -1,6 +1,6 @@
 {
   "name": "@clusterpay/sdk",
-  "version": "2.1.0",
+  "version": "1.0.0",
   "description": "Official Node.js, TypeScript & Browser SDK for ClusterPay Non-Custodial Cryptocurrency Gateway",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

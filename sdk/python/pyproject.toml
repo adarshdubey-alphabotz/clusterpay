@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "clusterpay"
-version = "2.1.0"
+version = "1.0.0"
 description = "Official Python SDK for ClusterPay - Non-Custodial Cryptocurrency Payment Gateway"
 readme = "README.md"
 authors = [{ name = "ClusterPay", email = "adarsh@clusterpay.cloud" }]
