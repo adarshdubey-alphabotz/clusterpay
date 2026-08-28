@@ -1,18 +1,37 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from pydantic import BaseModel, Field, field_validator
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from src.core.security import verify_merchant_key
+from src.core.rate_limiter import check_rate_limit_async
 from src.database import get_db
 from src.services.blockchain import verify_onchain_transaction
 from src.services.webhook_dispatcher import dispatch_webhook
 
 router = APIRouter()
 
+VALID_COINS = {"USDT", "USDT_BEP20", "USDT_TRC20", "USDT_POLY", "USDT_ARB", "TON", "LTC", "BTC", "POL"}
+
+
 class VerifyRequest(BaseModel):
-    session_id: str = Field(..., description="Checkout session ID")
-    coin: str = Field(..., description="Network/Token code (USDT, USDT_TRC20, USDT_POLY, etc.)")
-    txid: Optional[str] = Field(None, description="Blockchain transaction hash (optional for auto-indexers)")
+    session_id: str = Field(..., min_length=8, max_length=64, description="Checkout session ID")
+    coin: str       = Field(..., min_length=2, max_length=20, description="Network/Token (USDT_BEP20, USDT_TRC20, etc.)")
+    txid: Optional[str] = Field(None, min_length=8, max_length=128, description="Blockchain transaction hash")
+
+    @field_validator("coin")
+    @classmethod
+    def coin_must_be_valid(cls, v):
+        if v.upper() not in VALID_COINS:
+            raise ValueError(f"Unsupported coin '{v}'. Must be one of: {', '.join(sorted(VALID_COINS))}")
+        return v.upper()
+
+    @field_validator("txid")
+    @classmethod
+    def txid_no_whitespace(cls, v):
+        if v is not None:
+            return v.strip()
+        return v
+
 
 @router.get("/status/{session_id}", summary="Get Session Status")
 async def get_session_status(session_id: str, merchant: dict = Depends(verify_merchant_key)):
@@ -30,25 +49,35 @@ async def get_session_status(session_id: str, merchant: dict = Depends(verify_me
 
     return {
         "session_id": session["session_id"],
-        "status": session.get("status", "pending"),
-        "amount": session.get("amount"),
+        "status":     session.get("status", "pending"),
+        "amount":     session.get("amount"),
         "base_amount": session.get("base_amount"),
-        "currency": session.get("currency", "USD"),
-        "custom_id": session.get("custom_id"),
-        "coin": session.get("coin"),
-        "tx_hash": session.get("tx_hash"),
+        "currency":   session.get("currency", "USD"),
+        "custom_id":  session.get("custom_id"),
+        "coin":       session.get("coin"),
+        "tx_hash":    session.get("tx_hash"),
         "created_at": session["created_at"].isoformat() + "Z" if session.get("created_at") else None,
         "expires_at": session["expires_at"].isoformat() + "Z" if session.get("expires_at") else None,
-        "paid_at": session["paid_at"].isoformat() + "Z" if session.get("paid_at") else None
+        "paid_at":    session["paid_at"].isoformat() + "Z" if session.get("paid_at") else None
     }
 
+
 @router.post("/verify", summary="Verify On-Chain Transfer (Checkout UI)", include_in_schema=False)
-async def verify_payment(req: VerifyRequest, bg: BackgroundTasks):
+async def verify_payment(req: VerifyRequest, request: Request, bg: BackgroundTasks):
     """
     Public Checkout Verification:
     Atomic validation of on-chain transactions, micro-decimal offset matching,
     anti-replay claim locking, and background HMAC webhook dispatching.
+
+    Rate limited: 10 requests per minute per IP to prevent TxID enumeration.
     """
+    # Rate limit: 10 verify attempts per IP per minute (prevents TxID brute-force / enumeration)
+    client_ip = (
+        request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+        or getattr(request.client, "host", "unknown")
+    )
+    await check_rate_limit_async(f"verify:{client_ip}", limit=10, window_seconds=60)
+
     db = get_db()
     session = await db.payment_sessions.find_one({"session_id": req.session_id})
     if not session:
@@ -56,11 +85,11 @@ async def verify_payment(req: VerifyRequest, bg: BackgroundTasks):
 
     if session.get("status") == "paid":
         return {
-            "success": True,
-            "status": "paid",
-            "message": "Payment already confirmed and settled",
+            "success":    True,
+            "status":     "paid",
+            "message":    "Payment already confirmed and settled",
             "session_id": req.session_id,
-            "tx_hash": session.get("tx_hash")
+            "tx_hash":    session.get("tx_hash")
         }
 
     now = datetime.utcnow()
@@ -85,21 +114,18 @@ async def verify_payment(req: VerifyRequest, bg: BackgroundTasks):
     # 2. Get Merchant Destination Wallet
     wallets = session.get("wallets", {})
     recipient_map = {
-        "USDT": wallets.get("bep20", ""),
+        "USDT":       wallets.get("bep20", ""),
         "USDT_BEP20": wallets.get("bep20", ""),
         "USDT_TRC20": wallets.get("trc20", ""),
-        "USDT_POLY": wallets.get("poly", ""),
-        "USDT_ARB": wallets.get("arb", ""),
-        "TON": wallets.get("ton", ""),
-        "LTC": wallets.get("ltc", ""),
-        "BTC": wallets.get("btc", ""),
-        "POL": wallets.get("pol", "")
+        "USDT_POLY":  wallets.get("poly", ""),
+        "USDT_ARB":   wallets.get("arb", ""),
+        "TON":        wallets.get("ton", ""),
+        "LTC":        wallets.get("ltc", ""),
+        "BTC":        wallets.get("btc", ""),
+        "POL":        wallets.get("pol", "")
     }
-    recipient_address = recipient_map.get(coin, "")
-    if not recipient_address:
-        recipient_address = session.get("recipient_address", "")
-
-    expected_amount = float(session.get("amount", 0.0))
+    recipient_address = recipient_map.get(coin, "") or session.get("recipient_address", "")
+    expected_amount   = float(session.get("amount", 0.0))
 
     # 3. Verify on-chain execution, contract whitelist, recipient, and amount
     is_valid, msg, amount_received = await verify_onchain_transaction(
@@ -112,14 +138,14 @@ async def verify_payment(req: VerifyRequest, bg: BackgroundTasks):
     if not is_valid:
         raise HTTPException(status_code=400, detail=msg)
 
-    # 4. Atomic Claim Insertion
+    # 4. Atomic Claim Insertion (unique index prevents race condition double-spend)
     try:
         await db.payment_tx_claims.insert_one({
-            "network": coin,
-            "txid": clean_txid,
+            "network":    coin,
+            "txid":       clean_txid,
             "session_id": req.session_id,
             "claimed_at": now,
-            "amount": amount_received
+            "amount":     amount_received
         })
     except Exception:
         raise HTTPException(status_code=400, detail="Concurrency conflict: Transaction was just claimed by a concurrent request.")
@@ -127,15 +153,13 @@ async def verify_payment(req: VerifyRequest, bg: BackgroundTasks):
     # 5. Atomic Session State Transition (Only if status is still pending)
     updated = await db.payment_sessions.find_one_and_update(
         {"session_id": req.session_id, "status": "pending"},
-        {
-            "$set": {
-                "status": "paid",
-                "coin": coin,
-                "tx_hash": clean_txid,
-                "amount_received": amount_received,
-                "paid_at": now
-            }
-        },
+        {"$set": {
+            "status":          "paid",
+            "coin":            coin,
+            "tx_hash":         clean_txid,
+            "amount_received": amount_received,
+            "paid_at":         now
+        }},
         return_document=True
     )
 
@@ -145,14 +169,14 @@ async def verify_payment(req: VerifyRequest, bg: BackgroundTasks):
     # 6. Background Webhook Dispatch with HMAC-SHA256 Signature
     if updated.get("callback_url"):
         merchant = await db.merchants.find_one({"merchant_id": updated.get("merchant_id")})
-        api_key = merchant.get("api_key", "") if merchant else ""
+        api_key  = merchant.get("api_key", "") if merchant else ""
         bg.add_task(dispatch_webhook, updated, api_key)
 
     return {
-        "success": True,
-        "status": "paid",
-        "message": "Payment verified and settled successfully",
-        "session_id": req.session_id,
+        "success":         True,
+        "status":          "paid",
+        "message":         "Payment verified and settled successfully",
+        "session_id":      req.session_id,
         "amount_received": amount_received,
-        "tx_hash": clean_txid
+        "tx_hash":         clean_txid
     }

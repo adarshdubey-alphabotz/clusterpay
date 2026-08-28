@@ -526,6 +526,26 @@ export default function App() {
           </div>
         )}
 
+        {/* About ClusterPay Footer Banner inside Card */}
+        <div className="mx-4 sm:mx-6 mb-4 p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/90 text-center space-y-1.5 font-sans">
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
+            <span className="font-bold text-xs text-zinc-950">About ClusterPay</span>
+            <span className="px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-800 font-mono text-[9px] font-bold">100% FREE &amp; OPEN SOURCE</span>
+          </div>
+          <p className="text-[11px] text-zinc-500 font-sans leading-relaxed">
+            Non-custodial crypto payment gateway with 0% platform fees. Direct cold wallet settlement.
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-0.5 text-[11px] font-mono">
+            <a href="https://clusterpay.cloud" target="_blank" rel="noreferrer" className="text-zinc-900 font-semibold hover:underline">
+              clusterpay.cloud
+            </a>
+            <span className="text-zinc-300">·</span>
+            <a href="https://github.com/adarshdubey-alphabotz/clusterpay" target="_blank" rel="noreferrer" className="text-zinc-900 font-semibold hover:underline">
+              GitHub Repo
+            </a>
+          </div>
+        </div>
+
         {/* FOOTER BAR: Security Badge */}
         <div className="px-6 py-3 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between text-[11px] font-mono text-zinc-400">
           <div className="flex items-center gap-1.5">
@@ -535,6 +555,26 @@ export default function App() {
           <span className="font-semibold text-zinc-600">ClusterPay</span>
         </div>
 
+      </div>
+
+      {/* ── UNDER-CHECKOUT ATTRIBUTION BANNER ── */}
+      <div className="mt-4 p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-center space-y-1.5 font-sans">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="font-bold text-xs text-zinc-950">About ClusterPay</span>
+          <span className="px-2 py-0.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono text-[9.5px] font-bold">100% FREE &amp; OPEN SOURCE</span>
+        </div>
+        <p className="text-xs text-zinc-600 font-sans leading-relaxed">
+          Open-source, non-custodial crypto checkout protocol with 0% platform cuts. Settle direct to personal hardware keys.
+        </p>
+        <div className="flex items-center justify-center gap-3 pt-1 text-xs font-mono">
+          <a href="https://clusterpay.cloud" target="_blank" rel="noreferrer" className="text-black font-semibold hover:underline">
+            clusterpay.cloud
+          </a>
+          <span className="text-zinc-300">·</span>
+          <a href="https://github.com/adarshdubey-alphabotz/clusterpay" target="_blank" rel="noreferrer" className="text-black font-semibold hover:underline">
+            github.com/adarshdubey-alphabotz/clusterpay
+          </a>
+        </div>
       </div>
 
     </div>
