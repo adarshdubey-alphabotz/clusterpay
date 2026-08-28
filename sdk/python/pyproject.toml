@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "clusterpay"
-version = "1.0.0"
-description = "Official Python SDK for ClusterPay - Non-Custodial Cryptocurrency Payment Gateway"
+version = "1.0.1"
+description = "Official Python SDK & CLI Toolkit for ClusterPay - Non-Custodial Cryptocurrency Payment Gateway"
 readme = "README.md"
 authors = [{ name = "ClusterPay", email = "adarsh@clusterpay.cloud" }]
 license = { text = "MIT" }
@@ -25,7 +25,12 @@ classifiers = [
 ]
 dependencies = [
     "httpx>=0.24.0",
+    "pyotp>=2.9.0",
+    "qrcode>=7.4.2",
 ]
+
+[project.scripts]
+clusterpay = "clusterpay.cli:main"
 
 [project.urls]
 Homepage = "https://clusterpay.cloud"

@@ -14,7 +14,7 @@ from .exceptions import (
     SignatureVerificationError,
 )
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __all__ = [
     "ClusterPay",
     "verify_webhook_signature",
