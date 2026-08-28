@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/adarshdubey-alphabotz/clusterpay/main/frontend/public/assets/clusterpay-logo.png" alt="ClusterPay" width="72" height="72" />
+  <img src="https://graph.org/file/4fd6b06889187c528fd89-fb3daa9df03c8e3d86.jpg" alt="ClusterPay" width="72" height="72" />
   <h1>ClusterPay</h1>
   <p>Open-source crypto payment gateway. Non-custodial. Self-hosted. No fees.</p>
 
