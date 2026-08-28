@@ -62,7 +62,37 @@ async def get_session_status(session_id: str, merchant: dict = Depends(verify_me
     }
 
 
+@router.get("/gateway/status/{session_id}", summary="Public Checkout Status Poll", include_in_schema=False)
+async def get_gateway_session_status(session_id: str):
+    db = get_db()
+    session = await db.payment_sessions.find_one({"session_id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Checkout session not found")
+    
+    now = datetime.utcnow()
+    expires_at = session.get("expires_at", now)
+    time_left = max(0, int((expires_at - now).total_seconds()))
+    status = session.get("status", "pending")
+    if time_left == 0 and status == "pending":
+        status = "expired"
+
+    return {
+        "success": True,
+        "session_id": session["session_id"],
+        "status": status,
+        "amount": session.get("amount"),
+        "currency": session.get("currency", "USD"),
+        "coin": session.get("coin"),
+        "tx_hash": session.get("tx_hash"),
+        "txid": session.get("tx_hash") or session.get("txid"),
+        "amount_received": session.get("amount_received") or session.get("amount"),
+        "time_left": time_left,
+        "paid_at": session["paid_at"].isoformat() + "Z" if session.get("paid_at") else None
+    }
+
+
 @router.post("/verify", summary="Verify On-Chain Transfer (Checkout UI)", include_in_schema=False)
+@router.post("/gateway/verify", summary="Verify On-Chain Transfer (Checkout UI)", include_in_schema=False)
 async def verify_payment(req: VerifyRequest, request: Request, bg: BackgroundTasks):
     """
     Public Checkout Verification:

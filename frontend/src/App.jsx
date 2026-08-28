@@ -10,69 +10,28 @@ import {
   RefreshCw, 
   AlertCircle, 
   Lock,
-  Radio,
-  Zap
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  Zap,
+  Info,
+  CheckCircle,
+  XCircle,
+  HelpCircle
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import StoreApp from './StoreApp';
-
-// ── ACCURATE CRYPTO LOGOS (1.5PX FINTECH STYLE) ─────────────────────────
-const UsdtIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#26A17B" />
-    <path d="M17.8 14.5c-.1 0-.7.1-1.8.1-1 0-1.6-.1-1.8-.1v-2.3h7.4V8.5H10.4v3.7h3.8v2.3c-1.1 0-1.7-.1-1.8-.1-4.2-.2-7.4-1-7.4-2 0-1.1 3.2-1.9 7.4-2.1V7.1C7.8 7.3 4 8.5 4 10.1c0 1.9 5.4 3.4 12 3.4s12-1.5 12-3.4c0-1.6-3.8-2.8-8.4-3v3.2c4.2.2 7.4 1 7.4 2.1 0 1-3.2 1.8-7.2 2.1v7.6h-2V14.5z" fill="#FFFFFF" />
-  </svg>
-);
-
-const BnbIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#F3BA2F" />
-    <path d="M16 6L20.5 10.5L18.4 12.6L16 10.2L13.6 12.6L11.5 10.5L16 6ZM8.5 13.5L10.6 11.4L13 13.8L10.6 16.2L8.5 14.1V13.5ZM23.5 13.5L25.6 15.6L23.5 17.7L21.1 15.3L23.5 12.9V13.5ZM16 13.8L18.4 16.2L16 18.6L13.6 16.2L16 13.8ZM16 22.2L18.4 19.8L20.5 21.9L16 26.4L11.5 21.9L13.6 19.8L16 22.2Z" fill="#1E2026" />
-  </svg>
-);
-
-const TrxIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#EF0027" />
-    <path d="M7 8.5L25.5 6L23 26L7 8.5ZM19.5 11L10.5 10L20.5 21L19.5 11ZM21.5 10L13.5 18.5L22 22.5L21.5 10Z" fill="#FFFFFF" />
-  </svg>
-);
-
-const PolygonIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#8247E5" />
-    <path d="M21.5 13.5L17.5 11.2V15.7L21.5 18V13.5ZM14.5 11.2L10.5 13.5V18L14.5 15.7V11.2ZM10.5 19.5L14.5 21.8V17.3L10.5 15V19.5ZM17.5 21.8L21.5 19.5V15L17.5 17.3V21.8Z" fill="#FFFFFF" />
-  </svg>
-);
-
-const TonIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#0098EA" />
-    <path d="M16 6L25 11V21L16 26L7 21V11L16 6ZM16 9.5L10 13V19L16 22.5L22 19V13L16 9.5Z" fill="#FFFFFF" />
-  </svg>
-);
-
-const LtcIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#345D9D" />
-    <path d="M13 8H16.5L14.8 14.5H18L17.3 17.5H14L12.5 24H21V26H10.5L13 8Z" fill="#FFFFFF" />
-  </svg>
-);
-
-const BtcIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#F7931A" />
-    <path d="M19 14.5C20.5 14 21 13 21 11.5C21 9.5 19.5 8.5 17 8.5H12V23.5H17.5C20.5 23.5 22 22 22 19.5C22 17.5 21 15.5 19 14.5ZM15 11H17C18 11 18.5 11.5 18.5 12.5C18.5 13.5 18 14 17 14H15V11ZM17.5 21H15V16.5H17.5C18.5 16.5 19.5 17 19.5 18.5C19.5 20 18.5 21 17.5 21Z" fill="#FFFFFF" />
-  </svg>
-);
-
-const ArbIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} viewBox="0 0 32 32" fill="none">
-    <circle cx="16" cy="16" r="16" fill="#28A0F0" />
-    <path d="M16 6L24.5 11V21L16 26L7.5 21V11L16 6Z" stroke="#FFFFFF" strokeWidth="2" strokeLinejoin="round" />
-    <path d="M16 11L21 21H18L16 15L14 21H11L16 11Z" fill="#FFFFFF" />
-  </svg>
-);
+import { 
+  UsdtIcon, 
+  BnbIcon, 
+  TrxIcon, 
+  PolygonIcon, 
+  TonIcon, 
+  ArbitrumIcon, 
+  BtcIcon, 
+  EthIcon, 
+  LtcIcon 
+} from './CoinIcons';
 
 export default function App() {
   if (window.location.pathname.includes("/store")) {
@@ -82,10 +41,12 @@ export default function App() {
   const pData = window.paymentData || {};
   const initialAmount = parseFloat(pData.amount || '10.004829') || 10.004829;
   const sessionId = pData.session_id || 'cpay_sandbox_session';
-  const merchantName = pData.merchant_name || 'ClusterPay Store';
+  const merchantName = pData.merchant_name || 'ClusterPay Merchant';
+  const merchantUrl = pData.merchant_url || '';
   const logoUrl = pData.logo_url || '';
   const redirectUrl = pData.redirect_url || '';
   const customId = pData.custom_id || '';
+  const embed = pData.embed === 'true';
 
   // Pricing feeds
   const bnbPrice = parseFloat(pData.bnb_price || '600') || 600;
@@ -99,106 +60,129 @@ export default function App() {
     {
       id: 'USDT_BEP20',
       symbol: 'USDT',
-      network: 'BEP-20 (BNB Chain)',
-      name: 'Tether (BEP-20)',
+      network: 'BEP-20 (BSC)',
+      chainName: 'BNB Smart Chain',
+      name: 'Tether USDT',
       address: pData.USDT_WALLET_BEP20 || '',
       icon: UsdtIcon,
-      decimals: 4,
-      calcAmount: () => initialAmount.toFixed(4),
-      explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`
+      tag: 'Fast & Low Gas',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`
     },
     {
       id: 'USDT_TRC20',
       symbol: 'USDT',
       network: 'TRC-20 (TRON)',
-      name: 'Tether (TRC-20)',
+      chainName: 'TRON Network',
+      name: 'Tether USDT',
       address: pData.USDT_WALLET_TRC20 || '',
-      icon: UsdtIcon,
-      decimals: 4,
-      calcAmount: () => initialAmount.toFixed(4),
-      explorerUrl: (tx) => `https://tronscan.org/#/transaction/${tx}`
+      icon: TrxIcon,
+      tag: 'Popular',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://tronscan.org/#/transaction/${tx}`,
+      scheme: (addr, amt) => `tron:${addr}?amount=${amt}`
     },
     {
       id: 'USDT_POLY',
       symbol: 'USDT',
       network: 'Polygon PoS',
-      name: 'Tether (Polygon)',
+      chainName: 'Polygon Network',
+      name: 'Tether USDT',
       address: pData.USDT_WALLET_POLY || '',
-      icon: UsdtIcon,
-      decimals: 4,
-      calcAmount: () => initialAmount.toFixed(4),
-      explorerUrl: (tx) => `https://polygonscan.com/tx/${tx}`
+      icon: PolygonIcon,
+      tag: 'Micro Gas',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://polygonscan.com/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`
     },
     {
       id: 'USDT_ARB',
       symbol: 'USDT',
       network: 'Arbitrum One',
-      name: 'Tether (Arbitrum)',
+      chainName: 'Arbitrum L2',
+      name: 'Tether USDT',
       address: pData.USDT_WALLET_ARBITRUM || '',
-      icon: UsdtIcon,
-      decimals: 4,
-      calcAmount: () => initialAmount.toFixed(4),
-      explorerUrl: (tx) => `https://arbiscan.io/tx/${tx}`
+      icon: ArbitrumIcon,
+      tag: 'Arbitrum L2',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://arbiscan.io/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`
     },
     {
       id: 'TON',
       symbol: 'TON',
       network: 'TON Network',
-      name: 'The Open Network',
+      chainName: 'The Open Network',
+      name: 'Toncoin',
       address: pData.TON_WALLET || '',
       icon: TonIcon,
-      decimals: 4,
+      tag: 'Telegram Wallet',
       calcAmount: () => (tonPrice > 0 ? (initialAmount / tonPrice).toFixed(4) : '0.0000'),
-      explorerUrl: (tx) => `https://tonscan.org/tx/${tx}`
+      explorerUrl: (tx) => `https://tonscan.org/tx/${tx}`,
+      scheme: (addr, amt) => `ton://transfer/${addr}?amount=${Math.round(amt * 1e9)}`
     },
     {
       id: 'BNB',
       symbol: 'BNB',
-      network: 'BNB Chain Native',
-      name: 'BNB',
+      network: 'BNB Chain',
+      chainName: 'BNB Smart Chain',
+      name: 'BNB Native',
       address: pData.USDT_WALLET_BEP20 || '',
       icon: BnbIcon,
-      decimals: 4,
-      calcAmount: () => (bnbPrice > 0 ? (initialAmount / bnbPrice).toFixed(4) : '0.0000'),
-      explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`
+      tag: 'Native Coin',
+      calcAmount: () => (bnbPrice > 0 ? (initialAmount / bnbPrice).toFixed(6) : '0.000000'),
+      explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=${amt}`
     },
     {
       id: 'LTC',
       symbol: 'LTC',
-      network: 'Litecoin Network',
+      network: 'Litecoin',
+      chainName: 'Litecoin Network',
       name: 'Litecoin',
       address: pData.LTC_WALLET || '',
       icon: LtcIcon,
-      decimals: 4,
-      calcAmount: () => (ltcPrice > 0 ? (initialAmount / ltcPrice).toFixed(4) : '0.0000'),
-      explorerUrl: (tx) => `https://live.blockcypher.com/ltc/tx/${tx}`
+      tag: 'Low Fee UTXO',
+      calcAmount: () => (ltcPrice > 0 ? (initialAmount / ltcPrice).toFixed(6) : '0.000000'),
+      explorerUrl: (tx) => `https://live.blockcypher.com/ltc/tx/${tx}`,
+      scheme: (addr, amt) => `litecoin:${addr}?amount=${amt}`
     },
     {
       id: 'BTC',
       symbol: 'BTC',
-      network: 'Bitcoin Network',
+      network: 'Bitcoin',
+      chainName: 'Bitcoin Network',
       name: 'Bitcoin',
       address: pData.BTC_WALLET || '',
       icon: BtcIcon,
-      decimals: 6,
+      tag: 'Native UTXO',
       calcAmount: () => (btcPrice > 0 ? (initialAmount / btcPrice).toFixed(6) : '0.000000'),
-      explorerUrl: (tx) => `https://mempool.space/tx/${tx}`
+      explorerUrl: (tx) => `https://mempool.space/tx/${tx}`,
+      scheme: (addr, amt) => `bitcoin:${addr}?amount=${amt}`
     }
   ];
 
-  // Filter available coins that have non-empty address
+  // Filter available coins that have valid address configured
   const activeCoins = rawCoins.filter(c => c.address && c.address.trim().length > 5);
-  const availableCoins = activeCoins.length > 0 ? activeCoins : [rawCoins[0]]; // fallback
+  const availableCoins = activeCoins.length > 0 ? activeCoins : [rawCoins[0]];
 
   const [selectedCoin, setSelectedCoin] = useState(availableCoins[0]);
   const [timeLeft, setTimeLeft] = useState(parseInt(pData.time_left || '900', 10) || 900);
-  const [copied, setCopied] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
+  const [copiedAmount, setCopiedAmount] = useState(false);
   const [status, setStatus] = useState('pending'); // 'pending' | 'verifying' | 'paid' | 'expired'
-  const [txDetails, setTxDetails] = useState({ txid: '', amount_received: 0 });
-  const [isManualChecking, setIsManualChecking] = useState(false);
+  const [txDetails, setTxDetails] = useState({ txid: '', amount_received: 0, paid_at: '' });
+  
+  // Manual Verification States
+  const [txidInput, setTxidInput] = useState('');
+  const [isVerifyingManual, setIsVerifyingManual] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
+  const [isManualExpanded, setIsManualExpanded] = useState(false);
+  
   const [redirectCountdown, setRedirectCountdown] = useState(5);
 
-  // Countdown timer effect
+  // 15-Minute Countdown Timer
   useEffect(() => {
     if (timeLeft <= 0) {
       setStatus('expired');
@@ -220,7 +204,7 @@ export default function App() {
     return () => clearInterval(timer);
   }, [timeLeft, status]);
 
-  // Background 100% Automated Multi-RPC Polling
+  // Real-Time Background Multi-RPC Mempool Observer Polling
   const checkPaymentStatus = async () => {
     if (!sessionId || sessionId.includes('sandbox')) return;
     try {
@@ -230,24 +214,34 @@ export default function App() {
         if (data.status === 'paid') {
           setStatus('paid');
           setTxDetails({
-            txid: data.txid || '0xOnChainVerified',
-            amount_received: data.amount_received || initialAmount
+            txid: data.txid || data.tx_hash || '0xOnChainVerified',
+            amount_received: data.amount_received || initialAmount,
+            paid_at: data.paid_at || new Date().toISOString()
           });
           if (window.Telegram?.WebApp) {
             window.Telegram.WebApp.HapticFeedback?.notificationOccurred('success');
           }
+          if (embed && window.parent) {
+            window.parent.postMessage({
+              type: 'CLUSTERPAY_SUCCESS',
+              payload: { sessionId, amount: data.amount_received || initialAmount, txid: data.txid }
+            }, '*');
+          }
         } else if (data.status === 'expired') {
           setStatus('expired');
+          if (embed && window.parent) {
+            window.parent.postMessage({ type: 'CLUSTERPAY_EXPIRED', payload: { sessionId } }, '*');
+          }
         }
       }
     } catch (err) {
-      // silent background check
+      // silent background poll
     }
   };
 
   useEffect(() => {
     if (status === 'paid' || status === 'expired') return;
-    const pollInterval = setInterval(checkPaymentStatus, 3500);
+    const pollInterval = setInterval(checkPaymentStatus, 3000);
     return () => clearInterval(pollInterval);
   }, [sessionId, status, initialAmount]);
 
@@ -268,18 +262,60 @@ export default function App() {
     }
   }, [status, redirectUrl]);
 
-  const handleCopy = (text) => {
+  // Copy Helpers
+  const handleCopyAddress = (text) => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedAddress(true);
+      setTimeout(() => setCopiedAddress(false), 2000);
     }
   };
 
-  const handleCheckNow = async () => {
-    setIsManualChecking(true);
-    await checkPaymentStatus();
-    setTimeout(() => setIsManualChecking(false), 1500);
+  const handleCopyAmount = (text) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedAmount(true);
+      setTimeout(() => setCopiedAmount(false), 2000);
+    }
+  };
+
+  // Manual TxID Verification (Razorpay Style)
+  const handleManualVerify = async (e) => {
+    if (e) e.preventDefault();
+    setVerifyError('');
+    if (!txidInput || txidInput.trim().length < 8) {
+      setVerifyError('Please enter a valid blockchain transaction hash (TxID).');
+      return;
+    }
+
+    setIsVerifyingManual(true);
+    try {
+      const res = await fetch('/api/v1/gateway/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          coin: selectedCoin.id,
+          txid: txidInput.trim()
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && (data.status === 'paid' || data.success)) {
+        setStatus('paid');
+        setTxDetails({
+          txid: data.tx_hash || txidInput.trim(),
+          amount_received: data.amount_received || initialAmount,
+          paid_at: new Date().toISOString()
+        });
+      } else {
+        setVerifyError(data.detail || data.message || 'Transaction not found or still pending in mempool. Please wait 10-15 seconds and retry.');
+      }
+    } catch (err) {
+      setVerifyError('Network error connecting to verification node. Please retry.');
+    } finally {
+      setIsVerifyingManual(false);
+    }
   };
 
   const formatTimer = (seconds) => {
@@ -292,83 +328,118 @@ export default function App() {
   const currentAmount = selectedCoin.calcAmount();
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 bg-[#FAFAFA] font-sans text-zinc-900 selection:bg-black selection:text-white">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-6 bg-[#F4F6F8] font-sans text-zinc-900 selection:bg-black selection:text-white">
       
-      {/* Central Modern Card Container */}
-      <div className="w-full max-w-md bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden transition-all">
+      {/* ── MAIN RAZORPAY / STRIPE GRADE CHECKOUT CONTAINER ── */}
+      <div className="w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl border border-zinc-200/90 shadow-[0_10px_35px_-10px_rgba(0,0,0,0.08)] overflow-hidden transition-all">
         
-        {/* TOP BAR: Merchant Info & Expiry Timer */}
-        <div className="p-5 sm:p-6 border-b border-zinc-100 flex items-center justify-between">
+        {/* ══════════════════════════════════════════════════════════════════
+            HEADER: RAZORPAY STYLE BRAND & TRUST BAR
+            ══════════════════════════════════════════════════════════════════ */}
+        <div className="px-5 py-4 sm:px-6 sm:py-5 border-b border-zinc-100 bg-white flex items-center justify-between">
           <div className="flex items-center gap-3">
             {logoUrl ? (
-              <img src={logoUrl} alt="Logo" className="w-8 h-8 rounded-xl object-contain border border-zinc-200" />
+              <img src={logoUrl} alt={merchantName} className="w-9 h-9 rounded-xl object-contain border border-zinc-200/80 p-0.5 bg-white shadow-2xs" />
             ) : (
-              <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center font-mono font-bold text-xs shadow-2xs">
-                CP
+              <div className="w-9 h-9 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+                ⚡
               </div>
             )}
             <div>
-              <h1 className="font-semibold text-xs text-black leading-tight">
-                {merchantName}
-              </h1>
-              <div className="text-[10px] font-mono text-zinc-400 mt-0.5">
-                {customId ? `Order #${customId}` : `Invoice #${sessionId.slice(-8).toUpperCase()}`}
+              <div className="flex items-center gap-1.5">
+                <h1 className="font-bold text-xs sm:text-sm text-zinc-950 leading-none">
+                  {merchantName}
+                </h1>
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[9px] font-semibold border border-emerald-200/60">
+                  <CheckCircle className="w-2.5 h-2.5 text-emerald-600" />
+                  <span>Verified</span>
+                </span>
+              </div>
+              <div className="text-[10px] font-mono text-zinc-400 mt-1">
+                {customId ? `Order #${customId}` : `Ref #${sessionId.slice(-8).toUpperCase()}`}
               </div>
             </div>
           </div>
 
-          {/* Expiry Pill */}
-          <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium border ${
-            timeLeft < 180 
-              ? 'bg-rose-50 text-rose-600 border-rose-200' 
-              : 'bg-zinc-50 text-zinc-700 border-zinc-200'
-          }`}>
-            <Clock className="w-3.5 h-3.5" strokeWidth={1.5} />
-            <span>{formatTimer(timeLeft)}</span>
+          {/* 15-Minute Expiry Countdown Pill */}
+          <div className="flex flex-col items-end">
+            <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-bold border transition-colors ${
+              timeLeft < 180 
+                ? 'bg-rose-50 text-rose-700 border-rose-200' 
+                : 'bg-zinc-50 text-zinc-800 border-zinc-200'
+            }`}>
+              <Clock className="w-3.5 h-3.5 text-zinc-500 animate-pulse" />
+              <span>{formatTimer(timeLeft)}</span>
+            </div>
+            <span className="text-[9px] font-mono text-zinc-400 mt-0.5">Session Expires</span>
           </div>
         </div>
 
-        {/* ── STATE 1: PENDING PAYMENT ── */}
+
+        {/* ══════════════════════════════════════════════════════════════════
+            STATE 1: ACTIVE PAYMENT CHECKOUT
+            ══════════════════════════════════════════════════════════════════ */}
         {status === 'pending' && (
-          <div className="p-5 sm:p-6 space-y-6">
+          <div className="p-5 sm:p-7 space-y-6">
             
-            {/* Amount Banner */}
-            <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 text-center space-y-0.5">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 font-medium">
-                Exact Amount Due
+            {/* 1. AMOUNT DUE SUMMARY CARD (RAZORPAY STYLE) */}
+            <div className="p-4 rounded-2xl bg-zinc-950 text-white flex items-center justify-between shadow-xs">
+              <div>
+                <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
+                  Amount Due
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold font-sans tracking-tight text-white mt-0.5">
+                  ${initialAmount.toFixed(2)} <span className="text-xs font-mono text-zinc-400 font-normal">USD</span>
+                </div>
               </div>
-              <div className="text-3xl sm:text-4xl font-bold font-mono text-black tracking-tight">
-                {currentAmount} <span className="text-base font-semibold text-zinc-500">{selectedCoin.symbol}</span>
-              </div>
-              <div className="text-[10px] font-mono text-zinc-400">
-                Direct settlement to merchant cold wallet
+
+              <div className="text-right">
+                <div className="text-[10px] font-mono text-emerald-400 font-semibold uppercase">
+                  Exact Transfer
+                </div>
+                <div className="text-sm sm:text-base font-bold font-mono text-emerald-300">
+                  {currentAmount} {selectedCoin.symbol}
+                </div>
+                <div className="text-[9px] font-mono text-zinc-400">
+                  6-Dec Micro-Offset
+                </div>
               </div>
             </div>
 
-            {/* Network Selector (Pills Grid) */}
+
+            {/* 2. CHOOSE PAYMENT ASSET & NETWORK (RAZORPAY ACCORDION/GRID) */}
             <div className="space-y-2">
-              <div className="text-[11px] font-mono font-semibold uppercase text-zinc-400">
-                Select Network
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-mono font-bold text-zinc-500 uppercase tracking-wider">
+                  Select Payment Asset &amp; Network
+                </label>
+                <span className="text-[10px] font-mono text-zinc-400">
+                  {availableCoins.length} Networks Available
+                </span>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {availableCoins.map((coinItem) => {
                   const Icon = coinItem.icon;
                   const isSelected = selectedCoin.id === coinItem.id;
                   return (
                     <button
                       key={coinItem.id}
-                      onClick={() => setSelectedCoin(coinItem)}
-                      className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
+                      onClick={() => {
+                        setSelectedCoin(coinItem);
+                        setVerifyError('');
+                      }}
+                      className={`p-2.5 rounded-xl border text-left flex items-center gap-2 transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-black text-white border-black shadow-2xs'
-                          : 'bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300'
+                          ? 'bg-zinc-900 text-white border-zinc-900 shadow-xs ring-2 ring-zinc-950/20'
+                          : 'bg-white text-zinc-800 border-zinc-200/90 hover:border-zinc-300 hover:bg-zinc-50'
                       }`}
                     >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <div className="truncate">
-                        <div className="font-semibold text-xs leading-none">{coinItem.name}</div>
-                        <div className={`text-[10px] font-mono mt-0.5 ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
-                          {coinItem.symbol}
+                      <Icon className="w-5 h-5 shrink-0" />
+                      <div className="truncate min-w-0">
+                        <div className="font-bold text-xs leading-tight truncate">{coinItem.symbol}</div>
+                        <div className={`text-[9px] font-mono truncate ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
+                          {coinItem.network.split(' ')[0]}
                         </div>
                       </div>
                     </button>
@@ -377,109 +448,221 @@ export default function App() {
               </div>
             </div>
 
-            {/* QR Code Container */}
-            <div className="flex flex-col items-center justify-center p-5 bg-white rounded-2xl border border-zinc-200 shadow-2xs space-y-3">
-              <div className="p-2 bg-white rounded-xl border border-zinc-100">
-                <QRCodeSVG
-                  value={selectedCoin.address || 'empty'}
-                  size={140}
-                  level="H"
-                  includeMargin={false}
-                />
-              </div>
-              <div className="text-[11px] font-mono text-zinc-500 text-center">
-                Scan with Binance, Trust Wallet, MetaMask, OKX, or Telegram Wallet
-              </div>
-            </div>
 
-            {/* Destination Address Box */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-                <span>Receiving Address:</span>
-                <span>{selectedCoin.network}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 font-mono text-xs text-zinc-800 flex items-center justify-between gap-2">
-                <span className="truncate select-all">{selectedCoin.address}</span>
-                <button
-                  onClick={() => handleCopy(selectedCoin.address)}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-zinc-200 hover:bg-zinc-100 text-zinc-700 text-xs font-semibold flex items-center gap-1 shrink-0 transition-colors shadow-2xs"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-[#26A17B]" strokeWidth={1.5} /> : <Copy className="w-3.5 h-3.5" strokeWidth={1.5} />}
-                  <span>{copied ? 'Copied' : 'Copy'}</span>
-                </button>
-              </div>
-            </div>
+            {/* 3. DEPOSIT BOX WITH QR CODE & COPY FIELDS */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 space-y-4">
+              
+              {/* QR Code & Scan Instructions */}
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 p-2 bg-white rounded-xl border border-zinc-200/90 shadow-2xs shrink-0 flex items-center justify-center">
+                  <QRCodeSVG
+                    value={selectedCoin.address || '0x0'}
+                    size={110}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
 
-            {/* 100% AUTOMATED OBSERVATION RADAR */}
-            <div className="pt-2 border-t border-zinc-100 space-y-3">
-              <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#26A17B] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#26A17B]"></span>
-                  </span>
-                  <div className="text-[11px] font-mono text-zinc-600">
-                    Auto-detecting transfer on-chain...
+                <div className="space-y-2 flex-1 text-center sm:text-left min-w-0">
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white border border-zinc-200 text-[10px] font-mono text-zinc-600">
+                    <Zap className="w-3 h-3 text-amber-500" />
+                    <span>{selectedCoin.chainName}</span>
+                  </div>
+
+                  <div className="font-mono text-xs font-bold text-zinc-950 break-all leading-snug">
+                    {selectedCoin.address}
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-0.5">
+                    <button
+                      onClick={() => handleCopyAddress(selectedCoin.address)}
+                      className="px-3 py-1.5 rounded-lg bg-white border border-zinc-200 text-xs font-mono font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    >
+                      {copiedAddress ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-zinc-400" />}
+                      <span>{copiedAddress ? 'Address Copied!' : 'Copy Address'}</span>
+                    </button>
+
+                    <a
+                      href={selectedCoin.scheme(selectedCoin.address, currentAmount)}
+                      className="px-3 py-1.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-mono font-medium transition-colors flex items-center gap-1 shadow-2xs"
+                    >
+                      <span>Open Wallet</span>
+                      <ExternalLink className="w-3 h-3 text-zinc-400" />
+                    </a>
                   </div>
                 </div>
+              </div>
+
+              {/* Exact Amount Send Instruction */}
+              <div className="p-3 bg-white rounded-xl border border-zinc-200 flex items-center justify-between gap-3 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <Info className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="text-zinc-600 text-[11px]">Send Exact:</span>
+                  <span className="font-bold text-zinc-950">{currentAmount} {selectedCoin.symbol}</span>
+                </div>
                 <button
-                  onClick={handleCheckNow}
-                  disabled={isManualChecking}
-                  className="px-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-xs font-semibold font-mono text-zinc-800 hover:bg-zinc-100 flex items-center gap-1.5 shadow-2xs transition-all disabled:opacity-50"
+                  onClick={() => handleCopyAmount(currentAmount)}
+                  className="px-2.5 py-1 rounded-md bg-zinc-50 border border-zinc-200 text-[11px] font-semibold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-1 cursor-pointer"
                 >
-                  <RefreshCw className={`w-3 h-3 text-zinc-500 ${isManualChecking ? 'animate-spin text-black' : ''}`} strokeWidth={1.5} />
-                  <span>{isManualChecking ? 'Scanning...' : 'Check Status'}</span>
+                  {copiedAmount ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-zinc-400" />}
+                  <span>{copiedAmount ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
 
-              <div className="text-[10px] font-mono text-zinc-400 text-center">
-                Send the exact amount above. The gateway verifies automatically without requiring a TxID.
+            </div>
+
+
+            {/* 4. REAL-TIME OBSERVATION RADAR (RAZORPAY STYLE) */}
+            <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-2.5 w-2.5 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
+                </span>
+                <div>
+                  <div className="text-xs font-semibold text-emerald-950 font-mono leading-none">
+                    Listening for On-Chain Transfer...
+                  </div>
+                  <div className="text-[10px] text-emerald-800 font-sans mt-0.5">
+                    Zero-confirmation auto-detection active across multi-RPC nodes.
+                  </div>
+                </div>
               </div>
+
+              <button
+                onClick={checkPaymentStatus}
+                className="p-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-900 hover:bg-emerald-50 transition-colors shrink-0 cursor-pointer shadow-2xs"
+                title="Scan Mempool Now"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+
+            {/* 5. RAZORPAY-STYLE MANUAL TXID ACCELERATION ACCORDION */}
+            <div className="rounded-xl border border-zinc-200 bg-white overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setIsManualExpanded(!isManualExpanded)}
+                className="w-full px-4 py-2.5 bg-zinc-50/60 hover:bg-zinc-100/60 flex items-center justify-between text-xs font-mono text-zinc-700 transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="font-semibold">Paid already? Accelerate with TxID (Optional)</span>
+                </div>
+                {isManualExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+              </button>
+
+              {isManualExpanded && (
+                <form onSubmit={handleManualVerify} className="p-4 space-y-3 bg-white border-t border-zinc-100">
+                  <p className="text-[11px] text-zinc-600 font-sans leading-relaxed">
+                    If your wallet already submitted the transfer, paste the blockchain Transaction Hash (TxID) to trigger an immediate RPC query.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      value={txidInput}
+                      onChange={(e) => setTxidInput(e.target.value)}
+                      placeholder="0x..."
+                      className="flex-1 px-3 py-2 rounded-xl bg-zinc-50 border border-zinc-200 text-xs font-mono text-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-zinc-950/20"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isVerifyingManual}
+                      className="px-4 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-mono text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0"
+                    >
+                      {isVerifyingManual ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>Verifying...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Verify TxID</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {verifyError && (
+                    <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 font-sans text-xs flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                      <div className="leading-snug">{verifyError}</div>
+                    </div>
+                  )}
+                </form>
+              )}
             </div>
 
           </div>
         )}
 
-        {/* ── STATE 2: PAYMENT CONFIRMED / SETTLED ── */}
+
+        {/* ══════════════════════════════════════════════════════════════════
+            STATE 2: RAZORPAY-STYLE CELEBRATORY SUCCESS / RECEIPT
+            ══════════════════════════════════════════════════════════════════ */}
         {status === 'paid' && (
-          <div className="p-8 space-y-6 text-center">
+          <div className="p-6 sm:p-8 space-y-6 text-center">
             
-            <div className="w-14 h-14 rounded-full bg-emerald-50 text-[#26A17B] border border-emerald-200 flex items-center justify-center mx-auto shadow-2xs">
-              <CheckCircle2 className="w-7 h-7" strokeWidth={1.5} />
+            {/* Celebratory Checkmark Badge */}
+            <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 shadow-sm animate-bounce">
+              <CheckCircle2 className="w-9 h-9" />
             </div>
 
-            <div>
-              <h2 className="font-serif text-3xl text-black font-normal">Payment Confirmed</h2>
-              <p className="text-xs text-zinc-500 font-mono mt-1">
-                Settlement verified directly on-chain.
+            <div className="space-y-1">
+              <h2 className="font-sans text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">
+                Payment Confirmed &amp; Settled!
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 font-sans max-w-sm mx-auto">
+                On-chain verification completed. Settled directly into merchant cold storage.
               </p>
             </div>
 
-            {/* Receipt Box */}
-            <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-2.5 text-left">
-              <div className="flex justify-between">
-                <span className="text-zinc-500">Status:</span>
-                <span className="text-[#26A17B] font-bold uppercase">Settled (0x1 Success)</span>
+            {/* Itemized On-Chain Receipt Box */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-2.5 text-left">
+              <div className="flex justify-between items-center pb-2 border-b border-zinc-200/60">
+                <span className="text-zinc-500 font-sans">Payment Status:</span>
+                <span className="inline-flex items-center gap-1 font-bold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">
+                  <Check className="w-3 h-3 text-emerald-600" />
+                  <span>SETTLED (0x1 Success)</span>
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">Amount Received:</span>
-                <span className="text-black font-semibold">{txDetails.amount_received} USDT</span>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500 font-sans">Amount Settled:</span>
+                <span className="font-bold text-zinc-950">{txDetails.amount_received} {selectedCoin.symbol}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-500">TxID:</span>
-                <span className="text-zinc-800 truncate max-w-[180px]">{txDetails.txid}</span>
+
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500 font-sans">Network:</span>
+                <span className="font-semibold text-zinc-800">{selectedCoin.chainName}</span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500 font-sans">Transaction Hash:</span>
+                <a
+                  href={selectedCoin.explorerUrl(txDetails.txid)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-emerald-700 hover:text-emerald-900 font-bold truncate max-w-[170px] sm:max-w-[220px] flex items-center gap-1 underline"
+                >
+                  <span className="truncate">{txDetails.txid}</span>
+                  <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                </a>
               </div>
             </div>
 
-            {/* Redirect Action */}
+            {/* Redirect Action / Continue */}
             {redirectUrl ? (
-              <div className="space-y-2">
+              <div className="space-y-2 pt-2">
                 <button
                   onClick={() => window.location.href = redirectUrl}
-                  className="w-full py-3 rounded-xl bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs hover:bg-zinc-800 transition-colors"
+                  className="w-full py-3.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
                 >
-                  <span>Continue to Merchant</span>
-                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  <span>Continue to {merchantName}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
                 <div className="text-[11px] font-mono text-zinc-400">
                   Redirecting automatically in {redirectCountdown}s...
@@ -487,93 +670,73 @@ export default function App() {
               </div>
             ) : (
               <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 text-xs font-mono text-zinc-600">
-                You may now close this window and return to your merchant.
+                You may now safely close this payment window.
               </div>
             )}
 
           </div>
         )}
 
-        {/* ── STATE 3: INVOICE EXPIRED ── */}
+
+        {/* ══════════════════════════════════════════════════════════════════
+            STATE 3: INVOICE EXPIRED
+            ══════════════════════════════════════════════════════════════════ */}
         {status === 'expired' && (
-          <div className="p-8 space-y-6 text-center">
-            
-            <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto shadow-2xs">
-              <Clock className="w-7 h-7" strokeWidth={1.5} />
+          <div className="p-6 sm:p-8 space-y-6 text-center">
+            <div className="w-16 h-16 rounded-full bg-rose-50 border-2 border-rose-200 flex items-center justify-center mx-auto text-rose-600 shadow-sm">
+              <Clock className="w-9 h-9" />
             </div>
 
-            <div>
-              <h2 className="font-serif text-3xl text-black font-normal">Invoice Expired</h2>
-              <p className="text-xs text-zinc-500 font-mono mt-1">
+            <div className="space-y-1">
+              <h2 className="font-sans text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">
+                Invoice Expired
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-600 font-sans max-w-sm mx-auto">
                 The 15-minute payment window has elapsed.
               </p>
             </div>
 
             <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-200 text-xs font-mono text-zinc-600 leading-relaxed text-left">
-              To prevent transaction collisions, invoices are automatically invalidated after 15 minutes. Please return to the merchant storefront to initiate a fresh checkout.
+              To prevent address collisions and exchange-rate drift, payment invoices expire after 15 minutes. Please return to the merchant to generate a fresh invoice.
             </div>
 
             {redirectUrl && (
               <button
                 onClick={() => window.location.href = redirectUrl}
-                className="w-full py-3 rounded-xl bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs hover:bg-zinc-800 transition-colors"
+                className="w-full py-3 rounded-xl bg-zinc-950 text-white text-xs font-mono font-bold flex items-center justify-center gap-1.5 shadow-xs hover:bg-zinc-800 transition-colors"
               >
-                <span>Return to Merchant</span>
-                <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.5} />
+                <span>Return to Storefront</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
-
           </div>
         )}
 
-        {/* About ClusterPay Footer Banner inside Card */}
-        <div className="mx-4 sm:mx-6 mb-4 p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/90 text-center space-y-1.5 font-sans">
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
-            <span className="font-bold text-xs text-zinc-950">About ClusterPay</span>
-            <span className="px-2 py-0.5 rounded-full bg-zinc-200/80 text-zinc-800 font-mono text-[9px] font-bold">100% FREE &amp; OPEN SOURCE</span>
-          </div>
-          <p className="text-[11px] text-zinc-500 font-sans leading-relaxed">
-            Non-custodial crypto payment gateway with 0% platform fees. Direct cold wallet settlement.
-          </p>
-          <div className="flex items-center justify-center gap-3 pt-0.5 text-[11px] font-mono">
-            <a href="https://clusterpay.cloud" target="_blank" rel="noreferrer" className="text-zinc-900 font-semibold hover:underline">
-              clusterpay.cloud
-            </a>
-            <span className="text-zinc-300">·</span>
-            <a href="https://github.com/adarshdubey-alphabotz/clusterpay" target="_blank" rel="noreferrer" className="text-zinc-900 font-semibold hover:underline">
-              GitHub Repo
-            </a>
-          </div>
-        </div>
 
-        {/* FOOTER BAR: Security Badge */}
-        <div className="px-6 py-3 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+        {/* ══════════════════════════════════════════════════════════════════
+            FOOTER: RAZORPAY / STRIPE TRUST & SECURITY BADGE
+            ══════════════════════════════════════════════════════════════════ */}
+        <div className="px-5 py-3.5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between text-[11px] font-mono text-zinc-500">
           <div className="flex items-center gap-1.5">
-            <Lock className="w-3 h-3 text-zinc-400" strokeWidth={1.5} />
-            <span>Non-Custodial Direct Settlement</span>
+            <Lock className="w-3.5 h-3.5 text-emerald-600" />
+            <span>100% Non-Custodial Direct Settlement</span>
           </div>
-          <span className="font-semibold text-zinc-600">ClusterPay</span>
+          <span className="font-bold text-zinc-800">ClusterPay Gateway</span>
         </div>
 
       </div>
 
-      {/* ── UNDER-CHECKOUT ATTRIBUTION BANNER ── */}
-      <div className="mt-4 p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-center space-y-1.5 font-sans">
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="font-bold text-xs text-zinc-950">About ClusterPay</span>
-          <span className="px-2 py-0.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono text-[9.5px] font-bold">100% FREE &amp; OPEN SOURCE</span>
+
+      {/* ── SINGLE ATTRIBUTION FOOTER ── */}
+      <div className="mt-5 text-center text-xs font-mono text-zinc-400 space-y-1">
+        <div>
+          Powered by{' '}
+          <a href="https://clusterpay.cloud" target="_blank" rel="noreferrer" className="text-zinc-700 font-semibold hover:underline">
+            ClusterPay Open Source Protocol
+          </a>
         </div>
-        <p className="text-xs text-zinc-600 font-sans leading-relaxed">
-          Open-source, non-custodial crypto checkout protocol with 0% platform cuts. Settle direct to personal hardware keys.
-        </p>
-        <div className="flex items-center justify-center gap-3 pt-1 text-xs font-mono">
-          <a href="https://clusterpay.cloud" target="_blank" rel="noreferrer" className="text-black font-semibold hover:underline">
-            clusterpay.cloud
-          </a>
-          <span className="text-zinc-300">·</span>
-          <a href="https://github.com/adarshdubey-alphabotz/clusterpay" target="_blank" rel="noreferrer" className="text-black font-semibold hover:underline">
-            github.com/adarshdubey-alphabotz/clusterpay
-          </a>
+        <div className="text-[10px] text-zinc-400">
+          0% Platform Fee · Direct Cold Storage Settlement
         </div>
       </div>
 
