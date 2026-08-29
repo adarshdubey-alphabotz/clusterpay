@@ -587,7 +587,7 @@ export default function App() {
           {/* Subheader: Order Meta */}
           <div className="cf-subbar">
             <span className="cf-subbar-text">
-              Payment Options for <b className="text-zinc-100">{customId ? `Ref #${customId}` : `Inv #${sessionId.slice(-8).toUpperCase()}`}</b>
+              Payment Options for <b className="text-zinc-800">{customId ? `Ref #${customId}` : `Inv #${sessionId.slice(-8).toUpperCase()}`}</b>
             </span>
             <button 
               className="cf-edit-btn font-mono"
@@ -604,11 +604,11 @@ export default function App() {
             {/* Zero Fee & Anti-Theft Protection Promo Card */}
             <div className="cf-offer-card">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-950/20 text-emerald-600 flex items-center justify-center font-bold text-sm">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
                   ⚡
                 </div>
                 <div>
-                  <div className="font-bold text-xs text-white">0% Gateway Surcharge Applied</div>
+                  <div className="font-bold text-xs text-zinc-900">0% Gateway Surcharge Applied</div>
                   <div className="text-[11px] text-zinc-500">Direct non-custodial merchant settlement</div>
                 </div>
               </div>
@@ -654,18 +654,18 @@ export default function App() {
                   <div className="flex items-center gap-3">
                     <selectedCoin.icon className="w-10 h-10 shrink-0" />
                     <div>
-                      <h3 className="font-bold text-sm text-white">{selectedCoin.name}</h3>
+                      <h3 className="font-bold text-sm text-zinc-950">{selectedCoin.name}</h3>
                       <p className="text-xs text-zinc-500 font-mono">
-                        Send: <b className="text-white">{selectedCoin.calcAmount()} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
+                        Send: <b className="text-zinc-900">{selectedCoin.calcAmount()} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
                       </p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold bg-emerald-950/20 text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
                     {selectedCoin.fees}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.06]">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-100">
                   <button 
                     className="cf-btn-primary"
                     onClick={() => {
@@ -696,28 +696,28 @@ export default function App() {
           {showDetailsDrawer && (
             <div className="rzp-drawer-overlay" onClick={() => setShowDetailsDrawer(false)}>
               <div className="rzp-drawer-card" onClick={e => e.stopPropagation()}>
-                <div className="flex justify-between items-center pb-2 border-b border-white/[0.06]">
-                  <h3 className="font-bold text-sm text-white">Order Summary</h3>
-                  <button onClick={() => setShowDetailsDrawer(false)} className="text-zinc-400 hover:text-zinc-300">
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-100">
+                  <h3 className="font-bold text-sm text-zinc-900">Order Summary</h3>
+                  <button onClick={() => setShowDetailsDrawer(false)} className="text-zinc-400 hover:text-zinc-700">
                     <X size={16} />
                   </button>
                 </div>
                 <div className="space-y-2 py-3 text-xs font-mono">
                   <div className="flex justify-between text-zinc-500">
                     <span>Merchant</span>
-                    <span className="font-bold text-white">{merchantName}</span>
+                    <span className="font-bold text-zinc-900">{merchantName}</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
                     <span>Purpose</span>
-                    <span className="text-white">{paymentPurpose}</span>
+                    <span className="text-zinc-900">{paymentPurpose}</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
                     <span>Invoice Ref</span>
-                    <span className="font-bold text-white">{invoiceId}</span>
+                    <span className="font-bold text-zinc-900">{invoiceId}</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
                     <span>Base Amount</span>
-                    <span className="text-white">${initialAmount.toFixed(2)} USD</span>
+                    <span className="text-zinc-900">${initialAmount.toFixed(2)} USD</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
                     <span>ClusterPay Surcharge</span>
@@ -726,23 +726,23 @@ export default function App() {
                   {customerName && (
                     <div className="flex justify-between text-zinc-500">
                       <span>Buyer Name</span>
-                      <span className="text-white font-semibold">{customerName}</span>
+                      <span className="text-zinc-900 font-semibold">{customerName}</span>
                     </div>
                   )}
                   {customerEmail && (
                     <div className="flex justify-between text-zinc-500">
                       <span>Customer Email</span>
-                      <span className="text-white">{customerEmail}</span>
+                      <span className="text-zinc-900">{customerEmail}</span>
                     </div>
                   )}
                   {customNote && (
                     <div className="flex justify-between text-zinc-500">
                       <span>Custom Note</span>
-                      <span className="text-white italic max-w-[200px] text-right truncate">{customNote}</span>
+                      <span className="text-zinc-900 italic max-w-[200px] text-right truncate">{customNote}</span>
                     </div>
                   )}
                 </div>
-                <div className="pt-2 border-t border-white/[0.06] flex justify-between items-center text-sm font-bold text-white">
+                <div className="pt-2 border-t border-zinc-100 flex justify-between items-center text-sm font-bold text-zinc-950">
                   <span>Total Payable</span>
                   <span>${initialAmount.toFixed(2)} USD</span>
                 </div>
@@ -795,7 +795,7 @@ export default function App() {
           </div>
 
           {/* Selected Option Card */}
-          <div className="p-4 bg-[#0F0F12] text-white rounded-2xl m-4 space-y-2">
+          <div className="p-4 bg-zinc-900 text-white rounded-2xl m-4 space-y-2">
             <span className="text-[11px] text-zinc-400 uppercase font-semibold block">Selected Asset</span>
             <div className="flex items-center gap-3">
               <selectedCoin.icon className="w-8 h-8" />
@@ -809,7 +809,7 @@ export default function App() {
           </div>
 
           <div className="p-4 space-y-3">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block mb-1">
+            <span className="text-xs font-bold text-zinc-600 uppercase tracking-wider block mb-1">
               Choose Deposit Mode
             </span>
 
@@ -821,11 +821,11 @@ export default function App() {
                 setStep('payment_details');
               }}
             >
-              <div className="rzp-method-icon-wrap bg-blue-950/20 text-blue-600">
+              <div className="rzp-method-icon-wrap bg-blue-50 text-blue-600">
                 <QrCode3DIcon />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-sm text-white">Scan QR Code</h4>
+                <h4 className="font-bold text-sm text-zinc-950">Scan QR Code</h4>
                 <p className="text-xs text-zinc-500">Scan instantly with your mobile crypto wallet app</p>
               </div>
               <ChevronRight size={18} className="text-zinc-400" />
@@ -843,7 +843,7 @@ export default function App() {
                 <Crystal3DIcon />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-sm text-white">Payment Address</h4>
+                <h4 className="font-bold text-sm text-zinc-950">Payment Address</h4>
                 <p className="text-xs text-zinc-500">Copy destination wallet address & exact amount</p>
               </div>
               <ChevronRight size={18} className="text-zinc-400" />
@@ -872,7 +872,7 @@ export default function App() {
               <ArrowLeft size={16} />
             </button>
             <span className="rzp-nav-title">Pay with {selectedCoin.name}</span>
-            <div className="font-mono text-xs font-bold text-zinc-300 bg-[#252530] px-2 py-1 rounded-full">
+            <div className="font-mono text-xs font-bold text-zinc-700 bg-zinc-100 px-2 py-1 rounded-full">
               {formatTimer(timeLeft)}
             </div>
           </div>
@@ -880,9 +880,9 @@ export default function App() {
           <div className="p-4 space-y-4">
             
             {/* Amount Banner */}
-            <div className="text-center p-3 bg-[#1E1E24] rounded-2xl border border-white/10">
+            <div className="text-center p-3 bg-zinc-50 rounded-2xl border border-zinc-200/80">
               <span className="text-[11px] text-zinc-400 uppercase font-semibold block">Total Due</span>
-              <strong className="text-xl font-bold font-mono text-white">
+              <strong className="text-xl font-bold font-mono text-zinc-950">
                 {currentExactAmount} {selectedCoin.symbol}
               </strong>
               <div className="text-[11px] text-zinc-500">
@@ -892,8 +892,8 @@ export default function App() {
 
             {/* QR View */}
             {selectedSubMethod === 'qr' && (
-              <div className="p-4 bg-[#17171C] rounded-2xl border border-white/10 text-center space-y-3 shadow-sm">
-                <div className="inline-block p-3 bg-[#17171C] rounded-2xl border border-white/10 shadow-2xs">
+              <div className="p-4 bg-white rounded-2xl border border-zinc-200 text-center space-y-3 shadow-sm">
+                <div className="inline-block p-3 bg-white rounded-2xl border border-zinc-200 shadow-2xs">
                   <QRCodeSVG value={qrPayload} size={150} level="M" />
                 </div>
                 <div className="text-xs text-zinc-500 font-mono">
@@ -903,7 +903,7 @@ export default function App() {
                 <div className="flex gap-2 justify-center pt-1">
                   <button
                     onClick={() => handleCopyAmount(currentExactAmount)}
-                    className="px-3 py-1.5 rounded-xl bg-[#252530] hover:bg-[#1E1E24] text-zinc-100 text-xs font-mono font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-mono font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
                     {copiedAmount ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-zinc-500" />}
                     <span>{copiedAmount ? 'Amount Copied' : 'Copy Amount'}</span>
@@ -911,7 +911,7 @@ export default function App() {
 
                   <a
                     href={selectedCoin.scheme(selectedCoin.address, currentExactAmount)}
-                    className="px-3 py-1.5 rounded-xl bg-[#0F0F12] hover:bg-[#1E1E24] text-white text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span>Open App</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -923,13 +923,13 @@ export default function App() {
             {/* Mobile Wallet Quick Launch */}
             {selectedSubMethod === 'qr' && (
               <div className="grid grid-cols-3 gap-2">
-                <a href={getDeepLink('trust')} target="_blank" rel="noreferrer" className="p-2.5 bg-[#1E1E24] rounded-xl border border-white/10 text-center text-xs font-semibold text-zinc-100 hover:bg-[#252530]">
+                <a href={getDeepLink('trust')} target="_blank" rel="noreferrer" className="p-2.5 bg-zinc-50 rounded-xl border border-zinc-200 text-center text-xs font-semibold text-zinc-800 hover:bg-zinc-100">
                   Trust Wallet
                 </a>
-                <a href={getDeepLink('metamask')} target="_blank" rel="noreferrer" className="p-2.5 bg-[#1E1E24] rounded-xl border border-white/10 text-center text-xs font-semibold text-zinc-100 hover:bg-[#252530]">
+                <a href={getDeepLink('metamask')} target="_blank" rel="noreferrer" className="p-2.5 bg-zinc-50 rounded-xl border border-zinc-200 text-center text-xs font-semibold text-zinc-800 hover:bg-zinc-100">
                   MetaMask
                 </a>
-                <a href={getDeepLink('safepal')} target="_blank" rel="noreferrer" className="p-2.5 bg-[#1E1E24] rounded-xl border border-white/10 text-center text-xs font-semibold text-zinc-100 hover:bg-[#252530]">
+                <a href={getDeepLink('safepal')} target="_blank" rel="noreferrer" className="p-2.5 bg-zinc-50 rounded-xl border border-zinc-200 text-center text-xs font-semibold text-zinc-800 hover:bg-zinc-100">
                   SafePal
                 </a>
               </div>
@@ -938,13 +938,13 @@ export default function App() {
             {/* Address View */}
             {selectedSubMethod === 'address' && (
               <div className="space-y-3">
-                <div className="p-3.5 bg-[#1E1E24] rounded-2xl border border-white/10 space-y-1.5">
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-1.5">
                   <span className="text-[11px] font-bold text-zinc-500 uppercase block">Deposit Address</span>
-                  <div className="p-2.5 bg-[#17171C] rounded-xl border border-white/10 font-mono text-xs text-white break-all flex items-center justify-between gap-2">
+                  <div className="p-2.5 bg-white rounded-xl border border-zinc-200 font-mono text-xs text-zinc-900 break-all flex items-center justify-between gap-2">
                     <span>{selectedCoin.address}</span>
                     <button 
                       onClick={() => handleCopyAddress(selectedCoin.address)}
-                      className="shrink-0 px-2.5 py-1 rounded-lg bg-[#0F0F12] text-white text-xs font-medium flex items-center gap-1 cursor-pointer"
+                      className="shrink-0 px-2.5 py-1 rounded-lg bg-zinc-950 text-white text-xs font-medium flex items-center gap-1 cursor-pointer"
                     >
                       {copiedAddress ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                       <span>{copiedAddress ? 'Copied' : 'Copy'}</span>
@@ -952,13 +952,13 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="p-3.5 bg-[#1E1E24] rounded-2xl border border-white/10 space-y-1.5">
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-1.5">
                   <span className="text-[11px] font-bold text-zinc-500 uppercase block">Exact Amount to Transfer</span>
-                  <div className="p-2.5 bg-[#17171C] rounded-xl border border-white/10 font-mono text-xs font-bold text-white flex items-center justify-between">
+                  <div className="p-2.5 bg-white rounded-xl border border-zinc-200 font-mono text-xs font-bold text-zinc-900 flex items-center justify-between">
                     <span>{currentExactAmount} {selectedCoin.symbol}</span>
                     <button 
                       onClick={() => handleCopyAmount(currentExactAmount)}
-                      className="px-2.5 py-1 rounded-lg bg-[#252530] text-zinc-100 text-xs font-medium flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-zinc-100 text-zinc-800 text-xs font-medium flex items-center gap-1 cursor-pointer"
                     >
                       {copiedAmount ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                       <span>{copiedAmount ? 'Copied' : 'Copy'}</span>
@@ -966,27 +966,27 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-800/50 text-[11px] text-amber-200 leading-snug">
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-snug">
                   ⚠️ Send the exact amount (<b>{currentExactAmount} {selectedCoin.symbol}</b>). Micro-offset verification ensures automated instant settlement.
                 </div>
               </div>
             )}
 
             {/* Mempool Listening Radar */}
-            <div className="p-3 bg-[#1E1E24] rounded-2xl border border-white/10 flex items-center justify-between gap-3">
+            <div className="p-3 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <span className="relative flex h-2.5 w-2.5 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-950/200"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
-                <span className="text-xs font-semibold text-white">
+                <span className="text-xs font-semibold text-zinc-900">
                   Listening for mempool transfer...
                 </span>
               </div>
 
               <button
                 onClick={checkPaymentStatus}
-                className="p-1.5 rounded-lg bg-[#17171C] border border-white/10 text-zinc-400 hover:text-white shadow-2xs cursor-pointer"
+                className="p-1.5 rounded-lg bg-white border border-zinc-200 text-zinc-600 hover:text-zinc-950 shadow-2xs cursor-pointer"
                 title="Refresh Status"
               >
                 <RefreshCw size={13} />
@@ -1019,7 +1019,7 @@ export default function App() {
               )}
               <h1 className="rzp-merchant-title">{merchantName}</h1>
             </div>
-            <button onClick={() => setStep('payment_details')} className="text-zinc-400 hover:text-white">
+            <button onClick={() => setStep('payment_details')} className="text-zinc-400 hover:text-black">
               <X size={20} />
             </button>
           </div>
@@ -1038,7 +1038,7 @@ export default function App() {
             </div>
 
             <div className="rzp-confirming-amount-box">
-              <span className="font-mono text-sm font-bold text-white">
+              <span className="font-mono text-sm font-bold text-zinc-900">
                 {currentExactAmount} {selectedCoin?.symbol || 'USDT'}
               </span>
               <span className="text-xs text-zinc-500">
@@ -1146,7 +1146,7 @@ export default function App() {
                 <div className="rzp-receipt-row rzp-total-row">
                   <span className="lbl">Total Settled</span>
                   <span className="sep">:</span>
-                  <span className="val font-bold text-white">${initialAmount.toFixed(2)} USD</span>
+                  <span className="val font-bold text-zinc-950">${initialAmount.toFixed(2)} USD</span>
                 </div>
               </div>
             </div>
@@ -1162,7 +1162,7 @@ export default function App() {
                 <ArrowRight size={15} />
               </a>
             ) : (
-              <div className="mt-3 p-2.5 bg-emerald-950/20 text-emerald-300 rounded-xl text-xs font-medium border border-emerald-800/40 text-center">
+              <div className="mt-3 p-2.5 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-medium border border-emerald-200 text-center">
                 You may now safely close this window.
               </div>
             )}
@@ -1178,22 +1178,22 @@ export default function App() {
           ══════════════════════════════════════════════════════════════════ */}
       {step === 'underpayment' && (
         <div className="rzp-screen p-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-rose-950/20 text-rose-400 border border-rose-800/40 flex items-center justify-center mx-auto mb-3">
+          <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto mb-3">
             <XCircle size={32} />
           </div>
-          <h2 className="text-xl font-bold text-white">Incorrect Amount Paid</h2>
+          <h2 className="text-xl font-bold text-zinc-950">Incorrect Amount Paid</h2>
           <p className="text-xs text-zinc-500 max-w-xs mx-auto mt-1">
             We detected your transfer, but the amount received does not match the invoice.
           </p>
 
-          <div className="p-4 rounded-2xl bg-[#1E1E24] border border-white/10 text-left space-y-2 mt-4 font-mono text-xs">
+          <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 text-left space-y-2 mt-4 font-mono text-xs">
             <div className="flex justify-between">
               <span className="text-zinc-500">Requested</span>
-              <strong className="text-white">${underpaidInfo?.expected?.toFixed(2)} USD</strong>
+              <strong className="text-zinc-900">${underpaidInfo?.expected?.toFixed(2)} USD</strong>
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-500">Received</span>
-              <strong className="text-rose-400">${underpaidInfo?.received?.toFixed(2)} USD</strong>
+              <strong className="text-rose-600">${underpaidInfo?.received?.toFixed(2)} USD</strong>
             </div>
           </div>
 
@@ -1211,10 +1211,10 @@ export default function App() {
           ══════════════════════════════════════════════════════════════════ */}
       {step === 'expired' && (
         <div className="rzp-screen p-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-rose-950/20 text-rose-400 border border-rose-800/40 flex items-center justify-center mx-auto mb-3">
+          <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto mb-3">
             <XCircle size={32} />
           </div>
-          <h2 className="text-xl font-bold text-white">Invoice Expired</h2>
+          <h2 className="text-xl font-bold text-zinc-950">Invoice Expired</h2>
           <p className="text-xs text-zinc-500 max-w-xs mx-auto mt-1">
             The payment window has elapsed. Please request a new checkout link.
           </p>

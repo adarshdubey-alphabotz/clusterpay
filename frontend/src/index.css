@@ -2,9 +2,9 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #FAFAFA;
-    color: #09090b;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #0F0F12;
+    color: #FFFFFF;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -25,9 +25,8 @@
 body.checkout-body {
   margin: 0;
   padding: 16px !important;
-  background: radial-gradient(circle at 18% 0%, rgba(220, 231, 255, 0.7), transparent 34%),
-              linear-gradient(180deg, #f4f5fa 0%, #eef1f7 100%) !important;
-  color: #101828;
+  background: #0F0F12 !important;
+  color: #FFFFFF;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   display: flex;
@@ -38,10 +37,10 @@ body.checkout-body {
 .gateway-card {
   width: 100%;
   max-width: 460px;
-  background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   overflow: hidden;
   position: relative;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -54,14 +53,13 @@ body.checkout-body {
   border-radius: 20px;
 }
 
-/* Top Merchant Header */
 .gateway-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #edf1f7;
+  background: #17171C;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .merchant-link {
@@ -77,10 +75,10 @@ body.checkout-body {
   height: 36px;
   border-radius: 12px;
   object-fit: contain;
-  border: 1px solid #edf1f7;
+  border: 1px solid rgba(255,255,255,0.12);
   padding: 2px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .merchant-title-flex {
@@ -91,16 +89,16 @@ body.checkout-body {
 .merchant-bot-name {
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   line-height: 1.2;
 }
 
 .verified-label-sub {
   font-size: 10px;
   font-weight: 700;
-  color: #10b981;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
+  color: #10B981;
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
   border-radius: 999px;
   padding: 1px 7px;
   display: inline-flex;
@@ -113,9 +111,9 @@ body.checkout-body {
 .secure-checkout-mark {
   font-size: 11px;
   font-weight: 600;
-  color: #64748b;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  color: #8B8FA8;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 999px;
   padding: 4px 10px;
   display: flex;
@@ -126,7 +124,7 @@ body.checkout-body {
 .top-drag-handle {
   width: 36px;
   height: 4px;
-  background: #cbd5e1;
+  background: rgba(255,255,255,0.15);
   border-radius: 2px;
   margin: 0 auto 14px auto;
 }
@@ -136,18 +134,14 @@ body.checkout-body {
   text-align: left;
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* SCREEN 1: CONFIRM YOUR PAYMENT (REF 3)                             */
-/* ═══════════════════════════════════════════════════════════════════ */
-
 .light-card-canvas {
-  background: #ffffff;
-  color: #0f172a;
+  background: #17171C;
+  color: #FFFFFF;
 }
 
 .cpay-summary-kicker {
   display: block;
-  color: #94a3b8;
+  color: #52566A;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -158,7 +152,7 @@ body.checkout-body {
 .ref3-header-title {
   font-size: 22px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   letter-spacing: -0.5px;
   margin: 0 0 16px 0;
   line-height: 1.25;
@@ -166,10 +160,10 @@ body.checkout-body {
 
 .cpay-hero-summary {
   padding: 16px;
-  background: linear-gradient(180deg, #ffffff, #f8fafc);
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 22px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
   margin-bottom: 18px;
 }
 
@@ -178,7 +172,7 @@ body.checkout-body {
   align-items: center;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .cpay-merchant-line img {
@@ -186,19 +180,19 @@ body.checkout-body {
   height: 38px;
   border-radius: 12px;
   object-fit: cover;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
 .cpay-merchant-line span {
-  color: #94a3b8;
+  color: #52566A;
   font-size: 11px;
   font-weight: 700;
   display: block;
 }
 
 .cpay-merchant-line b {
-  color: #0f172a;
+  color: #FFFFFF;
   font-size: 15px;
   font-weight: 800;
 }
@@ -208,7 +202,7 @@ body.checkout-body {
 }
 
 .cpay-amount-block span {
-  color: #94a3b8;
+  color: #52566A;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -218,7 +212,7 @@ body.checkout-body {
 
 .cpay-amount-block strong {
   display: block;
-  color: #0f172a;
+  color: #FFFFFF;
   font-size: 36px;
   font-weight: 900;
   letter-spacing: -1.2px;
@@ -227,7 +221,7 @@ body.checkout-body {
 }
 
 .cpay-amount-block p {
-  color: #64748b;
+  color: #8B8FA8;
   margin: 6px 0 0 0;
   font-size: 12px;
   line-height: 1.4;
@@ -242,12 +236,12 @@ body.checkout-body {
 
 .cpay-info-grid div {
   padding: 8px 12px;
-  background: #f1f5f9;
+  background: rgba(255,255,255,0.05);
   border-radius: 14px;
 }
 
 .cpay-info-grid span {
-  color: #94a3b8;
+  color: #52566A;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -256,7 +250,7 @@ body.checkout-body {
 
 .cpay-info-grid b {
   display: block;
-  color: #0f172a;
+  color: #FFFFFF;
   font-size: 12px;
   font-family: 'JetBrains Mono', monospace;
   margin-top: 2px;
@@ -269,20 +263,20 @@ body.checkout-body {
 }
 
 .ref3-option-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
   padding: 14px 16px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
 }
 
 .ref3-option-card:hover {
   transform: translateY(-2px);
-  border-color: #0f172a;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.5);
 }
 
 .ref3-card-top {
@@ -295,13 +289,13 @@ body.checkout-body {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: #f8fafc;
-  border: 1px solid #f1f5f9;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .ref3-token-img {
@@ -317,7 +311,7 @@ body.checkout-body {
 .ref3-title-wrap h3 {
   font-size: 15px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
   display: flex;
   align-items: center;
@@ -328,12 +322,12 @@ body.checkout-body {
   font-size: 13px;
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: #2563eb;
+  color: #3B82F6;
 }
 
 .ref3-title-wrap p {
   font-size: 11px;
-  color: #64748b;
+  color: #8B8FA8;
   margin: 2px 0 0 0;
 }
 
@@ -343,7 +337,7 @@ body.checkout-body {
   gap: 6px;
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .ref3-stat-col {
@@ -351,34 +345,30 @@ body.checkout-body {
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: #f8fafc;
-  border: 1px solid #f1f5f9;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 999px;
   font-size: 10px;
   font-weight: 600;
-  color: #475569;
+  color: #8B8FA8;
 }
 
 .ref3-chevron {
-  color: #94a3b8;
+  color: #52566A;
   margin-left: auto;
   flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* SCREEN 2: SELECT PAYMENT METHOD (REF 4)                            */
-/* ═══════════════════════════════════════════════════════════════════ */
-
 .dark-choice-canvas {
-  background: #09090b;
+  background: #0F0F12;
   color: #ffffff;
   border-radius: 24px;
   padding: 20px 16px;
 }
 
 .back-btn-light {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
   color: #ffffff;
   font-size: 12px;
   font-weight: 600;
@@ -393,13 +383,13 @@ body.checkout-body {
 }
 
 .back-btn-light:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255,255,255,0.18);
 }
 
 .cpay-method-hero {
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 20px;
   margin-bottom: 18px;
 }
@@ -424,7 +414,7 @@ body.checkout-body {
 }
 
 .cpay-method-hero p {
-  color: #94a3b8;
+  color: #52566A;
   margin: 6px 0 0 0;
   font-size: 12px;
 }
@@ -444,20 +434,21 @@ body.checkout-body {
 }
 
 .ref4-pill-card {
-  background: #ffffff;
-  color: #0f172a;
+  background: #1E1E24;
+  color: #FFFFFF;
   border-radius: 20px;
   padding: 14px 18px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255,255,255,0.07);
 }
 
 .ref4-pill-card:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
 .ref4-icon-frame {
@@ -473,24 +464,20 @@ body.checkout-body {
 .ref4-card-text h3 {
   font-size: 16px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
 }
 
 .ref4-card-text p {
   font-size: 11px;
-  color: #64748b;
+  color: #8B8FA8;
   margin: 2px 0 0 0;
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* SCREEN 3: PAYMENT DETAILS                                          */
-/* ═══════════════════════════════════════════════════════════════════ */
-
 .back-btn {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  color: #475569;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #8B8FA8;
   font-size: 12px;
   font-weight: 600;
   padding: 6px 14px;
@@ -500,25 +487,25 @@ body.checkout-body {
   align-items: center;
   gap: 6px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   transition: all 0.2s;
 }
 
 .back-btn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.18);
 }
 
 .card-header h2 {
   font-size: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
 }
 
 .card-header p {
   font-size: 12px;
-  color: #64748b;
+  color: #8B8FA8;
   margin: 3px 0 0 0;
 }
 
@@ -526,9 +513,9 @@ body.checkout-body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-weight: 700;
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.08);
+  color: #FFFFFF;
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 4px 10px;
   border-radius: 999px;
 }
@@ -538,29 +525,29 @@ body.checkout-body {
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   padding: 12px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 18px;
   margin-top: 14px;
 }
 
 .cpay-detail-summary div {
   padding: 8px 10px;
-  background: #f8fafc;
+  background: rgba(255,255,255,0.05);
   border-radius: 12px;
 }
 
 .cpay-detail-summary span {
   font-size: 9px;
   font-weight: 700;
-  color: #94a3b8;
+  color: #52566A;
   text-transform: uppercase;
   display: block;
 }
 
 .cpay-detail-summary b {
   font-size: 12px;
-  color: #0f172a;
+  color: #FFFFFF;
   display: block;
   margin-top: 2px;
   word-break: break-all;
@@ -571,16 +558,16 @@ body.checkout-body {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   font-size: 11px;
-  color: #64748b;
+  color: #8B8FA8;
   margin-top: 10px;
 }
 
 .invoice-meta b {
-  color: #0f172a;
+  color: #FFFFFF;
   font-family: 'JetBrains Mono', monospace;
 }
 
@@ -589,10 +576,10 @@ body.checkout-body {
   grid-template-columns: 140px 1fr;
   gap: 14px;
   padding: 14px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
   margin-top: 14px;
   align-items: center;
 }
@@ -600,12 +587,12 @@ body.checkout-body {
 .payment-qr-frame {
   padding: 8px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .payment-qr-copy {
@@ -617,7 +604,7 @@ body.checkout-body {
 .qr-eyebrow {
   font-size: 10px;
   font-weight: 800;
-  color: #94a3b8;
+  color: #52566A;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -625,29 +612,29 @@ body.checkout-body {
 .qr-amount {
   font-size: 17px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   font-family: 'JetBrains Mono', monospace;
   word-break: break-all;
 }
 
 .payment-qr-copy span {
   font-size: 11px;
-  color: #64748b;
+  color: #8B8FA8;
 }
 
 .deposit-details-box {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
   padding: 16px;
   margin-top: 14px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
 }
 
 .label {
   font-size: 11px;
   font-weight: 700;
-  color: #64748b;
+  color: #8B8FA8;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 4px;
@@ -660,8 +647,8 @@ body.checkout-body {
   justify-content: space-between;
   gap: 8px;
   padding: 10px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
 }
 
@@ -669,12 +656,12 @@ body.checkout-body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-weight: 600;
-  color: #0f172a;
+  color: #FFFFFF;
   word-break: break-all;
 }
 
 .copy-btn {
-  background: #0f172a;
+  background: #3B82F6;
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -690,13 +677,13 @@ body.checkout-body {
 }
 
 .copy-btn:hover {
-  background: #1e293b;
+  background: #2563EB;
 }
 
 .warning-banner {
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #92400e;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  color: #F59E0B;
   padding: 10px 12px;
   border-radius: 12px;
   font-size: 11px;
@@ -707,7 +694,7 @@ body.checkout-body {
 .btn-primary {
   width: 100%;
   padding: 12px 16px;
-  background: #0f172a;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: #ffffff;
   border: none;
   border-radius: 16px;
@@ -718,23 +705,19 @@ body.checkout-body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 8px 24px rgba(59,130,246,0.35);
   margin-top: 14px;
   transition: all 0.2s;
 }
 
 .btn-primary:hover {
-  background: #1e293b;
+  opacity: 0.92;
   transform: translateY(-1px);
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* SCREEN 4: PAYMENT PROCESSING (REF 1)                               */
-/* ═══════════════════════════════════════════════════════════════════ */
-
 .ref1-processing-screen {
-  background: #ffffff;
-  color: #0f172a;
+  background: #0F0F12;
+  color: #FFFFFF;
   border-radius: 24px;
   padding: 24px 20px;
   min-height: 380px;
@@ -754,7 +737,7 @@ body.checkout-body {
 .ref1-brand-logo {
   font-size: 20px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   letter-spacing: -0.5px;
 }
 
@@ -762,7 +745,7 @@ body.checkout-body {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #64748b;
+  color: #8B8FA8;
   padding: 4px;
 }
 
@@ -779,7 +762,7 @@ body.checkout-body {
   height: 72px;
   margin: 0 auto 18px;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff 0 34%, #dbeafe 35% 37%, transparent 38%);
+  background: radial-gradient(circle, #17171C 0 34%, rgba(59,130,246,0.15) 35% 37%, transparent 38%);
 }
 
 .cpay-chain-loader span,
@@ -792,13 +775,13 @@ body.checkout-body {
 }
 
 .cpay-chain-loader span {
-  border-top-color: #2563eb;
+  border-top-color: #3B82F6;
   animation: spin 1s linear infinite;
 }
 
 .cpay-chain-loader i {
   inset: 10px;
-  border-right-color: #10b981;
+  border-right-color: #10B981;
   animation: spin 1.35s linear infinite reverse;
 }
 
@@ -812,21 +795,21 @@ body.checkout-body {
   content: "";
   position: absolute;
   inset: 8px;
-  background: #fff;
+  background: #17171C;
   border-radius: 50%;
 }
 
 .ref1-processing-title {
   font-size: 20px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0 0 8px 0;
   letter-spacing: -0.4px;
 }
 
 .ref1-processing-subtitle {
   font-size: 13px;
-  color: #64748b;
+  color: #8B8FA8;
   max-width: 280px;
   line-height: 1.45;
   margin: 0 auto;
@@ -836,26 +819,26 @@ body.checkout-body {
   display: grid;
   gap: 4px;
   padding: 10px 14px;
-  background: #f8fafc;
+  background: rgba(255,255,255,0.05);
   border-radius: 14px;
-  color: #64748b;
+  color: #8B8FA8;
   font-size: 12px;
   margin-top: 14px;
   width: 100%;
 }
 
 .cpay-processing-details span {
-  color: #0f172a;
+  color: #FFFFFF;
   font-size: 16px;
   font-weight: 800;
 }
 
 .ref1-live-status-pill {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.3);
   padding: 6px 14px;
   border-radius: 999px;
-  color: #2563eb;
+  color: #93C5FD;
   font-size: 12px;
   font-weight: 600;
   margin-top: 18px;
@@ -864,25 +847,21 @@ body.checkout-body {
   gap: 6px;
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* SCREEN 5: SUCCESSFUL PAPER RECEIPT (REF 2)                         */
-/* ═══════════════════════════════════════════════════════════════════ */
-
 .ref2-receipt-backdrop {
   padding: 16px 12px 28px 12px;
 }
 
 .ref2-receipt-card {
-  background: #ffffff;
-  color: #0f172a;
+  background: #17171C;
+  color: #FFFFFF;
   border-radius: 22px 22px 0 0;
   padding: 24px 20px 36px 20px;
   position: relative;
   max-width: 420px;
   margin: 0 auto;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.6);
   text-align: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.07);
   border-bottom: none;
 }
 
@@ -894,7 +873,7 @@ body.checkout-body {
   left: 0;
   width: 100%;
   height: 14px;
-  background-image: linear-gradient(135deg, #ffffff 5px, transparent 0), linear-gradient(225deg, #ffffff 5px, transparent 0);
+  background-image: linear-gradient(135deg, #17171C 5px, transparent 0), linear-gradient(225deg, #17171C 5px, transparent 0);
   background-position: left bottom;
   background-size: 10px 14px;
   background-repeat: repeat-x;
@@ -907,7 +886,7 @@ body.checkout-body {
   right: 14px;
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: #52566A;
   cursor: pointer;
   padding: 4px;
 }
@@ -921,7 +900,7 @@ body.checkout-body {
 .ref2-title {
   font-size: 20px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0;
   letter-spacing: -0.4px;
 }
@@ -933,9 +912,9 @@ body.checkout-body {
 .ref2-section-heading {
   font-size: 12px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0 0 8px 0;
-  border-top: 1px dashed #cbd5e1;
+  border-top: 1px dashed rgba(255,255,255,0.1);
   padding-top: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -955,22 +934,22 @@ body.checkout-body {
 }
 
 .ref2-row .lbl {
-  color: #64748b;
+  color: #8B8FA8;
 }
 
 .ref2-row .sep {
-  color: #94a3b8;
+  color: #52566A;
   text-align: center;
 }
 
 .ref2-row .val {
-  color: #0f172a;
+  color: #FFFFFF;
   font-weight: 600;
   word-break: break-all;
 }
 
 .ref2-green-pill {
-  background: #10b981;
+  background: #10B981;
   color: #ffffff;
   font-size: 10px;
   font-weight: 700;
@@ -981,16 +960,16 @@ body.checkout-body {
 
 .ref2-total-row {
   font-weight: 800 !important;
-  color: #0f172a;
-  border-top: 1px dashed #cbd5e1;
+  color: #FFFFFF;
+  border-top: 1px dashed rgba(255,255,255,0.1);
   padding-top: 6px;
   margin-top: 4px;
 }
 
 .ref2-download-btn {
-  background: #0f172a;
+  background: rgba(255,255,255,0.06);
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.1);
   font-size: 12px;
   font-weight: 700;
   padding: 10px 18px;
@@ -1006,30 +985,26 @@ body.checkout-body {
 }
 
 .ref2-download-btn:hover {
-  background: #1e293b;
+  background: rgba(255,255,255,0.1);
 }
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/* FOOTER & DISCLOSURES                                                */
-/* ═══════════════════════════════════════════════════════════════════ */
 
 .processing-disclosure {
   padding: 10px 16px;
   font-size: 10px;
-  color: #64748b;
+  color: #52566A;
   text-align: center;
   line-height: 1.45;
-  background: #f8fafc;
-  border-top: 1px solid #edf1f7;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .gateway-trust-footer {
   padding: 10px 16px;
   font-size: 11px;
-  color: #64748b;
+  color: #52566A;
   text-align: center;
-  background: #ffffff;
-  border-top: 1px solid #edf1f7;
+  background: #17171C;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 @keyframes spin {
@@ -1053,11 +1028,7 @@ body.checkout-body {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/* RAZORPAY / MODERN CHECKOUT EXTENSIONS                               */
-/* ═══════════════════════════════════════════════════════════════════ */
-
-/* 1. 3D Spinning Gold Coin Animation */
+/* ── 3D Spinning Gold Coin ── */
 .spinning-coin-wrapper {
   position: relative;
   display: flex;
@@ -1072,7 +1043,7 @@ body.checkout-body {
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, rgba(251, 191, 36, 0.08) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(251,191,36,0.3) 0%, rgba(251,191,36,0.12) 50%, transparent 70%);
   animation: coinPulse 2.5s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -1134,7 +1105,6 @@ body.checkout-body {
   text-shadow: 0 1px 1px rgba(254, 240, 138, 0.6);
 }
 
-/* 2. Razorpay-Style Payment Options Layout */
 .rp-container {
   padding: 16px 20px 20px 20px;
 }
@@ -1157,23 +1127,23 @@ body.checkout-body {
   height: 42px;
   border-radius: 12px;
   object-contain: contain;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 2px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .rp-merchant-name {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   letter-spacing: -0.3px;
 }
 
 .rp-section-title {
   font-size: 13px;
   font-weight: 700;
-  color: #64748b;
+  color: #8B8FA8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 18px 0 10px 0;
@@ -1184,24 +1154,24 @@ body.checkout-body {
   align-items: center;
   justify-content: space-between;
   padding: 13px 16px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   margin-bottom: 8px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .rp-rec-card:hover {
-  border-color: #0f172a;
+  border-color: rgba(255,255,255,0.2);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
 .rp-rec-card.selected {
-  border: 2px solid #0f172a;
-  background: #f8fafc;
+  border: 2px solid #3B82F6;
+  background: rgba(59,130,246,0.08);
 }
 
 .rp-rec-left {
@@ -1213,15 +1183,14 @@ body.checkout-body {
 .rp-rec-name {
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
 }
 
 .rp-rec-sub {
   font-size: 11px;
-  color: #64748b;
+  color: #8B8FA8;
 }
 
-/* 2-Column Grid for All Options */
 .rp-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1234,23 +1203,23 @@ body.checkout-body {
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .rp-tile:hover {
-  border-color: #0f172a;
-  background: #f8fafc;
+  border-color: rgba(255,255,255,0.2);
+  background: #1E1E24;
   transform: translateY(-1px);
 }
 
 .rp-tile.selected {
-  border: 2px solid #0f172a;
-  background: #f1f5f9;
+  border: 2px solid #3B82F6;
+  background: rgba(59,130,246,0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════════════ */
@@ -1263,11 +1232,11 @@ body.checkout-body {
   min-height: 100dvh;
   max-width: 440px;
   margin: 0 auto;
-  background: #ffffff;
+  background: #0F0F12;
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
   box-sizing: border-box;
 }
 
@@ -1275,7 +1244,7 @@ body.checkout-body {
   html, body, body.checkout-body {
     padding: 0 !important;
     margin: 0 !important;
-    background: #ffffff !important;
+    background: #0F0F12 !important;
     width: 100vw !important;
     max-width: 100vw !important;
     overflow-x: hidden !important;
@@ -1296,7 +1265,7 @@ body.checkout-body {
   flex-direction: column;
   flex: 1;
   min-height: 100vh;
-  background: #ffffff;
+  background: #0F0F12;
   position: relative;
 }
 
@@ -1305,7 +1274,9 @@ body.checkout-body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(15,15,18,0.95);
+  backdrop-filter: blur(20px);
 }
 
 .rzp-merchant-info {
@@ -1319,16 +1290,16 @@ body.checkout-body {
   height: 36px;
   border-radius: 10px;
   object-fit: contain;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.12);
   padding: 2px;
-  background: #ffffff;
+  background: rgba(255,255,255,0.06);
 }
 
 .rzp-logo-fallback {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #0f172a;
+  background: #1A1A22;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -1339,7 +1310,7 @@ body.checkout-body {
 .rzp-merchant-title {
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1351,7 +1322,7 @@ body.checkout-body {
   width: 16px;
   height: 16px;
   border-radius: 9999px;
-  background: #10b981;
+  background: #10B981;
   color: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -1362,19 +1333,19 @@ body.checkout-body {
   width: 32px;
   height: 32px;
   border-radius: 9999px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748b;
+  color: #8B8FA8;
 }
 
 .rzp-request-card {
   margin: 16px 20px;
   padding: 16px 18px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 20px;
 }
 
@@ -1389,21 +1360,21 @@ body.checkout-body {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: #52566A;
   letter-spacing: 0.5px;
 }
 
 .rzp-timer {
   font-size: 11px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #ffffff;
+  background: rgba(255,255,255,0.08);
   padding: 2px 8px;
   border-radius: 9999px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .rzp-request-purpose {
@@ -1413,34 +1384,34 @@ body.checkout-body {
 .rzp-request-purpose .lbl {
   font-size: 10px;
   font-weight: 600;
-  color: #94a3b8;
+  color: #52566A;
   display: block;
 }
 
 .rzp-request-purpose .val {
   font-size: 13px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
 }
 
 .rzp-request-amount .lbl {
   font-size: 10px;
   font-weight: 600;
-  color: #94a3b8;
+  color: #52566A;
   display: block;
 }
 
 .rzp-request-amount .amt {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   letter-spacing: -0.5px;
 }
 
 .rzp-request-amount .curr {
   font-size: 12px;
   font-weight: 500;
-  color: #64748b;
+  color: #8B8FA8;
 }
 
 .rzp-content-body {
@@ -1451,7 +1422,7 @@ body.checkout-body {
 .rzp-heading {
   font-size: 16px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 0 0 12px 0;
   letter-spacing: -0.3px;
 }
@@ -1460,7 +1431,7 @@ body.checkout-body {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: #8B8FA8;
   letter-spacing: 0.5px;
   margin: 0 0 10px 0;
   display: flex;
@@ -1469,7 +1440,7 @@ body.checkout-body {
 }
 
 .badge-fast {
-  color: #059669;
+  color: #10B981;
   font-size: 10px;
   font-weight: 700;
   display: flex;
@@ -1488,16 +1459,16 @@ body.checkout-body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: #17171C;
+  border: 1.5px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .rzp-rec-item:hover, .rzp-rec-item.selected {
-  border-color: #0f172a;
-  background: #f8fafc;
+  border-color: rgba(255,255,255,0.2);
+  background: #1E1E24;
 }
 
 .rzp-rec-left {
@@ -1510,8 +1481,8 @@ body.checkout-body {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1521,13 +1492,13 @@ body.checkout-body {
 .rzp-coin-title {
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   line-height: 1.2;
 }
 
 .rzp-coin-desc {
   font-size: 11px;
-  color: #64748b;
+  color: #8B8FA8;
   font-family: 'JetBrains Mono', monospace;
   margin-top: 2px;
 }
@@ -1544,29 +1515,29 @@ body.checkout-body {
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.08);
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .rzp-grid-tile:hover, .rzp-grid-tile.selected {
-  border-color: #0f172a;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: rgba(255,255,255,0.2);
+  background: #17171C;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .rzp-tile-name {
   font-size: 12px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   line-height: 1.2;
 }
 
 .rzp-tile-sub {
   font-size: 10px;
-  color: #64748b;
+  color: #8B8FA8;
 }
 
 .rzp-bottom-bar {
@@ -1576,14 +1547,14 @@ body.checkout-body {
   transform: translateX(-50%);
   width: 100%;
   max-width: 440px;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid #e2e8f0;
+  background: rgba(15,15,18,0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.07);
   padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
   z-index: 40;
   padding-bottom: max(14px, env(safe-area-inset-bottom));
   box-sizing: border-box;
@@ -1606,14 +1577,14 @@ body.checkout-body {
 .rzp-bottom-price {
   font-size: 20px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   letter-spacing: -0.5px;
 }
 
 .rzp-details-btn {
   font-size: 11px;
   font-weight: 600;
-  color: #3b82f6;
+  color: #3B82F6;
   background: none;
   border: none;
   padding: 0;
@@ -1624,7 +1595,7 @@ body.checkout-body {
 }
 
 .rzp-continue-btn {
-  background: #0f172a;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
@@ -1633,10 +1604,12 @@ body.checkout-body {
   border: none;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 8px 24px rgba(59,130,246,0.35);
 }
 
 .rzp-continue-btn:hover {
-  background: #1e293b;
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
 .rzp-header-nav {
@@ -1644,26 +1617,26 @@ body.checkout-body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .rzp-nav-back {
   width: 32px;
   height: 32px;
   border-radius: 9999px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0f172a;
+  color: #FFFFFF;
   cursor: pointer;
 }
 
 .rzp-nav-title {
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
 }
 
 .rzp-method-card {
@@ -1671,16 +1644,16 @@ body.checkout-body {
   align-items: center;
   gap: 14px;
   padding: 16px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: #17171C;
+  border: 1.5px solid rgba(255,255,255,0.08);
   border-radius: 18px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .rzp-method-card:hover {
-  border-color: #0f172a;
-  background: #f8fafc;
+  border-color: rgba(255,255,255,0.2);
+  background: #1E1E24;
 }
 
 .rzp-method-icon-wrap {
@@ -1695,7 +1668,7 @@ body.checkout-body {
 
 .rzp-primary-btn {
   width: 100%;
-  background: #0f172a;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
@@ -1709,13 +1682,16 @@ body.checkout-body {
   gap: 8px;
   text-decoration: none;
   transition: all 0.2s;
+  box-shadow: 0 8px 24px rgba(59,130,246,0.35);
 }
 
 .rzp-primary-btn:hover {
-  background: #1e293b;
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
 .rzp-confirming-screen {
+  background: #0F0F12;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -1734,13 +1710,13 @@ body.checkout-body {
 .rzp-confirming-title {
   font-size: 22px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   margin: 16px 0 4px 0;
 }
 
 .rzp-confirming-subtitle {
   font-size: 13px;
-  color: #64748b;
+  color: #8B8FA8;
   margin: 0 0 16px 0;
 }
 
@@ -1750,17 +1726,17 @@ body.checkout-body {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 9999px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.3);
+  color: #93C5FD;
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 16px;
 }
 
 .rzp-confirming-amount-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   padding: 12px 20px;
   display: flex;
@@ -1770,14 +1746,14 @@ body.checkout-body {
 }
 
 .rzp-cancel-button {
-  background: none;
-  border: none;
-  color: #64748b;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #52566A;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  padding: 8px 16px;
-  text-decoration: underline;
+  padding: 10px 24px;
 }
 
 .rzp-secured-mark {
@@ -1785,10 +1761,11 @@ body.checkout-body {
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: #64748b;
+  color: #52566A;
 }
 
 .rzp-receipt-card {
+  background: #17171C;
   padding: 24px 20px;
 }
 
@@ -1801,23 +1778,23 @@ body.checkout-body {
 .rzp-receipt-title {
   font-size: 20px;
   font-weight: 800;
-  color: #0f172a;
+  color: #FFFFFF;
   text-align: center;
 }
 
 .rzp-receipt-section {
   margin-top: 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   padding: 14px;
-  background: #f8fafc;
+  background: rgba(255,255,255,0.04);
 }
 
 .rzp-receipt-heading {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: #52566A;
   margin-bottom: 8px;
 }
 
@@ -1835,24 +1812,24 @@ body.checkout-body {
 
 .rzp-receipt-row .lbl {
   width: 110px;
-  color: #64748b;
+  color: #8B8FA8;
   font-size: 11px;
 }
 
 .rzp-receipt-row .sep {
   margin-right: 8px;
-  color: #94a3b8;
+  color: #52566A;
 }
 
 .rzp-receipt-row .val {
   flex: 1;
-  color: #0f172a;
+  color: #FFFFFF;
   text-align: right;
   word-break: break-all;
 }
 
 .rzp-total-row {
-  border-top: 1px dashed #cbd5e1;
+  border-top: 1px dashed rgba(255,255,255,0.1);
   padding-top: 6px;
   margin-top: 2px;
   font-weight: bold;
@@ -1860,8 +1837,8 @@ body.checkout-body {
 
 .rzp-green-pill {
   display: inline-block;
-  background: #ecfdf5;
-  color: #059669;
+  background: rgba(16,185,129,0.15);
+  color: #10B981;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 9999px;
@@ -1871,9 +1848,9 @@ body.checkout-body {
 .rzp-download-btn {
   width: 100%;
   margin-top: 14px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  color: #0f172a;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  color: #FFFFFF;
   font-size: 13px;
   font-weight: 700;
   padding: 10px 16px;
@@ -1888,8 +1865,8 @@ body.checkout-body {
 .rzp-drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(2px);
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1898,13 +1875,13 @@ body.checkout-body {
 }
 
 .rzp-drawer-card {
-  background: #ffffff;
+  background: #17171C;
   width: 100%;
   max-width: 440px;
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
   padding: 20px;
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.6);
   animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1917,21 +1894,19 @@ body.checkout-body {
   flex-direction: column;
   flex: 1;
   min-height: 100vh;
-  background: #f8fafc;
+  background: #0F0F12;
   position: relative;
   padding-bottom: 90px;
 }
 
 .cf-header {
-  background: #090d16;
+  background: #0F0F12;
   padding: 20px 20px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
 .cf-header-top {
@@ -1952,7 +1927,7 @@ body.checkout-body {
 
 .cf-secured-badge {
   font-size: 11px;
-  color: #94a3b8;
+  color: #52566A;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1971,22 +1946,22 @@ body.checkout-body {
   height: 52px;
   border-radius: 16px;
   object-fit: contain;
-  background: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.15);
   padding: 3px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
 }
 
 .cf-merchant-avatar-fallback {
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: #181d29;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1E1E24;
+  border: 1px solid rgba(255,255,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
 }
 
 .cf-merchant-name {
@@ -2000,8 +1975,8 @@ body.checkout-body {
 }
 
 .cf-amount-pill {
-  background: #161b26;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
   color: #ffffff;
   padding: 10px 24px;
   border-radius: 9999px;
@@ -2011,13 +1986,13 @@ body.checkout-body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   transition: all 0.2s ease;
 }
 
 .cf-amount-pill:hover {
-  background: #1e2433;
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25);
   transform: translateY(-1px);
 }
 
@@ -2026,20 +2001,20 @@ body.checkout-body {
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #eef2f6;
+  background: #17171C;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .cf-subbar-text {
   font-size: 12px;
-  color: #64748b;
+  color: #8B8FA8;
 }
 
 .cf-edit-btn {
   font-size: 12px;
   font-weight: 700;
-  color: #2563eb;
-  background: #eff6ff;
+  color: #3B82F6;
+  background: rgba(59,130,246,0.12);
   padding: 4px 10px;
   border-radius: 6px;
   border: none;
@@ -2054,22 +2029,22 @@ body.checkout-body {
 }
 
 .cf-offer-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 14px;
   padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .cf-apply-badge {
   font-size: 11px;
   font-weight: 800;
-  color: #059669;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
+  color: #10B981;
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
   padding: 4px 10px;
   border-radius: 6px;
   letter-spacing: 0.05em;
@@ -2085,7 +2060,7 @@ body.checkout-body {
 .cf-section-title {
   font-size: 13px;
   font-weight: 700;
-  color: #334155;
+  color: #8B8FA8;
   text-transform: capitalize;
 }
 
@@ -2102,8 +2077,8 @@ body.checkout-body {
 }
 
 .cf-app-tile {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 14px;
   padding: 14px 6px 10px;
   display: flex;
@@ -2111,14 +2086,14 @@ body.checkout-body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: all 0.2s ease;
 }
 
 .cf-app-tile:hover {
-  border-color: #0f172a;
+  border-color: rgba(255,255,255,0.18);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
 }
 
 .cf-app-icon-wrap {
@@ -2132,7 +2107,7 @@ body.checkout-body {
 .cf-app-name {
   font-size: 11px;
   font-weight: 600;
-  color: #1e293b;
+  color: #8B8FA8;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -2141,11 +2116,11 @@ body.checkout-body {
 }
 
 .cf-stacked-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: #17171C;
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .cf-list-item {
@@ -2158,12 +2133,12 @@ body.checkout-body {
 }
 
 .cf-list-item:hover {
-  background: #f8fafc;
+  background: rgba(255,255,255,0.04);
 }
 
 .cf-divider {
   height: 1px;
-  background: #f1f5f9;
+  background: rgba(255,255,255,0.06);
   margin: 0 16px;
 }
 
@@ -2193,8 +2168,8 @@ body.checkout-body {
 
 .cf-carousel-card {
   flex: 0 0 84px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  background: #17171C;
+  border: 1.5px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   padding: 12px 6px 10px;
   display: flex;
@@ -2202,20 +2177,20 @@ body.checkout-body {
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
 .cf-carousel-card:hover {
-  border-color: #94a3b8;
+  border-color: rgba(255,255,255,0.18);
   transform: translateY(-2px);
 }
 
 .cf-carousel-card.selected {
-  border-color: #0f172a;
-  background: #f8fafc;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+  border-color: #3B82F6;
+  background: rgba(59,130,246,0.08);
+  box-shadow: 0 4px 14px rgba(59,130,246,0.2);
   transform: translateY(-2px);
 }
 
@@ -2230,15 +2205,15 @@ body.checkout-body {
 .cf-carousel-name {
   font-size: 11px;
   font-weight: 700;
-  color: #0f172a;
+  color: #FFFFFF;
   text-align: center;
 }
 
 .cf-carousel-badge {
   font-size: 9px;
   font-weight: 700;
-  background: #f1f5f9;
-  color: #64748b;
+  background: rgba(255,255,255,0.06);
+  color: #8B8FA8;
   padding: 1px 5px;
   border-radius: 4px;
   font-family: 'JetBrains Mono', monospace;
@@ -2247,7 +2222,7 @@ body.checkout-body {
 .cf-carousel-amount {
   font-size: 9px;
   font-family: 'JetBrains Mono', monospace;
-  color: #94a3b8;
+  color: #52566A;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2256,14 +2231,14 @@ body.checkout-body {
 
 /* ── ACTIVE SELECTED COIN PANEL ── */
 .cf-active-panel {
-  background: #ffffff;
-  border: 1.5px solid #0f172a;
+  background: #17171C;
+  border: 1.5px solid rgba(59,130,246,0.4);
   border-radius: 18px;
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 16px rgba(59,130,246,0.12);
   animation: fadeIn 0.2s ease;
 }
 
@@ -2274,7 +2249,7 @@ body.checkout-body {
 }
 
 .cf-btn-primary {
-  background: #0f172a;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: #ffffff;
   font-size: 13px;
   font-weight: 700;
@@ -2286,7 +2261,7 @@ body.checkout-body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 4px 12px rgba(59,130,246,0.35);
   transition: all 0.15s ease;
 }
 
@@ -2295,13 +2270,13 @@ body.checkout-body {
 }
 
 .cf-btn-secondary {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: rgba(255,255,255,0.06);
+  color: #FFFFFF;
   font-size: 13px;
   font-weight: 700;
   padding: 11px 14px;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.1);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2314,7 +2289,12 @@ body.checkout-body {
   transform: scale(0.98);
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-
-
-
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
