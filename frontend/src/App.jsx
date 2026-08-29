@@ -24,6 +24,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import StoreApp from './StoreApp';
 import { 
+  ClusterPayIcon,
   UsdtIcon, 
   UsdtTrc20Icon,
   UsdtPolyIcon,
@@ -505,7 +506,7 @@ export default function App() {
           <div className="cf-header">
             <div className="cf-header-top">
               <div className="cf-back-placeholder">
-                <ShieldCheck size={18} className="text-emerald-400" />
+                <ClusterPayIcon className="w-5 h-5" />
               </div>
               <div className="cf-secured-badge">
                 <span>Secured by</span>
@@ -519,11 +520,14 @@ export default function App() {
             {/* Merchant Avatar & Title */}
             <div className="cf-merchant-hero">
               {logoUrl ? (
-                <img src={logoUrl} alt="" className="cf-merchant-avatar" onError={(e) => { e.target.style.display = 'none'; }} />
+                <img 
+                  src={logoUrl} 
+                  alt="" 
+                  className="cf-merchant-avatar" 
+                  onError={(e) => { e.target.onerror = null; e.target.src = "/assets/clusterpay-icon.png"; }} 
+                />
               ) : (
-                <div className="cf-merchant-avatar-fallback">
-                  <Shield3DIcon size={30} />
-                </div>
+                <ClusterPayIcon className="cf-merchant-avatar" />
               )}
               <h1 className="cf-merchant-name">{merchantName}</h1>
             </div>

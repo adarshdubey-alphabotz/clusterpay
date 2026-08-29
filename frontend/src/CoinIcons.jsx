@@ -15,7 +15,20 @@ const COIN_IMAGES = {
   ARB: "https://assets.coingecko.com/coins/images/16547/large/arbitrum_logo.png"
 };
 
-// 1. Tether USDT (Generic)
+// 0. Official ClusterPay Brand Logo
+export const ClusterPayIcon = ({ className = "w-7 h-7" }) => (
+  <img 
+    src="/assets/clusterpay-icon.png" 
+    alt="ClusterPay" 
+    className={`${className} rounded-full object-contain shadow-sm`} 
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = "https://clusterpay.cloud/assets/clusterpay-icon.png";
+    }}
+  />
+);
+
+// 1. Tether USDT (Generic & BEP-20)
 export const UsdtIcon = ({ className = "w-6 h-6" }) => (
   <img 
     src={COIN_IMAGES.USDT} 
@@ -27,6 +40,8 @@ export const UsdtIcon = ({ className = "w-6 h-6" }) => (
     }}
   />
 );
+
+export const UsdtBep20Icon = UsdtIcon;
 
 // 1a. USDT on TRON (Official TRON Red Logo)
 export const UsdtTrc20Icon = ({ className = "w-6 h-6" }) => (
@@ -63,19 +78,6 @@ export const UsdtArbIcon = ({ className = "w-6 h-6" }) => (
     onError={(e) => {
       e.target.onerror = null;
       e.target.src = "https://cryptologos.cc/logos/arbitrum-arb-logo.png";
-    }}
-  />
-);
-
-// 1d. USDT on BSC (Official Binance Gold Logo)
-export const UsdtBep20Icon = ({ className = "w-6 h-6" }) => (
-  <img 
-    src={COIN_IMAGES.BNB} 
-    alt="USDT BSC" 
-    className={`${className} rounded-full object-contain`} 
-    onError={(e) => {
-      e.target.onerror = null;
-      e.target.src = "https://cryptologos.cc/logos/bnb-bnb-logo.png";
     }}
   />
 );
