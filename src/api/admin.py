@@ -44,6 +44,11 @@ class AdminCreateSessionRequest(BaseModel):
     logo_url: Optional[str] = None
     theme_color: Optional[str] = None
     expiry_minutes: Optional[int] = 15
+    require_email: Optional[bool] = False
+    require_buyer_name: Optional[bool] = False
+    customer_email: Optional[str] = None
+    customer_name: Optional[str] = None
+    custom_note: Optional[str] = None
     wallets: dict
 
 class AdminCreateMerchantRequest(BaseModel):
@@ -391,6 +396,11 @@ async def admin_create_session(req: AdminCreateSessionRequest, _: bool = Depends
         "custom_id":          req.custom_id       or f"ORDER-{secrets.token_hex(3).upper()}",
         "description":        req.description     or "ClusterPay Direct Invoice",
         "wallets":            req.wallets,
+        "require_email":      bool(req.require_email),
+        "require_buyer_name": bool(req.require_buyer_name),
+        "customer_email":     req.customer_email  or "",
+        "customer_name":      req.customer_name   or "",
+        "custom_note":        req.custom_note     or "",
         "status":             "pending",
         "created_at":         now,
         "expires_at":         expires_at,

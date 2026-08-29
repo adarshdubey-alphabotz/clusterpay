@@ -1,24 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Clock, 
   Copy, 
-  Check, 
-  ExternalLink, 
-  CheckCircle2, 
-  ArrowRight, 
-  ShieldCheck, 
-  RefreshCw, 
-  AlertCircle, 
-  Lock,
+  ChevronRight, 
   ChevronDown,
-  ChevronRight,
-  Sparkles,
+  ChevronUp,
+  ArrowLeft, 
+  X, 
+  Download, 
+  XCircle, 
+  Check, 
+  ExternalLink,
+  CheckCircle2,
+  Clock,
+  ArrowRight,
+  ShieldCheck,
+  RefreshCw,
+  ArrowUpRight,
+  User,
   Zap,
-  Info,
-  CheckCircle,
-  XCircle,
-  Wallet,
-  ArrowUpRight
+  QrCode,
+  Wallet
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import StoreApp from './StoreApp';
@@ -30,8 +31,19 @@ import {
   TonIcon, 
   ArbitrumIcon, 
   BtcIcon, 
-  EthIcon, 
-  LtcIcon 
+  LtcIcon,
+  BscBadge,
+  TronBadge,
+  PolygonBadge,
+  TonBadge,
+  LtcBadge,
+  BtcBadge,
+  ArbBadge,
+  QrCode3DIcon,
+  Crystal3DIcon,
+  PaperReceiptGraphic,
+  Shield3DIcon,
+  Spinning3DCoin
 } from './CoinIcons';
 
 export default function App() {
@@ -40,181 +52,324 @@ export default function App() {
   }
 
   const pData = window.paymentData || {};
-  const initialAmount = parseFloat(pData.amount || '10.004829') || 10.004829;
-  const sessionId = pData.session_id || 'cpay_sandbox_session';
-  const merchantName = pData.merchant_name || 'ClusterPay Merchant';
-  const merchantUrl = pData.merchant_url || '';
-  const logoUrl = pData.logo_url || '';
-  const redirectUrl = pData.redirect_url || '';
-  const customId = pData.custom_id || '';
-  const embed = pData.embed === 'true';
+  const rawAmt = pData.amount && pData.amount !== "{amount}" ? pData.amount : '10.004829';
+  const initialAmount = parseFloat(rawAmt) || 10.004829;
+  const sessionId = pData.session_id && pData.session_id !== "{session_id}" ? pData.session_id : 'cpay_demo_session';
+  const merchantName = pData.merchant_name && pData.merchant_name !== "{merchant_name}" ? pData.merchant_name : 'ClusterPay Merchant';
+  const merchantUrl = pData.merchant_url && pData.merchant_url !== "{merchant_url}" ? pData.merchant_url : '';
+  const logoUrl = pData.logo_url && pData.logo_url !== "{logo_url}" && pData.logo_url !== "None" ? pData.logo_url : '';
+  const redirectUrl = pData.redirect_url && pData.redirect_url !== "{redirect_url}" ? pData.redirect_url : '';
+  const customId = pData.custom_id && pData.custom_id !== "{custom_id}" ? pData.custom_id : '';
+  const paymentPurpose = pData.description || pData.purpose || 'Wallet credit / merchant order';
+  const isEmbed = pData.embed === 'true';
 
-  // Pricing feeds
+  // Custom customer metadata and notes
+  const requireEmail = pData.require_email === 'true';
+  const requireBuyerName = pData.require_buyer_name === 'true';
+  const initialCustomerEmail = pData.customer_email || '';
+  const initialCustomerName = pData.customer_name || '';
+  const customNote = pData.custom_note || '';
+
+  const [customerEmail, setCustomerEmail] = useState(initialCustomerEmail);
+  const [customerName, setCustomerName] = useState(initialCustomerName);
+
+  // Live or injected price feeds
   const bnbPrice = parseFloat(pData.bnb_price || '600') || 600;
   const ltcPrice = parseFloat(pData.ltc_price || '85') || 85;
   const tonPrice = parseFloat(pData.ton_price || '5.5') || 5.5;
   const polPrice = parseFloat(pData.pol_price || '0.45') || 0.45;
-  const btcPrice = parseFloat(pData.btc_price || '65000') || 65000;
+  const btcPrice = parseFloat(pData.btc_price || '90000') || 90000;
 
-  // Base list of options
-  const usdtNetworks = [
-    {
+  // Real Supported Coins and Networks in ClusterPay
+  const allCoins = {
+    USDT_BEP20: {
       id: 'USDT_BEP20',
-      networkName: 'BNB Smart Chain',
+      key: 'USDT_BEP20',
+      symbol: 'USDT',
+      name: 'USDT (BEP-20)',
+      shortName: 'USDT - BEP-20',
+      network: 'Binance Smart Chain',
       badge: 'BSC',
+      description: 'Binance Smart Chain (0% Surcharge)',
       address: pData.USDT_WALLET_BEP20 || '',
       icon: UsdtIcon,
-      networkIcon: BnbIcon,
+      netBadge: <BscBadge size={16} />,
+      speed: 'Instant',
+      fees: '0.1-0.3%',
+      type: 'Crypto',
+      recommended: true,
       calcAmount: () => initialAmount.toFixed(6),
       explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`,
-      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`
+      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`,
+      qrPayload: (addr, amt) => `ethereum:pay-0x55d398326f99059fF775485246999027B3197955@56/transfer?address=${addr}&uint256=${toBaseUnits(amt, 18)}`
     },
-    {
-      id: 'USDT_TRC20',
-      networkName: 'TRON Network',
-      badge: 'TRON',
-      address: pData.USDT_WALLET_TRC20 || '',
-      icon: UsdtIcon,
-      networkIcon: TrxIcon,
-      calcAmount: () => initialAmount.toFixed(6),
-      explorerUrl: (tx) => `https://tronscan.org/#/transaction/${tx}`,
-      scheme: (addr, amt) => `tron:${addr}?amount=${amt}`
-    },
-    {
-      id: 'USDT_POLY',
-      networkName: 'Polygon PoS',
-      badge: 'Polygon',
-      address: pData.USDT_WALLET_POLY || '',
-      icon: UsdtIcon,
-      networkIcon: PolygonIcon,
-      calcAmount: () => initialAmount.toFixed(6),
-      explorerUrl: (tx) => `https://polygonscan.com/tx/${tx}`,
-      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`
-    },
-    {
-      id: 'USDT_ARB',
-      networkName: 'Arbitrum One',
-      badge: 'Arbitrum',
-      address: pData.USDT_WALLET_ARBITRUM || '',
-      icon: UsdtIcon,
-      networkIcon: ArbitrumIcon,
-      calcAmount: () => initialAmount.toFixed(6),
-      explorerUrl: (tx) => `https://arbiscan.io/tx/${tx}`,
-      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`
-    }
-  ].filter(n => Boolean(n.address));
-
-  const nativeCoins = [
-    {
+    TON: {
       id: 'TON',
+      key: 'TON',
       symbol: 'TON',
-      name: 'Toncoin',
-      networkName: 'The Open Network',
+      name: 'Toncoin (TON)',
+      shortName: 'Toncoin (TON)',
+      network: 'The Open Network',
       badge: 'TON',
+      description: 'The Open Network Native Transfer',
       address: pData.TON_WALLET || '',
       icon: TonIcon,
+      netBadge: <TonBadge size={16} />,
+      speed: 'Instant',
+      fees: 'Micro Fee',
+      type: 'Crypto',
+      recommended: true,
       calcAmount: () => (tonPrice > 0 ? (initialAmount / tonPrice).toFixed(4) : '0.0000'),
       explorerUrl: (tx) => `https://tonscan.org/tx/${tx}`,
-      scheme: (addr, amt) => `ton://transfer/${addr}?amount=${Math.round(amt * 1e9)}`
+      scheme: (addr, amt) => `ton://transfer/${addr}?amount=${Math.round(amt * 1e9)}`,
+      qrPayload: (addr, amt) => `ton://transfer/${addr}?amount=${toBaseUnits(amt, 9)}`
     },
-    {
-      id: 'BNB',
-      symbol: 'BNB',
-      name: 'BNB Coin',
-      networkName: 'BNB Smart Chain',
-      badge: 'BSC',
-      address: pData.USDT_WALLET_BEP20 || '',
-      icon: BnbIcon,
-      calcAmount: () => (bnbPrice > 0 ? (initialAmount / bnbPrice).toFixed(6) : '0.000000'),
-      explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`,
-      scheme: (addr, amt) => `ethereum:${addr}?value=${amt}`
+    USDT_TRC20: {
+      id: 'USDT_TRC20',
+      key: 'USDT_TRC20',
+      symbol: 'USDT',
+      name: 'USDT (TRC-20)',
+      shortName: 'USDT - TRON',
+      network: 'TRON Network',
+      badge: 'TRON',
+      description: 'Tron Network Instant Transfer',
+      address: pData.USDT_WALLET_TRC20 || '',
+      icon: UsdtIcon,
+      netBadge: <TronBadge size={16} />,
+      speed: 'Instant',
+      fees: 'Network Fee',
+      type: 'Crypto',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://tronscan.org/#/transaction/${tx}`,
+      scheme: (addr, amt) => `tron:${addr}?amount=${amt}`,
+      qrPayload: (addr, amt) => `tron:${addr}?amount=${amt}`
     },
-    {
+    USDT_POLY: {
+      id: 'USDT_POLY',
+      key: 'USDT_POLY',
+      symbol: 'USDT',
+      name: 'USDT (Polygon)',
+      shortName: 'USDT - Polygon',
+      network: 'Polygon PoS',
+      badge: 'Polygon',
+      description: 'Polygon Proof of Stake (Near-Zero Fee)',
+      address: pData.USDT_WALLET_POLY || '',
+      icon: UsdtIcon,
+      netBadge: <PolygonBadge size={16} />,
+      speed: 'Instant',
+      fees: 'Near-Zero',
+      type: 'Crypto',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://polygonscan.com/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`,
+      qrPayload: (addr, amt) => `ethereum:pay-0xc2132D05D31c914a87C6611C10748AEb04B58e8F@137/transfer?address=${addr}&uint256=${toBaseUnits(amt, 6)}`
+    },
+    USDT_ARB: {
+      id: 'USDT_ARB',
+      key: 'USDT_ARB',
+      symbol: 'USDT',
+      name: 'USDT (Arbitrum)',
+      shortName: 'USDT - Arbitrum',
+      network: 'Arbitrum One',
+      badge: 'Arbitrum',
+      description: 'Arbitrum Layer 2 Instant Transfer',
+      address: pData.USDT_WALLET_ARBITRUM || '',
+      icon: UsdtIcon,
+      netBadge: <ArbBadge size={16} />,
+      speed: 'Instant',
+      fees: 'Low L2 Fee',
+      type: 'Crypto',
+      calcAmount: () => initialAmount.toFixed(6),
+      explorerUrl: (tx) => `https://arbiscan.io/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=0&amount=${amt}`,
+      qrPayload: (addr, amt) => `ethereum:pay-0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9@42161/transfer?address=${addr}&uint256=${toBaseUnits(amt, 6)}`
+    },
+    LTC: {
       id: 'LTC',
+      key: 'LTC',
       symbol: 'LTC',
-      name: 'Litecoin',
-      networkName: 'Litecoin Network',
+      name: 'Litecoin (LTC)',
+      shortName: 'Litecoin',
+      network: 'Litecoin Network',
       badge: 'LTC',
+      description: 'Litecoin Blockchain Direct Transfer',
       address: pData.LTC_WALLET || '',
       icon: LtcIcon,
+      netBadge: <LtcBadge size={16} />,
+      speed: 'Instant',
+      fees: 'Micro Fee',
+      type: 'Crypto',
       calcAmount: () => (ltcPrice > 0 ? (initialAmount / ltcPrice).toFixed(6) : '0.000000'),
       explorerUrl: (tx) => `https://live.blockcypher.com/ltc/tx/${tx}`,
-      scheme: (addr, amt) => `litecoin:${addr}?amount=${amt}`
+      scheme: (addr, amt) => `litecoin:${addr}?amount=${amt}`,
+      qrPayload: (addr, amt) => `litecoin:${addr}?amount=${amt}`
     },
-    {
+    BTC: {
       id: 'BTC',
+      key: 'BTC',
       symbol: 'BTC',
-      name: 'Bitcoin',
-      networkName: 'Bitcoin Network',
+      name: 'Bitcoin (BTC)',
+      shortName: 'Bitcoin',
+      network: 'Bitcoin Network',
       badge: 'BTC',
+      description: 'Bitcoin Core Network Transfer',
       address: pData.BTC_WALLET || '',
       icon: BtcIcon,
+      netBadge: <BtcBadge size={16} />,
+      speed: 'Fast (Mempool)',
+      fees: 'Standard Fee',
+      type: 'Crypto',
       calcAmount: () => (btcPrice > 0 ? (initialAmount / btcPrice).toFixed(8) : '0.00000000'),
       explorerUrl: (tx) => `https://mempool.space/tx/${tx}`,
-      scheme: (addr, amt) => `bitcoin:${addr}?amount=${amt}`
+      scheme: (addr, amt) => `bitcoin:${addr}?amount=${amt}`,
+      qrPayload: (addr, amt) => `bitcoin:${addr}?amount=${amt}`
+    },
+    BNB: {
+      id: 'BNB',
+      key: 'BNB',
+      symbol: 'BNB',
+      name: 'BNB Coin (BSC)',
+      shortName: 'BNB Coin',
+      network: 'BNB Smart Chain',
+      badge: 'BSC',
+      description: 'Binance Smart Chain Native Coin',
+      address: pData.USDT_WALLET_BEP20 || '',
+      icon: BnbIcon,
+      netBadge: <BscBadge size={16} />,
+      speed: 'Instant',
+      fees: '0.1-0.2%',
+      type: 'Crypto',
+      calcAmount: () => (bnbPrice > 0 ? (initialAmount / bnbPrice).toFixed(6) : '0.000000'),
+      explorerUrl: (tx) => `https://bscscan.com/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=${amt}`,
+      qrPayload: (addr, amt) => `ethereum:pay-${addr}@56?value=${toBaseUnits(amt, 18)}`
+    },
+    POL: {
+      id: 'POL',
+      key: 'POL',
+      symbol: 'POL',
+      name: 'Polygon (POL)',
+      shortName: 'Polygon (POL)',
+      network: 'Polygon PoS',
+      badge: 'Polygon',
+      description: 'Polygon Native Coin Transfer',
+      address: pData.POL_WALLET || pData.USDT_WALLET_POLY || '',
+      icon: PolygonIcon,
+      netBadge: <PolygonBadge size={16} />,
+      speed: 'Instant',
+      fees: 'Micro Fee',
+      type: 'Crypto',
+      calcAmount: () => (polPrice > 0 ? (initialAmount / polPrice).toFixed(4) : '0.0000'),
+      explorerUrl: (tx) => `https://polygonscan.com/tx/${tx}`,
+      scheme: (addr, amt) => `ethereum:${addr}?value=${amt}`,
+      qrPayload: (addr, amt) => `ethereum:pay-${addr}@137?value=${toBaseUnits(amt, 18)}`
     }
-  ].filter(c => Boolean(c.address));
+  };
 
-  // State Management
-  const [selectedAsset, setSelectedAsset] = useState(usdtNetworks.length > 0 ? 'USDT' : (nativeCoins[0]?.symbol || 'USDT'));
-  const [selectedUsdtNetwork, setSelectedUsdtNetwork] = useState(usdtNetworks[0] || null);
-  const [selectedNativeCoin, setSelectedNativeCoin] = useState(nativeCoins[0] || null);
+  // Filter coins to configured wallets
+  const availableCoins = Object.values(allCoins).filter(c => Boolean(c.address && c.address.trim().length > 6));
+  const displayCoins = availableCoins.length > 0 ? availableCoins : Object.values(allCoins);
 
-  const activeOption = selectedAsset === 'USDT' ? selectedUsdtNetwork : selectedNativeCoin;
-
+  // Flow State Machine
+  // Steps: 'select_option' | 'choose_method' | 'payment_details' | 'confirming' | 'success' | 'underpayment' | 'expired'
+  const [step, setStep] = useState('select_option');
+  const [selectedCoin, setSelectedCoin] = useState(displayCoins[0] || null);
+  const [selectedSubMethod, setSelectedSubMethod] = useState('qr'); // 'qr' | 'address'
+  const [showDetailsDrawer, setShowDetailsDrawer] = useState(false);
+  
   const [timeLeft, setTimeLeft] = useState(parseInt(pData.time_left || '900', 10) || 900);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedAmount, setCopiedAmount] = useState(false);
-  const [status, setStatus] = useState('pending'); // 'pending' | 'paid' | 'expired'
   const [txDetails, setTxDetails] = useState({ txid: '', amount_received: 0, paid_at: '' });
+  const [verifyingStatus, setVerifyingStatus] = useState('Detecting transfer on blockchain mempool...');
+  const [underpaidInfo, setUnderpaidInfo] = useState(null);
+  const [orderTime, setOrderTime] = useState('');
   const [redirectCountdown, setRedirectCountdown] = useState(5);
+
+  useEffect(() => {
+    document.body.classList.add('checkout-body');
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())} ${now.getHours() >= 12 ? 'PM' : 'AM'}, ${now.getDate()} ${months[now.getMonth()]}, ${now.getFullYear()}`;
+    setOrderTime(timeStr);
+    return () => document.body.classList.remove('checkout-body');
+  }, []);
 
   // 15-Minute Countdown Timer
   useEffect(() => {
-    if (status !== 'pending') return;
+    if (step === 'success' || step === 'expired') return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          setStatus('expired');
+          setStep('expired');
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [status]);
+  }, [step]);
 
-  // Automated Mempool Status Polling (Every 3.5 seconds)
+  // Iframe Auto-Resize
+  useEffect(() => {
+    if (isEmbed || window.parent !== window) {
+      const handleResize = () => {
+        const height = document.documentElement.scrollHeight || document.body.scrollHeight;
+        window.parent.postMessage({ type: 'clusterpay:resize', height: height }, '*');
+      };
+      const timeoutId = setTimeout(handleResize, 100);
+      window.addEventListener('resize', handleResize);
+      return () => {
+        clearTimeout(timeoutId);
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, [step, selectedSubMethod, selectedCoin, showDetailsDrawer]);
+
+  // Automated Mempool Status Polling (ONLY marks success when status is STRICTLY 'paid')
   const checkPaymentStatus = async () => {
+    if (!sessionId || sessionId === 'cpay_demo_session' || step === 'success') return false;
     try {
       const res = await fetch(`/api/v1/gateway/status/${sessionId}`);
-      if (!res.ok) return;
+      if (!res.ok) return false;
       const data = await res.json();
-      if (data.status === 'paid' || data.success) {
-        setStatus('paid');
+      
+      // CRITICAL FIX: Only trigger success when status === 'paid' (NOT data.success)
+      if (data.status === 'paid') {
         setTxDetails({
           txid: data.txid || data.tx_hash || '0xOnChainSettled',
           amount_received: data.amount_received || initialAmount,
           paid_at: data.paid_at || new Date().toISOString()
         });
+        setStep('success');
+        handleSuccessRedirect();
+        return true;
       } else if (data.status === 'expired') {
-        setStatus('expired');
+        setStep('expired');
+      } else if (data.status === 'underpayment' || (data.message && data.message.toLowerCase().includes("underpayment"))) {
+        setStep('underpayment');
+        setUnderpaidInfo({
+          expected: initialAmount,
+          received: parseFloat(data.amount_received || 0.0)
+        });
       }
     } catch (err) {
-      // Background retry
+      // background retry
     }
+    return false;
   };
 
   useEffect(() => {
-    if (status !== 'pending') return;
-    const interval = setInterval(checkPaymentStatus, 3500);
+    if (step === 'success' || step === 'expired') return;
+    const interval = setInterval(checkPaymentStatus, 4000);
     return () => clearInterval(interval);
-  }, [status, sessionId]);
+  }, [step, sessionId]);
 
   // Auto Redirect Countdown on Paid
   useEffect(() => {
-    if (status !== 'paid' || !redirectUrl) return;
+    if (step !== 'success' || !redirectUrl) return;
     const timer = setInterval(() => {
       setRedirectCountdown((prev) => {
         if (prev <= 1) {
@@ -226,7 +381,50 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [status, redirectUrl]);
+  }, [step, redirectUrl]);
+
+  const handleSuccessRedirect = () => {
+    if (isEmbed || window.parent !== window) {
+      window.parent.postMessage({
+        type: 'clusterpay:success',
+        session_id: sessionId,
+        custom_id: customId
+      }, '*');
+    }
+
+    if (redirectUrl) {
+      const separator = redirectUrl.includes('?') ? '&' : '?';
+      const target = `${redirectUrl}${separator}session_id=${encodeURIComponent(sessionId)}&custom_id=${encodeURIComponent(customId)}&status=paid`;
+      setTimeout(() => {
+        window.location.href = target;
+      }, 4000);
+    }
+  };
+
+  const handlePaidClick = async () => {
+    setStep('confirming');
+    setVerifyingStatus('Scanning blockchain network for your transfer...');
+    
+    const verified = await checkPaymentStatus();
+    if (verified) return;
+
+    let pollCount = 0;
+    const interval = setInterval(async () => {
+      pollCount++;
+      if (pollCount % 3 === 1) {
+        setVerifyingStatus('Scanning mempool and recent blocks...');
+      } else if (pollCount % 3 === 2) {
+        setVerifyingStatus('Matching exact deposit micro-offset on-chain...');
+      } else {
+        setVerifyingStatus('Checking zero-confirmation settlement...');
+      }
+
+      const done = await checkPaymentStatus();
+      if (done || pollCount >= 60 || step === 'underpayment' || step === 'expired') {
+        clearInterval(interval);
+      }
+    }, 2800);
+  };
 
   const handleCopyAddress = (addr) => {
     if (!addr) return;
@@ -252,365 +450,828 @@ export default function App() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const currentExactAmount = activeOption ? activeOption.calcAmount() : initialAmount.toFixed(6);
-  const currentSymbol = selectedAsset === 'USDT' ? 'USDT' : activeOption?.symbol || 'CRYPTO';
+  const toBaseUnits = (value, decimals) => {
+    try {
+      const [whole = '0', fraction = ''] = String(value).split('.');
+      const padded = (fraction + '0'.repeat(decimals)).slice(0, decimals);
+      return (BigInt(whole || '0') * (10n ** BigInt(decimals)) + BigInt(padded || '0')).toString();
+    } catch {
+      return '0';
+    }
+  };
+
+  const getDeepLink = (wallet) => {
+    if (!selectedCoin) return '#';
+    const address = selectedCoin.address;
+    const amountStr = selectedCoin.calcAmount();
+    if (wallet === 'trust') {
+      if (selectedCoin.key === 'BNB') return `https://link.trustwallet.com/send?asset=c20000714&address=${address}&amount=${amountStr}`;
+      if (selectedCoin.key === 'LTC') return `https://link.trustwallet.com/send?asset=c2&address=${address}&amount=${amountStr}`;
+      if (selectedCoin.key === 'BTC') return `https://link.trustwallet.com/send?asset=c0&address=${address}&amount=${amountStr}`;
+      if (selectedCoin.key === 'TON') return `https://link.trustwallet.com/send?asset=c607&address=${address}&amount=${amountStr}`;
+      return `https://link.trustwallet.com/send?asset=c20000714_t0x55d398326f99059fF775485246999027B3197955&address=${address}&amount=${amountStr}`;
+    }
+    if (wallet === 'metamask') {
+      const chainId = ['POL', 'USDT_POLY'].includes(selectedCoin.key) ? '137' : (selectedCoin.key === 'USDT_ARB' ? '42161' : '56');
+      return `https://metamask.app.link/send/${address}@${chainId}?value=${amountStr}`;
+    }
+    if (wallet === 'safepal') return `safepal://send?address=${address}&amount=${amountStr}`;
+    return '#';
+  };
+
+  const currentExactAmount = selectedCoin ? selectedCoin.calcAmount() : initialAmount.toFixed(6);
+  const currentSymbol = selectedCoin ? selectedCoin.symbol : 'USDT';
+  const qrPayload = selectedCoin ? selectedCoin.qrPayload(selectedCoin.address, currentExactAmount) : '';
+  const invoiceId = customId ? `CPAY-${customId.toUpperCase()}` : `CPAY-${sessionId.slice(-8).toUpperCase()}`;
+
+  const stableCoins = displayCoins.filter(c => c.symbol === 'USDT');
+  const nativeCoins = displayCoins.filter(c => c.symbol !== 'USDT');
+  const [activeTab, setActiveTab] = useState('quick'); // 'quick' | 'stable' | 'native'
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-6 bg-[#F8FAFC] font-sans text-zinc-900 selection:bg-black selection:text-white">
-      
-      {/* ── MAIN CHECKOUT CONTAINER ── */}
-      <div className="w-full max-w-[490px] bg-white rounded-3xl border border-zinc-200/80 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.06)] overflow-hidden transition-all">
-        
-        {/* ══════════════════════════════════════════════════════════════════
-            HEADER: MERCHANT BRANDING & COUNTDOWN
-            ══════════════════════════════════════════════════════════════════ */}
-        <div className="px-6 py-5 border-b border-zinc-100 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {logoUrl ? (
-              <img src={logoUrl} alt={merchantName} className="w-9 h-9 rounded-xl object-contain border border-zinc-200/80 p-0.5 bg-white shadow-2xs" />
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
-                ⚡
+    <div className={`rzp-wrapper ${isEmbed ? 'embedded' : ''}`}>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 1: CASHFREE / DIGITAL HUB FINTECH SCREEN (REF_IMG2.JPG)
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'select_option' && (
+        <div className="cf-screen">
+          
+          {/* Top Dark Header Card (Exact Ref 2) */}
+          <div className="cf-header">
+            <div className="cf-header-top">
+              <div className="cf-back-placeholder">
+                <ShieldCheck size={18} className="text-emerald-400" />
               </div>
-            )}
-            <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="font-semibold text-sm text-zinc-950 tracking-tight leading-tight">
-                  {merchantName}
-                </h1>
-                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200/60">
-                  <CheckCircle className="w-2.5 h-2.5 text-emerald-600" />
-                  <span>Verified</span>
-                </span>
-              </div>
-              <div className="text-[11px] text-zinc-400 font-mono mt-0.5">
-                {customId ? `Order #${customId}` : `Ref #${sessionId.slice(-8).toUpperCase()}`}
+              <div className="cf-secured-badge">
+                <span>Secured by</span>
+                <strong className="text-white flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  ClusterPay
+                </strong>
               </div>
             </div>
+
+            {/* Merchant Avatar & Title */}
+            <div className="cf-merchant-hero">
+              {logoUrl ? (
+                <img src={logoUrl} alt="" className="cf-merchant-avatar" onError={(e) => { e.target.style.display = 'none'; }} />
+              ) : (
+                <div className="cf-merchant-avatar-fallback">
+                  <Shield3DIcon size={30} />
+                </div>
+              )}
+              <h1 className="cf-merchant-name">{merchantName}</h1>
+            </div>
+
+            {/* Amount Pill (Dropdown Trigger) */}
+            <button 
+              className="cf-amount-pill"
+              onClick={() => setShowDetailsDrawer(!showDetailsDrawer)}
+            >
+              <span>${initialAmount.toFixed(2)} USD</span>
+              {showDetailsDrawer ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
           </div>
 
-          {/* Clean Countdown Badge */}
-          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium border transition-colors ${
-            timeLeft < 180 
-              ? 'bg-rose-50 text-rose-700 border-rose-200/80' 
-              : 'bg-zinc-50 text-zinc-600 border-zinc-200/80'
-          }`}>
-            <Clock className="w-3 h-3 text-zinc-400" />
-            <span>{formatTimer(timeLeft)}</span>
+          {/* Subheader: Order Meta */}
+          <div className="cf-subbar">
+            <span className="cf-subbar-text">
+              Payment Options for <b className="text-zinc-800">{customId ? `Ref #${customId}` : `Inv #${sessionId.slice(-8).toUpperCase()}`}</b>
+            </span>
+            <button 
+              className="cf-edit-btn font-mono"
+              onClick={() => setShowDetailsDrawer(true)}
+            >
+              <Clock size={11} className="inline mr-1" />
+              {formatTimer(timeLeft)}
+            </button>
           </div>
-        </div>
 
-
-        {/* ══════════════════════════════════════════════════════════════════
-            STATE 1: ACTIVE PAYMENT CHECKOUT
-            ══════════════════════════════════════════════════════════════════ */}
-        {status === 'pending' && (
-          <div className="p-6 sm:p-7 space-y-6">
+          {/* Main Body */}
+          <div className="cf-body">
             
-            {/* 1. ELEGANT AMOUNT HERO */}
-            <div className="text-center space-y-1">
-              <div className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-                Total to Pay
+            {/* Zero Fee & Anti-Theft Protection Promo Card */}
+            <div className="cf-offer-card">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
+                  ⚡
+                </div>
+                <div>
+                  <div className="font-bold text-xs text-zinc-900">0% Gateway Surcharge Applied</div>
+                  <div className="text-[11px] text-zinc-500">Direct non-custodial merchant settlement</div>
+                </div>
               </div>
-              <div className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-950">
-                ${initialAmount.toFixed(2)} <span className="text-sm font-normal text-zinc-400">USD</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 font-mono text-xs font-semibold">
-                <span>Send Exactly:</span>
-                <span className="text-zinc-950 font-bold">{currentExactAmount} {currentSymbol}</span>
-              </div>
+              <span className="cf-apply-badge">APPLIED</span>
             </div>
 
+            {/* Horizontal Swipeable Carousel (Like Cashfree UPI Row) */}
+            <div className="cf-section-header">
+              <span className="cf-section-title">Select Coin to Pay</span>
+              <span className="text-[11px] text-blue-600 font-semibold flex items-center gap-0.5">
+                Swipe & Choose &gt;
+              </span>
+            </div>
 
-            {/* 2. MODERN CURRENCY SELECTOR TABS */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs font-medium text-zinc-500">
-                <span>Payment Asset</span>
-                {activeOption && (
-                  <span className="text-zinc-400 text-[11px] font-mono">{activeOption.networkName}</span>
-                )}
-              </div>
-
-              {/* Primary Asset Pill Tabs */}
-              <div className="grid grid-cols-5 gap-1.5 p-1 bg-zinc-100/80 rounded-2xl border border-zinc-200/60">
-                {usdtNetworks.length > 0 && (
-                  <button
-                    onClick={() => setSelectedAsset('USDT')}
-                    className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
-                      selectedAsset === 'USDT'
-                        ? 'bg-white text-zinc-950 font-semibold shadow-xs'
-                        : 'text-zinc-500 hover:text-zinc-900 font-normal'
-                    }`}
-                  >
-                    <UsdtIcon className="w-5 h-5" />
-                    <span className="text-[11px] leading-none">USDT</span>
-                  </button>
-                )}
-
-                {nativeCoins.map((coin) => {
-                  const Icon = coin.icon;
-                  const isSelected = selectedAsset === coin.symbol;
+            <div className="cf-carousel-wrap">
+              <div className="cf-carousel-track">
+                {displayCoins.map((c) => {
+                  const Icon = c.icon;
+                  const isSelected = (selectedCoin?.id === c.id) || (!selectedCoin && c.id === 'USDT_BEP20');
+                  const calcAmt = c.calcAmount();
                   return (
-                    <button
-                      key={coin.id}
-                      onClick={() => {
-                        setSelectedAsset(coin.symbol);
-                        setSelectedNativeCoin(coin);
-                      }}
-                      className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-white text-zinc-950 font-semibold shadow-xs'
-                          : 'text-zinc-500 hover:text-zinc-900 font-normal'
-                      }`}
+                    <div 
+                      key={c.id} 
+                      className={`cf-carousel-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => setSelectedCoin(c)}
                     >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-[11px] leading-none">{coin.symbol}</span>
-                    </button>
+                      <div className="cf-carousel-icon-box">
+                        <Icon className="w-9 h-9" />
+                      </div>
+                      <span className="cf-carousel-name">{c.symbol}</span>
+                      <span className="cf-carousel-badge">{c.badge}</span>
+                      <span className="cf-carousel-amount">{calcAmt}</span>
+                    </div>
                   );
                 })}
               </div>
-
-              {/* Secondary Sub-Network Selector for USDT */}
-              {selectedAsset === 'USDT' && usdtNetworks.length > 1 && (
-                <div className="grid grid-cols-4 gap-1.5 pt-1">
-                  {usdtNetworks.map((net) => {
-                    const isSelected = selectedUsdtNetwork?.id === net.id;
-                    const NetIcon = net.networkIcon;
-                    return (
-                      <button
-                        key={net.id}
-                        onClick={() => setSelectedUsdtNetwork(net)}
-                        className={`py-1.5 px-2 rounded-xl border text-[11px] font-medium transition-all flex items-center justify-center gap-1 cursor-pointer ${
-                          isSelected
-                            ? 'bg-zinc-950 border-zinc-950 text-white shadow-2xs'
-                            : 'bg-white border-zinc-200 text-zinc-600 hover:bg-zinc-50'
-                        }`}
-                      >
-                        <NetIcon className="w-3 h-3" />
-                        <span>{net.badge}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
             </div>
 
-
-            {/* 3. QR CODE & WALLET ADDRESS CARD */}
-            {activeOption && (
-              <div className="p-5 rounded-2xl bg-zinc-50/70 border border-zinc-200/80 space-y-4">
-                
-                {/* Clean QR Code Center */}
-                <div className="flex flex-col items-center justify-center pt-1 pb-1">
-                  <div className="p-3 bg-white rounded-2xl border border-zinc-200/80 shadow-2xs">
-                    <QRCodeSVG 
-                      value={activeOption.address}
-                      size={168}
-                      level="M"
-                      includeMargin={false}
-                    />
+            {/* Active Selected Coin Quick Action Panel */}
+            {selectedCoin && (
+              <div className="cf-active-panel">
+                <div className="cf-active-top">
+                  <div className="flex items-center gap-3">
+                    <selectedCoin.icon className="w-10 h-10 shrink-0" />
+                    <div>
+                      <h3 className="font-bold text-sm text-zinc-950">{selectedCoin.name}</h3>
+                      <p className="text-xs text-zinc-500 font-mono">
+                        Send: <b className="text-zinc-900">{selectedCoin.calcAmount()} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-[11px] text-zinc-400 font-mono mt-2">
-                    Scan with any {activeOption.networkName} wallet
-                  </div>
+                  <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    {selectedCoin.fees}
+                  </span>
                 </div>
 
-                {/* Address Bar with Embedded Copy */}
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-medium text-zinc-500 flex items-center justify-between">
-                    <span>Deposit Address</span>
-                    <span className="text-[10px] font-mono text-zinc-400">{activeOption.badge || activeOption.networkName}</span>
-                  </label>
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-100">
+                  <button 
+                    className="cf-btn-primary"
+                    onClick={() => {
+                      setSelectedSubMethod('qr');
+                      setStep('payment_details');
+                    }}
+                  >
+                    <QrCode size={15} />
+                    <span>Scan QR Code</span>
+                  </button>
 
-                  <div className="flex items-center justify-between p-2.5 bg-white rounded-xl border border-zinc-200 shadow-2xs">
-                    <div className="font-mono text-xs font-medium text-zinc-900 truncate pr-2">
-                      {activeOption.address}
+                  <button 
+                    className="cf-btn-secondary"
+                    onClick={() => {
+                      setSelectedSubMethod('address');
+                      setStep('payment_details');
+                    }}
+                  >
+                    <Copy size={15} />
+                    <span>Copy Address</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Categorized Detailed Coins List (All Coins with Live Exact Amounts) */}
+            <div className="cf-section-header mt-4">
+              <span className="cf-section-title">All Supported Networks</span>
+            </div>
+
+            {/* Category 1: USDT Stablecoins (0% Slippage) */}
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block px-1">
+                💵 USDT Networks (0% Slippage)
+              </span>
+              <div className="cf-stacked-card">
+                {stableCoins.map((c, idx) => {
+                  const Icon = c.icon;
+                  const calcAmt = c.calcAmount();
+                  return (
+                    <React.Fragment key={c.id}>
+                      {idx > 0 && <div className="cf-divider" />}
+                      <div 
+                        className="cf-list-item"
+                        onClick={() => {
+                          setSelectedCoin(c);
+                          setStep('choose_method');
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-sm text-zinc-900 flex items-center gap-1.5">
+                              <span>{c.name}</span>
+                              <span className="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">
+                                {c.badge}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-zinc-500 font-mono">
+                              {calcAmt} {c.symbol} • {c.fees}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-bold text-zinc-900">${initialAmount.toFixed(2)}</span>
+                          <ChevronRight size={18} className="text-zinc-400" />
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Category 2: Native Cryptocurrencies */}
+            <div className="space-y-2 mt-4">
+              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block px-1">
+                🪙 Native Layer-1 Blockchains
+              </span>
+              <div className="cf-stacked-card">
+                {nativeCoins.map((c, idx) => {
+                  const Icon = c.icon;
+                  const calcAmt = c.calcAmount();
+                  return (
+                    <React.Fragment key={c.id}>
+                      {idx > 0 && <div className="cf-divider" />}
+                      <div 
+                        className="cf-list-item"
+                        onClick={() => {
+                          setSelectedCoin(c);
+                          setStep('choose_method');
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center shrink-0">
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-sm text-zinc-900 flex items-center gap-1.5">
+                              <span>{c.name}</span>
+                              <span className="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">
+                                {c.badge}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-zinc-500 font-mono">
+                              {calcAmt} {c.symbol} • {c.speed}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-bold text-zinc-900">{calcAmt} {c.symbol}</span>
+                          <ChevronRight size={18} className="text-zinc-400" />
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Expandable Invoice Details Popup Drawer */}
+          {showDetailsDrawer && (
+            <div className="rzp-drawer-overlay" onClick={() => setShowDetailsDrawer(false)}>
+              <div className="rzp-drawer-card" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-100">
+                  <h3 className="font-bold text-sm text-zinc-900">Order Summary</h3>
+                  <button onClick={() => setShowDetailsDrawer(false)} className="text-zinc-400 hover:text-zinc-700">
+                    <X size={16} />
+                  </button>
+                </div>
+                <div className="space-y-2 py-3 text-xs font-mono">
+                  <div className="flex justify-between text-zinc-500">
+                    <span>Merchant</span>
+                    <span className="font-bold text-zinc-900">{merchantName}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-500">
+                    <span>Purpose</span>
+                    <span className="text-zinc-900">{paymentPurpose}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-500">
+                    <span>Invoice Ref</span>
+                    <span className="font-bold text-zinc-900">{invoiceId}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-500">
+                    <span>Base Amount</span>
+                    <span className="text-zinc-900">${initialAmount.toFixed(2)} USD</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-500">
+                    <span>ClusterPay Surcharge</span>
+                    <span className="font-bold text-emerald-600">$0.00 (0%)</span>
+                  </div>
+                  {customerName && (
+                    <div className="flex justify-between text-zinc-500">
+                      <span>Buyer Name</span>
+                      <span className="text-zinc-900 font-semibold">{customerName}</span>
                     </div>
-                    <button
-                      onClick={() => handleCopyAddress(activeOption.address)}
-                      className="px-3 py-1 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-mono font-medium transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                  )}
+                  {customerEmail && (
+                    <div className="flex justify-between text-zinc-500">
+                      <span>Customer Email</span>
+                      <span className="text-zinc-900">{customerEmail}</span>
+                    </div>
+                  )}
+                  {customNote && (
+                    <div className="flex justify-between text-zinc-500">
+                      <span>Custom Note</span>
+                      <span className="text-zinc-900 italic max-w-[200px] text-right truncate">{customNote}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="pt-2 border-t border-zinc-100 flex justify-between items-center text-sm font-bold text-zinc-950">
+                  <span>Total Payable</span>
+                  <span>${initialAmount.toFixed(2)} USD</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Sticky Bottom Action Bar */}
+          <div className="rzp-bottom-bar">
+            <div className="rzp-bottom-left">
+              <span className="rzp-bottom-price">${initialAmount.toFixed(2)}</span>
+              <button 
+                className="rzp-details-btn"
+                onClick={() => setShowDetailsDrawer(!showDetailsDrawer)}
+              >
+                <span>{showDetailsDrawer ? 'Hide Details' : 'View Details'}</span>
+                {showDetailsDrawer ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
+              </button>
+            </div>
+
+            <button 
+              className="rzp-continue-btn"
+              onClick={() => {
+                setSelectedCoin(displayCoins[0]);
+                setStep('choose_method');
+              }}
+            >
+              <span>Continue →</span>
+            </button>
+          </div>
+
+        </div>
+      )}
+
+
+
+
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 2: CHOOSE PAYMENT METHOD (SEPARATE CLEAN PAGE)
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'choose_method' && selectedCoin && (
+        <div className="rzp-screen">
+          
+          <div className="rzp-header-nav">
+            <button className="rzp-nav-back" onClick={() => setStep('select_option')}>
+              <ArrowLeft size={16} />
+            </button>
+            <span className="rzp-nav-title">Select Payment Method</span>
+            <div className="w-8" />
+          </div>
+
+          {/* Selected Option Card */}
+          <div className="p-4 bg-zinc-900 text-white rounded-2xl m-4 space-y-2">
+            <span className="text-[11px] text-zinc-400 uppercase font-semibold block">Selected Asset</span>
+            <div className="flex items-center gap-3">
+              <selectedCoin.icon className="w-8 h-8" />
+              <div>
+                <h3 className="font-bold text-base text-white">{selectedCoin.name}</h3>
+                <span className="text-xs text-zinc-300 font-mono">
+                  Send: <b>{currentExactAmount} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 space-y-3">
+            <span className="text-xs font-bold text-zinc-600 uppercase tracking-wider block mb-1">
+              Choose Deposit Mode
+            </span>
+
+            {/* Method 1: QR Code */}
+            <div 
+              className="rzp-method-card"
+              onClick={() => {
+                setSelectedSubMethod('qr');
+                setStep('payment_details');
+              }}
+            >
+              <div className="rzp-method-icon-wrap bg-blue-50 text-blue-600">
+                <QrCode3DIcon />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-bold text-sm text-zinc-950">Scan QR Code</h4>
+                <p className="text-xs text-zinc-500">Scan instantly with your mobile crypto wallet app</p>
+              </div>
+              <ChevronRight size={18} className="text-zinc-400" />
+            </div>
+
+            {/* Method 2: Monospace Address */}
+            <div 
+              className="rzp-method-card"
+              onClick={() => {
+                setSelectedSubMethod('address');
+                setStep('payment_details');
+              }}
+            >
+              <div className="rzp-method-icon-wrap bg-purple-50 text-purple-600">
+                <Crystal3DIcon />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-bold text-sm text-zinc-950">Payment Address</h4>
+                <p className="text-xs text-zinc-500">Copy destination wallet address & exact amount</p>
+              </div>
+              <ChevronRight size={18} className="text-zinc-400" />
+            </div>
+          </div>
+
+          <div className="mt-auto p-4 text-center">
+            <div className="rzp-secured-mark">
+              <ShieldCheck size={14} className="text-blue-600" />
+              <span>Secured by <b>ClusterPay</b></span>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 3: PAYMENT DETAILS SCREEN (QR OR ADDRESS)
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'payment_details' && selectedCoin && (
+        <div className="rzp-screen pb-6">
+          
+          <div className="rzp-header-nav">
+            <button className="rzp-nav-back" onClick={() => setStep('choose_method')}>
+              <ArrowLeft size={16} />
+            </button>
+            <span className="rzp-nav-title">Pay with {selectedCoin.name}</span>
+            <div className="font-mono text-xs font-bold text-zinc-700 bg-zinc-100 px-2 py-1 rounded-full">
+              {formatTimer(timeLeft)}
+            </div>
+          </div>
+
+          <div className="p-4 space-y-4">
+            
+            {/* Amount Banner */}
+            <div className="text-center p-3 bg-zinc-50 rounded-2xl border border-zinc-200/80">
+              <span className="text-[11px] text-zinc-400 uppercase font-semibold block">Total Due</span>
+              <strong className="text-xl font-bold font-mono text-zinc-950">
+                {currentExactAmount} {selectedCoin.symbol}
+              </strong>
+              <div className="text-[11px] text-zinc-500">
+                ${initialAmount.toFixed(2)} USD • {selectedCoin.network}
+              </div>
+            </div>
+
+            {/* QR View */}
+            {selectedSubMethod === 'qr' && (
+              <div className="p-4 bg-white rounded-2xl border border-zinc-200 text-center space-y-3 shadow-sm">
+                <div className="inline-block p-3 bg-white rounded-2xl border border-zinc-200 shadow-2xs">
+                  <QRCodeSVG value={qrPayload} size={150} level="M" />
+                </div>
+                <div className="text-xs text-zinc-500 font-mono">
+                  Scan with Trust Wallet, MetaMask, SafePal or Tonkeeper
+                </div>
+
+                <div className="flex gap-2 justify-center pt-1">
+                  <button
+                    onClick={() => handleCopyAmount(currentExactAmount)}
+                    className="px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-mono font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedAmount ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-zinc-500" />}
+                    <span>{copiedAmount ? 'Amount Copied' : 'Copy Amount'}</span>
+                  </button>
+
+                  <a
+                    href={selectedCoin.scheme(selectedCoin.address, currentExactAmount)}
+                    className="px-3 py-1.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Open App</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Wallet Quick Launch */}
+            {selectedSubMethod === 'qr' && (
+              <div className="grid grid-cols-3 gap-2">
+                <a href={getDeepLink('trust')} target="_blank" rel="noreferrer" className="p-2.5 bg-zinc-50 rounded-xl border border-zinc-200 text-center text-xs font-semibold text-zinc-800 hover:bg-zinc-100">
+                  Trust Wallet
+                </a>
+                <a href={getDeepLink('metamask')} target="_blank" rel="noreferrer" className="p-2.5 bg-zinc-50 rounded-xl border border-zinc-200 text-center text-xs font-semibold text-zinc-800 hover:bg-zinc-100">
+                  MetaMask
+                </a>
+                <a href={getDeepLink('safepal')} target="_blank" rel="noreferrer" className="p-2.5 bg-zinc-50 rounded-xl border border-zinc-200 text-center text-xs font-semibold text-zinc-800 hover:bg-zinc-100">
+                  SafePal
+                </a>
+              </div>
+            )}
+
+            {/* Address View */}
+            {selectedSubMethod === 'address' && (
+              <div className="space-y-3">
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-1.5">
+                  <span className="text-[11px] font-bold text-zinc-500 uppercase block">Deposit Address</span>
+                  <div className="p-2.5 bg-white rounded-xl border border-zinc-200 font-mono text-xs text-zinc-900 break-all flex items-center justify-between gap-2">
+                    <span>{selectedCoin.address}</span>
+                    <button 
+                      onClick={() => handleCopyAddress(selectedCoin.address)}
+                      className="shrink-0 px-2.5 py-1 rounded-lg bg-zinc-950 text-white text-xs font-medium flex items-center gap-1 cursor-pointer"
                     >
-                      {copiedAddress ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedAddress ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                       <span>{copiedAddress ? 'Copied' : 'Copy'}</span>
                     </button>
                   </div>
                 </div>
 
-                {/* Amount Copy Row + Deeplink Button */}
-                <div className="flex items-center gap-2 pt-1">
-                  <div className="flex-1 flex items-center justify-between p-2.5 bg-white rounded-xl border border-zinc-200 shadow-2xs">
-                    <div className="text-xs font-mono text-zinc-600">
-                      <span className="text-zinc-400 text-[11px]">Exact: </span>
-                      <span className="font-bold text-zinc-950">{currentExactAmount} {currentSymbol}</span>
-                    </div>
-                    <button
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 space-y-1.5">
+                  <span className="text-[11px] font-bold text-zinc-500 uppercase block">Exact Amount to Transfer</span>
+                  <div className="p-2.5 bg-white rounded-xl border border-zinc-200 font-mono text-xs font-bold text-zinc-900 flex items-center justify-between">
+                    <span>{currentExactAmount} {selectedCoin.symbol}</span>
+                    <button 
                       onClick={() => handleCopyAmount(currentExactAmount)}
-                      className="text-xs font-mono font-semibold text-zinc-700 hover:text-zinc-950 transition-colors flex items-center gap-1 cursor-pointer pl-2"
+                      className="px-2.5 py-1 rounded-lg bg-zinc-100 text-zinc-800 text-xs font-medium flex items-center gap-1 cursor-pointer"
                     >
-                      {copiedAmount ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-zinc-400" />}
+                      {copiedAmount ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                       <span>{copiedAmount ? 'Copied' : 'Copy'}</span>
                     </button>
                   </div>
-
-                  <a
-                    href={activeOption.scheme(activeOption.address, currentExactAmount)}
-                    className="p-2.5 px-3.5 rounded-xl bg-white border border-zinc-200 hover:bg-zinc-100 text-zinc-800 text-xs font-medium transition-colors flex items-center gap-1 shadow-2xs cursor-pointer"
-                  >
-                    <span>Open Wallet</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
-                  </a>
                 </div>
 
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-snug">
+                  ⚠️ Send the exact amount (<b>{currentExactAmount} {selectedCoin.symbol}</b>). Micro-offset verification ensures automated instant settlement.
+                </div>
               </div>
             )}
 
-
-            {/* 4. REAL-TIME MULTI-RPC RADAR STATUS */}
-            <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80 flex items-center justify-between gap-3">
+            {/* Mempool Listening Radar */}
+            <div className="p-3 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <span className="relative flex h-2.5 w-2.5 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
-                <div>
-                  <div className="text-xs font-medium text-zinc-900 leading-tight">
-                    Listening to blockchain mempool...
-                  </div>
-                  <div className="text-[11px] text-zinc-400 mt-0.5">
-                    Zero-confirmation auto-settlement active
-                  </div>
-                </div>
+                <span className="text-xs font-semibold text-zinc-900">
+                  Listening for mempool transfer...
+                </span>
               </div>
 
               <button
                 onClick={checkPaymentStatus}
-                className="p-1.5 rounded-lg bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-950 transition-colors shrink-0 cursor-pointer shadow-2xs"
-                title="Refresh Mempool"
+                className="p-1.5 rounded-lg bg-white border border-zinc-200 text-zinc-600 hover:text-zinc-950 shadow-2xs cursor-pointer"
+                title="Refresh Status"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw size={13} />
               </button>
             </div>
 
+            {/* Action Button */}
+            <button className="rzp-primary-btn" onClick={handlePaidClick}>
+              <span>I have Paid & Sent Transfer →</span>
+            </button>
+
           </div>
-        )}
+
+        </div>
+      )}
 
 
-        {/* ══════════════════════════════════════════════════════════════════
-            STATE 2: CELEBRATORY SUCCESS & RECEIPT
-            ══════════════════════════════════════════════════════════════════ */}
-        {status === 'paid' && (
-          <div className="p-7 sm:p-9 text-center space-y-6">
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 4: CONFIRMING PAYMENT / 3D COIN MODAL (IMAGE 3 & 4)
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'confirming' && (
+        <div className="rzp-screen rzp-confirming-screen">
+          
+          <div className="rzp-topbar">
+            <div className="rzp-merchant-info">
+              {logoUrl ? <img src={logoUrl} alt="" className="rzp-logo-img" /> : <div className="rzp-logo-fallback">⚡</div>}
+              <h1 className="rzp-merchant-title">{merchantName}</h1>
+            </div>
+            <button onClick={() => setStep('payment_details')} className="text-zinc-400 hover:text-black">
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="rzp-confirming-body">
             
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto shadow-sm animate-bounce">
-              <CheckCircle2 className="w-9 h-9" />
+            {/* 3D Spinning Gold Crypto Coin with Halo */}
+            <Spinning3DCoin size={120} />
+
+            <h2 className="rzp-confirming-title">Confirming Payment</h2>
+            <p className="rzp-confirming-subtitle">This will only take a few seconds.</p>
+
+            <div className="rzp-confirming-pill">
+              <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full"></span>
+              <span>{verifyingStatus}</span>
             </div>
 
-            <div className="space-y-1">
-              <h2 className="text-2xl font-bold text-zinc-950 tracking-tight">
-                Payment Settled!
-              </h2>
-              <p className="text-xs text-zinc-500">
-                Zero-confirmation transaction verified on-chain.
-              </p>
+            <div className="rzp-confirming-amount-box">
+              <span className="font-mono text-sm font-bold text-zinc-900">
+                {currentExactAmount} {selectedCoin?.symbol || 'USDT'}
+              </span>
+              <span className="text-xs text-zinc-500">
+                {paymentPurpose}
+              </span>
             </div>
 
-            <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200 text-left space-y-3 font-mono text-xs">
-              <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                <span className="text-zinc-500">Merchant</span>
-                <span className="font-semibold text-zinc-900">{merchantName}</span>
-              </div>
-              <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                <span className="text-zinc-500">Amount Paid</span>
-                <span className="font-bold text-emerald-600">${initialAmount.toFixed(2)} USD</span>
-              </div>
-              <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                <span className="text-zinc-500">Asset</span>
-                <span className="font-semibold text-zinc-900">{activeOption?.networkName || selectedAsset}</span>
-              </div>
-              <div className="flex justify-between items-center pt-1">
-                <span className="text-zinc-500">Tx Hash</span>
-                {txDetails.txid && activeOption?.explorerUrl ? (
-                  <a 
-                    href={activeOption.explorerUrl(txDetails.txid)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1"
-                  >
-                    <span>{txDetails.txid.slice(0, 8)}...{txDetails.txid.slice(-6)}</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                ) : (
-                  <span className="text-zinc-700">Verified</span>
+            <button 
+              className="rzp-cancel-button"
+              onClick={() => setStep('payment_details')}
+            >
+              Cancel
+            </button>
+
+          </div>
+
+          <div className="mt-auto pb-4 text-center">
+            <div className="rzp-secured-mark">
+              <ShieldCheck size={14} className="text-blue-600" />
+              <span>Secured by <b>ClusterPay</b></span>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 5: PAYMENT SUCCESSFUL PAPER RECEIPT (IMAGE 2)
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'success' && (
+        <div className="rzp-screen rzp-success-screen">
+          
+          <div className="rzp-receipt-card">
+            
+            <div className="rzp-receipt-graphic">
+              <PaperReceiptGraphic />
+            </div>
+
+            <h2 className="rzp-receipt-title">Payment Successful</h2>
+            <p className="text-xs text-zinc-500 mt-1">Zero-confirmation transaction verified on-chain.</p>
+
+            {/* Payment Details Section */}
+            <div className="rzp-receipt-section">
+              <h3 className="rzp-receipt-heading">Payment Details</h3>
+              <div className="rzp-receipt-table">
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Invoice Number</span>
+                  <span className="sep">:</span>
+                  <span className="val font-mono">{invoiceId}</span>
+                </div>
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Order Time</span>
+                  <span className="sep">:</span>
+                  <span className="val">{orderTime}</span>
+                </div>
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Payment Method</span>
+                  <span className="sep">:</span>
+                  <span className="val">{selectedCoin?.name || 'USDT (BEP-20)'}</span>
+                </div>
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Payment Status</span>
+                  <span className="sep">:</span>
+                  <span className="val"><span className="rzp-green-pill">Successful</span></span>
+                </div>
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Amount Paid</span>
+                  <span className="sep">:</span>
+                  <span className="val font-bold">${initialAmount.toFixed(2)} USD</span>
+                </div>
+                {txDetails.txid && (
+                  <div className="rzp-receipt-row">
+                    <span className="lbl">Tx Hash</span>
+                    <span className="sep">:</span>
+                    <span className="val font-mono">
+                      {selectedCoin?.explorerUrl ? (
+                        <a href={selectedCoin.explorerUrl(txDetails.txid)} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline inline-flex items-center gap-1">
+                          <span>{txDetails.txid.slice(0, 8)}...{txDetails.txid.slice(-6)}</span>
+                          <ExternalLink size={11} />
+                        </a>
+                      ) : (
+                        <span>{txDetails.txid.slice(0, 12)}...</span>
+                      )}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
 
+            {/* Product Details Section */}
+            <div className="rzp-receipt-section">
+              <h3 className="rzp-receipt-heading">Product Details</h3>
+              <div className="rzp-receipt-table">
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Order Item</span>
+                  <span className="sep">:</span>
+                  <span className="val">{paymentPurpose}</span>
+                </div>
+                <div className="rzp-receipt-row">
+                  <span className="lbl">Gateway Fee</span>
+                  <span className="sep">:</span>
+                  <span className="val font-bold text-emerald-600">$0.00</span>
+                </div>
+                <div className="rzp-receipt-row rzp-total-row">
+                  <span className="lbl">Total Settled</span>
+                  <span className="sep">:</span>
+                  <span className="val font-bold text-zinc-950">${initialAmount.toFixed(2)} USD</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Download PDF Button */}
+            <button className="rzp-download-btn" onClick={() => window.print()}>
+              <Download size={15} /> Download PDF Receipt
+            </button>
+
             {redirectUrl ? (
-              <a
-                href={redirectUrl}
-                className="w-full py-3.5 px-4 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-medium text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-              >
+              <a href={redirectUrl} className="rzp-primary-btn mt-3 text-center">
                 <span>Return to Merchant ({redirectCountdown}s)</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight size={15} />
               </a>
             ) : (
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-medium border border-emerald-200/60">
+              <div className="mt-3 p-2.5 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-medium border border-emerald-200 text-center">
                 You may now safely close this window.
               </div>
             )}
 
           </div>
-        )}
 
-
-        {/* ══════════════════════════════════════════════════════════════════
-            STATE 3: EXPIRED INVOICE
-            ══════════════════════════════════════════════════════════════════ */}
-        {status === 'expired' && (
-          <div className="p-8 text-center space-y-5">
-            <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto">
-              <XCircle className="w-8 h-8" />
-            </div>
-            <div className="space-y-1">
-              <h2 className="text-xl font-bold text-zinc-950">Invoice Expired</h2>
-              <p className="text-xs text-zinc-500 max-w-xs mx-auto">
-                The 15-minute payment window has elapsed. Please request a new checkout link from the merchant.
-              </p>
-            </div>
-            {merchantUrl && (
-              <a
-                href={merchantUrl}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-950 text-white text-xs font-medium"
-              >
-                <span>Return to Store</span>
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            )}
-          </div>
-        )}
-
-
-        {/* ══════════════════════════════════════════════════════════════════
-            FOOTER: NON-CUSTODIAL COMPLIANCE & BRANDING
-            ══════════════════════════════════════════════════════════════════ */}
-        <div className="px-6 py-3.5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Non-Custodial Direct Settlement</span>
-          </div>
-          <div className="font-mono text-[10px] text-zinc-400">
-            ClusterPay Gateway
-          </div>
         </div>
+      )}
 
-      </div>
 
-      {/* Subtle Bottom Credit */}
-      <div className="mt-4 text-center text-[11px] text-zinc-400 space-y-0.5">
-        <div>Powered by <span className="font-medium text-zinc-600">ClusterPay Open Source Protocol</span></div>
-        <div className="text-[10px] text-zinc-400">0% Platform Fee • Direct Cold Storage Settlement</div>
-      </div>
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 6: UNDERPAYMENT / WRONG AMOUNT
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'underpayment' && (
+        <div className="rzp-screen p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto mb-3">
+            <XCircle size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-zinc-950">Incorrect Amount Paid</h2>
+          <p className="text-xs text-zinc-500 max-w-xs mx-auto mt-1">
+            We detected your transfer, but the amount received does not match the invoice.
+          </p>
+
+          <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 text-left space-y-2 mt-4 font-mono text-xs">
+            <div className="flex justify-between">
+              <span className="text-zinc-500">Requested</span>
+              <strong className="text-zinc-900">${underpaidInfo?.expected?.toFixed(2)} USD</strong>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-500">Received</span>
+              <strong className="text-rose-600">${underpaidInfo?.received?.toFixed(2)} USD</strong>
+            </div>
+          </div>
+
+          {merchantUrl && (
+            <a href={merchantUrl} target="_blank" rel="noreferrer" className="rzp-primary-btn mt-4 text-center">
+              <span>Contact Merchant Support</span>
+            </a>
+          )}
+        </div>
+      )}
+
+
+      {/* ══════════════════════════════════════════════════════════════════
+          PAGE 7: EXPIRED INVOICE
+          ══════════════════════════════════════════════════════════════════ */}
+      {step === 'expired' && (
+        <div className="rzp-screen p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto mb-3">
+            <XCircle size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-zinc-950">Invoice Expired</h2>
+          <p className="text-xs text-zinc-500 max-w-xs mx-auto mt-1">
+            The payment window has elapsed. Please request a new checkout link.
+          </p>
+
+          {merchantUrl && (
+            <a href={merchantUrl} className="rzp-primary-btn mt-4 text-center">
+              <span>Return to Store</span>
+            </a>
+          )}
+        </div>
+      )}
 
     </div>
   );
 }
+

@@ -130,10 +130,128 @@ async def verify_tron_usdt(txid: str, recipient: str, expected_amount: float) ->
 
     return False, "Tron transaction could not be verified at this moment", 0.0
 
+async def verify_evm_native(chain: str, txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
+    """
+    Verifies native EVM cryptocurrency transfers (BNB on BSC, POL on Polygon).
+    """
+    tx = await _evm_rpc_call(chain, "eth_getTransactionByHash", [txid])
+    if not tx:
+        return False, f"Transaction {txid} not found on {chain} mempool/blocks", 0.0
+
+    receipt = await _evm_rpc_call(chain, "eth_getTransactionReceipt", [txid])
+    if not receipt:
+        return False, "Transaction receipt pending confirmation", 0.0
+
+    status = receipt.get("status")
+    if status not in ("0x1", 1, "1"):
+        return False, "Transaction was reverted or failed on-chain", 0.0
+
+    tx_to = tx.get("to") or ""
+    if tx_to.lower() != recipient.lower():
+        return False, f"Recipient mismatch: transfer was sent to {tx_to}, expected {recipient}", 0.0
+
+    raw_val = int(tx.get("value", "0x0"), 16)
+    amount_found = float(Decimal(raw_val) / Decimal(10 ** 18))
+
+    if abs(amount_found - expected_amount) < 0.000005 or amount_found >= expected_amount:
+        return True, f"{chain} native transfer verified successfully", amount_found
+
+    return False, f"Amount mismatch: expected {expected_amount:.6f}, received {amount_found:.6f}", amount_found
+
+
+async def verify_btc_transfer(txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
+    """
+    Verifies Bitcoin mainnet UTXO transfers via Mempool.space API.
+    """
+    urls = [
+        f"https://mempool.space/api/tx/{txid}",
+        f"https://blockstream.info/api/tx/{txid}"
+    ]
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for url in urls:
+            try:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    data = res.json()
+                    vouts = data.get("vout", [])
+                    for v in vouts:
+                        addr = v.get("scriptpubkey_address", "")
+                        if addr.lower() == recipient.lower():
+                            sats = v.get("value", 0)
+                            btc_amt = float(Decimal(sats) / Decimal(10 ** 8))
+                            if abs(btc_amt - expected_amount) < 0.00000005 or btc_amt >= expected_amount:
+                                return True, "Bitcoin payment verified successfully", btc_amt
+                            return False, f"BTC amount mismatch: expected {expected_amount:.8f}, received {btc_amt:.8f}", btc_amt
+            except Exception as e:
+                logger.warning(f"BTC verify error ({url}): {e}")
+
+    return False, f"Bitcoin transaction {txid} not found or unconfirmed", 0.0
+
+
+async def verify_ltc_transfer(txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
+    """
+    Verifies Litecoin transfers via LitecoinSpace / BlockCypher.
+    """
+    urls = [
+        f"https://litecoinspace.org/api/tx/{txid}",
+        f"https://api.blockcypher.com/v1/ltc/main/txs/{txid}"
+    ]
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for url in urls:
+            try:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    data = res.json()
+                    vouts = data.get("vout", []) or data.get("outputs", [])
+                    for v in vouts:
+                        addrs = v.get("scriptpubkey_address", "") or (v.get("addresses", [""])[0] if v.get("addresses") else "")
+                        if addrs.lower() == recipient.lower():
+                            sats = v.get("value", 0)
+                            ltc_amt = float(Decimal(sats) / Decimal(10 ** 8))
+                            if abs(ltc_amt - expected_amount) < 0.0000005 or ltc_amt >= expected_amount:
+                                return True, "Litecoin payment verified successfully", ltc_amt
+                            return False, f"LTC amount mismatch: expected {expected_amount:.6f}, received {ltc_amt:.6f}", ltc_amt
+            except Exception as e:
+                logger.warning(f"LTC verify error ({url}): {e}")
+
+    return False, f"Litecoin transaction {txid} not found or unconfirmed", 0.0
+
+
+async def verify_ton_transfer(txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
+    """
+    Verifies Toncoin native transfer via Toncenter / TonAPI.
+    """
+    url = f"https://toncenter.com/api/v2/getTransactions?address={recipient}&limit=15"
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        try:
+            res = await client.get(url)
+            if res.status_code == 200:
+                data = res.json()
+                if data.get("ok"):
+                    txs = data.get("result", [])
+                    for tx in txs:
+                        tx_id_obj = tx.get("transaction_id", {})
+                        hash_val = tx_id_obj.get("hash", "")
+                        in_msg = tx.get("in_msg", {})
+                        nanotons = int(in_msg.get("value", 0))
+                        ton_amt = float(Decimal(nanotons) / Decimal(10 ** 9))
+
+                        if txid.lower() in hash_val.lower() or hash_val.lower() in txid.lower() or abs(ton_amt - expected_amount) < 0.0001:
+                            if abs(ton_amt - expected_amount) < 0.0005 or ton_amt >= expected_amount:
+                                return True, "Toncoin transfer verified successfully", ton_amt
+        except Exception as e:
+            logger.warning(f"TON verify error: {e}")
+
+    return False, f"Toncoin transaction {txid} not found or unconfirmed for {recipient}", 0.0
+
+
 async def verify_onchain_transaction(network: str, txid: str, recipient_address: str, expected_amount: float) -> Tuple[bool, str, float]:
     """
-    Multi-chain Router for on-chain verification.
+    Multi-chain Router for strict cryptographic on-chain verification.
     """
+    if not recipient_address or len(recipient_address.strip()) < 6:
+        return False, "Merchant recipient address is missing or invalid", 0.0
+
     net = network.upper()
     if net in ("USDT", "USDT_BEP20", "BSC", "BEP20"):
         return await verify_evm_usdt("BSC", "USDT_BEP20", txid, recipient_address, expected_amount)
@@ -143,6 +261,16 @@ async def verify_onchain_transaction(network: str, txid: str, recipient_address:
         return await verify_evm_usdt("POLYGON", "USDT_POLY", txid, recipient_address, expected_amount)
     elif net in ("USDT_ARB", "ARBITRUM"):
         return await verify_evm_usdt("ARBITRUM", "USDT_ARB", txid, recipient_address, expected_amount)
-    
-    # Fallback / simulated for sandbox or unsupported chains
-    return True, "Verified (Sandbox Mode)", expected_amount
+    elif net in ("BNB", "BNB_BSC"):
+        return await verify_evm_native("BSC", txid, recipient_address, expected_amount)
+    elif net in ("POL", "MATIC_NATIVE"):
+        return await verify_evm_native("POLYGON", txid, recipient_address, expected_amount)
+    elif net in ("BTC", "BITCOIN"):
+        return await verify_btc_transfer(txid, recipient_address, expected_amount)
+    elif net in ("LTC", "LITECOIN"):
+        return await verify_ltc_transfer(txid, recipient_address, expected_amount)
+    elif net in ("TON", "TONCOIN"):
+        return await verify_ton_transfer(txid, recipient_address, expected_amount)
+
+    return False, f"Unsupported network '{network}' for on-chain verification", 0.0
+

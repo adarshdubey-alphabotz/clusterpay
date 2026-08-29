@@ -45,8 +45,8 @@ def is_safe_webhook_url(url: str) -> bool:
 
 async def verify_merchant_key(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)):
     api_key = credentials.credentials
-    if not isinstance(api_key, str) or len(api_key) < 12 or not api_key.startswith("CS_key_"):
-        raise HTTPException(status_code=401, detail="Invalid API key format")
+    if not isinstance(api_key, str) or len(api_key) < 12 or not (api_key.startswith("CS_key_") or api_key.startswith("cp_live_") or api_key.startswith("cpay_") or api_key.startswith("cp_test_")):
+        raise HTTPException(status_code=401, detail="Invalid API key format (must start with cp_live_, cp_test_, cpay_, or CS_key_)")
 
     db = get_db()
     merchant = await db.merchants.find_one({"api_key": api_key})

@@ -11,6 +11,7 @@ class Settings:
     # MongoDB — always enable auth in production (see docker-compose.yml)
     MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
     MONGO_DB_NAME: str = os.getenv("MONGO_DB_NAME", "clusterpay_db")
+    RATE_LIMIT_PER_MINUTE: int = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
 
     # Admin Authentication — generate both with: python scripts/generate_secrets.py
     ADMIN_MASTER_KEY: str = os.getenv("ADMIN_MASTER_KEY", "change_me_immediately")

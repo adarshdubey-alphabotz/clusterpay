@@ -1,8 +1,9 @@
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
+
 from src.database import init_db
 from src.api.checkout import router as checkout_router
 from src.api.status import router as status_router
@@ -47,6 +48,12 @@ app.include_router(sessions_router, prefix="/api/v1", tags=["Merchant Sessions"]
 app.include_router(webhooks_router, prefix="/api/v1", tags=["Webhooks"])
 app.include_router(admin_api_router, prefix="/api/v1", tags=["Admin Operations"])
 app.include_router(admin_ui_router, tags=["Admin Portal"])
+
+from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
 
 @app.get("/health", tags=["System"])
 async def health_check():
@@ -141,7 +148,21 @@ import os
 from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 from src.config import settings
+from src.core.currency import get_crypto_prices
 from src.database import get_db
+from src.api.status import get_gateway_session_status, verify_payment
+
+@app.get("/api/check_status/{session_id}", include_in_schema=False)
+async def api_check_status_alias(session_id: str):
+    return await get_gateway_session_status(session_id)
+
+@app.post("/verify", include_in_schema=False)
+@app.post("/api/verify", include_in_schema=False)
+async def verify_alias(req: Request, bg: BackgroundTasks):
+    from src.api.status import VerifyRequest
+    body = await req.json()
+    verify_req = VerifyRequest(**body)
+    return await verify_payment(verify_req, req, bg)
 
 DIST_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
 if os.path.exists(os.path.join(DIST_DIR, "assets")):
@@ -176,12 +197,24 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
     btc = wallets.get("btc", getattr(settings, "DEFAULT_BTC_WALLET", ""))
     pol = wallets.get("pol", getattr(settings, "DEFAULT_POL_WALLET", ""))
     
+    crypto_prices = await get_crypto_prices()
+    
     html = html.replace("{amount}", f"{session.get('amount', 0.0):.6f}")
     html = html.replace("{session_id}", session_id)
     html = html.replace("{time_left}", str(time_left))
+    html = html.replace("{bnb_price}", f"{crypto_prices.get('BNB', 600.0):.2f}")
+    html = html.replace("{ltc_price}", f"{crypto_prices.get('LTC', 85.0):.2f}")
+    html = html.replace("{ton_price}", f"{crypto_prices.get('TON', 5.5):.4f}")
+    html = html.replace("{pol_price}", f"{crypto_prices.get('POL', 0.45):.4f}")
+    html = html.replace("{btc_price}", f"{crypto_prices.get('BTC', 90000.0):.2f}")
     
     inject_data = (
         f'time_left: "{time_left}", '
+        f'bnb_price: "{crypto_prices.get("BNB", 600.0):.2f}", '
+        f'ltc_price: "{crypto_prices.get("LTC", 85.0):.2f}", '
+        f'ton_price: "{crypto_prices.get("TON", 5.5):.4f}", '
+        f'pol_price: "{crypto_prices.get("POL", 0.45):.4f}", '
+        f'btc_price: "{crypto_prices.get("BTC", 90000.0):.2f}", '
         f'USDT_WALLET_BEP20: "{bep20}", '
         f'USDT_WALLET_TRC20: "{trc20}", '
         f'USDT_WALLET_POLY: "{poly}", '
@@ -192,12 +225,19 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
         f'POL_WALLET: "{pol}", '
         f'BINANCE_ID: "", '
         f'is_gateway: "true", '
+        f'description: "{session.get("description", "")}", '
+        f'purpose: "{session.get("description", "")}", '
         f'logo_url: "{session.get("logo_url", "")}", '
         f'theme_color: "{session.get("theme_color", "")}", '
-        f'merchant_name: "{session.get("merchant_name", "")}", '
+        f'merchant_name: "{session.get("merchant_name", "ClusterPay Merchant")}", '
         f'merchant_url: "{session.get("merchant_url", "")}", '
         f'redirect_url: "{session.get("redirect_url", "")}", '
         f'custom_id: "{session.get("custom_id", "")}", '
+        f'require_email: "{"true" if session.get("require_email") else "false"}", '
+        f'require_buyer_name: "{"true" if session.get("require_buyer_name") else "false"}", '
+        f'customer_email: "{session.get("customer_email", "")}", '
+        f'customer_name: "{session.get("customer_name", "")}", '
+        f'custom_note: "{session.get("custom_note", "")}", '
         f'embed: "{"true" if embed else "false"}"'
     )
     html = html.replace(f'time_left: "{time_left}"', inject_data)
@@ -209,3 +249,4 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
         "X-Frame-Options": "ALLOWALL"
     }
     return HTMLResponse(html, headers=headers)
+
