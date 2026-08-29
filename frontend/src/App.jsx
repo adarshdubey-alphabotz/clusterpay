@@ -670,20 +670,6 @@ export default function App() {
           {/* Main Body */}
           <div className="cf-body">
             
-            {/* Zero Fee & Anti-Theft Protection Promo Card */}
-            <div className="cf-offer-card">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-950/20 text-emerald-600 flex items-center justify-center font-bold text-sm">
-                  ⚡
-                </div>
-                <div>
-                  <div className="font-bold text-xs text-white">{t('surcharge_applied')}</div>
-                  <div className="text-[11px] text-zinc-500">{t('surcharge_desc')}</div>
-                </div>
-              </div>
-              <span className="cf-apply-badge">{t('applied')}</span>
-            </div>
-
             {/* Horizontal Swipeable Carousel (Like Cashfree UPI Row) */}
             <div className="cf-section-header">
               <span className="cf-section-title">{t('select_coin')}</span>
