@@ -19,8 +19,16 @@ import {
   User,
   Zap,
   QrCode,
-  Wallet
+  Wallet,
+  Globe,
+  Sun,
+  Moon,
+  Search,
+  Lock,
+  Home,
+  MoreVertical
 } from 'lucide-react';
+import { LANGUAGES, getTranslation } from './i18n';
 import { QRCodeSVG } from 'qrcode.react';
 import StoreApp from './StoreApp';
 import { 
@@ -294,6 +302,31 @@ export default function App() {
   const [isVerifyingManual, setIsVerifyingManual] = useState(false);
   const [verifyError, setVerifyError] = useState('');
 
+  // 🌐 Multilingual & ☀️/🌙 Theme Switcher State
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem('cpay_theme') || 'dark'; } catch(e) { return 'dark'; }
+  });
+  const [currentLang, setCurrentLang] = useState(() => {
+    try { return localStorage.getItem('cpay_lang') || 'en'; } catch(e) { return 'en'; }
+  });
+  const [showLangDrawer, setShowLangDrawer] = useState(false);
+  const [searchLangQuery, setSearchLangQuery] = useState('');
+  const t = (key) => getTranslation(currentLang, key);
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.add('theme-light');
+    } else {
+      document.body.classList.remove('theme-light');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    try { localStorage.setItem('cpay_theme', nextTheme); } catch(e) {}
+  };
+
   const handleManualVerify = async (txToVerify) => {
     const tx = (txToVerify || manualTxId || '').trim();
     if (!tx || tx.length < 8) {
@@ -536,7 +569,43 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('quick'); // 'quick' | 'stable' | 'native'
 
   return (
-    <div className={`rzp-wrapper ${isEmbed ? 'embedded' : ''}`}>
+    <div className={`rzp-wrapper ${isEmbed ? 'embedded' : ''} ${theme === 'light' ? 'theme-light' : ''}`}>
+
+      {/* Top Browser Bar (URL Pill, Language Selector, Dark/Light Mode) */}
+      <div className="cf-top-browser-bar">
+        <div className="flex items-center gap-2">
+          <button className="cf-top-icon-btn" title="ClusterPay Non-Custodial">
+            <Home size={15} />
+          </button>
+        </div>
+        
+        <div className="cf-url-pill">
+          <Lock size={11} className="text-emerald-400" />
+          <span>clusterpay.cloud</span>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <button 
+            className="cf-top-icon-btn" 
+            onClick={() => setShowLangDrawer(true)} 
+            title={t('select_language')}
+          >
+            <Globe size={15} />
+          </button>
+
+          <button 
+            className="cf-top-icon-btn" 
+            onClick={toggleTheme} 
+            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          >
+            {theme === 'dark' ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-indigo-600" />}
+          </button>
+
+          <button className="cf-top-icon-btn" title="Options">
+            <MoreVertical size={15} />
+          </button>
+        </div>
+      </div>
 
       {/* ══════════════════════════════════════════════════════════════════
           PAGE 1: CASHFREE / DIGITAL HUB FINTECH SCREEN (REF_IMG2.JPG)
@@ -551,7 +620,7 @@ export default function App() {
                 <ClusterPayIcon className="w-5 h-5" />
               </div>
               <div className="cf-secured-badge">
-                <span>Secured by</span>
+                <span>{t('secured_by')}</span>
                 <strong className="text-white flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                   ClusterPay
@@ -587,7 +656,7 @@ export default function App() {
           {/* Subheader: Order Meta */}
           <div className="cf-subbar">
             <span className="cf-subbar-text">
-              Payment Options for <b className="text-zinc-100">{customId ? `Ref #${customId}` : `Inv #${sessionId.slice(-8).toUpperCase()}`}</b>
+              {t('payment_options_for')} <b className="text-zinc-100">{customId ? `Ref #${customId}` : `Inv #${sessionId.slice(-8).toUpperCase()}`}</b>
             </span>
             <button 
               className="cf-edit-btn font-mono"
@@ -608,18 +677,18 @@ export default function App() {
                   ⚡
                 </div>
                 <div>
-                  <div className="font-bold text-xs text-white">0% Gateway Surcharge Applied</div>
-                  <div className="text-[11px] text-zinc-500">Direct non-custodial merchant settlement</div>
+                  <div className="font-bold text-xs text-white">{t('surcharge_applied')}</div>
+                  <div className="text-[11px] text-zinc-500">{t('surcharge_desc')}</div>
                 </div>
               </div>
-              <span className="cf-apply-badge">APPLIED</span>
+              <span className="cf-apply-badge">{t('applied')}</span>
             </div>
 
             {/* Horizontal Swipeable Carousel (Like Cashfree UPI Row) */}
             <div className="cf-section-header">
-              <span className="cf-section-title">Select Coin to Pay</span>
+              <span className="cf-section-title">{t('select_coin')}</span>
               <span className="text-[11px] text-blue-600 font-semibold flex items-center gap-0.5">
-                Swipe & Choose &gt;
+                {t('swipe_choose')}
               </span>
             </div>
 
@@ -656,7 +725,7 @@ export default function App() {
                     <div>
                       <h3 className="font-bold text-sm text-white">{selectedCoin.name}</h3>
                       <p className="text-xs text-zinc-500 font-mono">
-                        Send: <b className="text-white">{selectedCoin.calcAmount()} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
+                        {t('send')}: <b className="text-white">{selectedCoin.calcAmount()} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
                       </p>
                     </div>
                   </div>
@@ -674,7 +743,7 @@ export default function App() {
                     }}
                   >
                     <QrCode size={15} />
-                    <span>Scan QR Code</span>
+                    <span>{t('scan_qr')}</span>
                   </button>
 
                   <button 
@@ -685,7 +754,7 @@ export default function App() {
                     }}
                   >
                     <Copy size={15} />
-                    <span>Copy Address</span>
+                    <span>{t('copy_address')}</span>
                   </button>
                 </div>
               </div>
@@ -758,7 +827,7 @@ export default function App() {
                 className="rzp-details-btn"
                 onClick={() => setShowDetailsDrawer(!showDetailsDrawer)}
               >
-                <span>{showDetailsDrawer ? 'Hide Details' : 'View Details'}</span>
+                <span>{showDetailsDrawer ? 'Hide Details' : t('view_details')}</span>
                 {showDetailsDrawer ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
               </button>
             </div>
@@ -770,10 +839,74 @@ export default function App() {
                 setStep('choose_method');
               }}
             >
-              <span>Continue →</span>
+              <span>{t('continue')}</span>
             </button>
           </div>
 
+        </div>
+      )}
+
+      {/* 🌐 Multilingual Language Selection Bottom Sheet Modal */}
+      {showLangDrawer && (
+        <div className="rzp-drawer-overlay" onClick={() => setShowLangDrawer(false)}>
+          <div className="rzp-drawer-card max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center pb-3 border-b border-white/[0.08]">
+              <h3 className="font-bold text-base text-white flex items-center gap-2">
+                <Globe size={18} className="text-blue-500" />
+                <span>{t('select_language')}</span>
+              </h3>
+              <button onClick={() => setShowLangDrawer(false)} className="p-1 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400">
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative my-3">
+              <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <input 
+                type="text" 
+                placeholder={t('search_language')}
+                value={searchLangQuery}
+                onChange={(e) => setSearchLangQuery(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Language List */}
+            <div className="overflow-y-auto space-y-1.5 max-h-[50vh] pr-1">
+              {LANGUAGES.filter(l => 
+                l.name.toLowerCase().includes(searchLangQuery.toLowerCase()) || 
+                l.native.toLowerCase().includes(searchLangQuery.toLowerCase())
+              ).map((lang, idx) => {
+                const isSelected = currentLang === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setCurrentLang(lang.code);
+                      try { localStorage.setItem('cpay_lang', lang.code); } catch(e) {}
+                      setShowLangDrawer(false);
+                    }}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl transition-all cursor-pointer ${
+                      isSelected 
+                        ? 'bg-blue-600/20 border border-blue-500/50 text-white' 
+                        : 'bg-white/[0.03] hover:bg-white/[0.06] border border-transparent text-zinc-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono text-zinc-500 w-4">{idx + 1}.</span>
+                      <span className="text-xl">{lang.flag}</span>
+                      <div className="text-left">
+                        <span className="text-sm font-bold block">{lang.native}</span>
+                        <span className="text-[11px] text-zinc-400">({lang.name})</span>
+                      </div>
+                    </div>
+                    {isSelected && <Check size={18} className="text-blue-400" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
 
