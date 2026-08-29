@@ -153,11 +153,18 @@ from src.database import get_db
 from src.api.status import get_gateway_session_status, verify_payment
 
 @app.get("/api/check_status/{session_id}", include_in_schema=False)
-async def api_check_status_alias(session_id: str):
-    return await get_gateway_session_status(session_id)
+@app.get("/gateway/status/{session_id}", include_in_schema=False)
+@app.get("/api/gateway/status/{session_id}", include_in_schema=False)
+@app.get("/api/v1/gateway/status/{session_id}", include_in_schema=False)
+async def api_check_status_alias(session_id: str, bg: BackgroundTasks):
+    return await get_gateway_session_status(session_id, bg)
 
 @app.post("/verify", include_in_schema=False)
 @app.post("/api/verify", include_in_schema=False)
+@app.post("/gateway/verify", include_in_schema=False)
+@app.post("/api/gateway/verify", include_in_schema=False)
+@app.post("/api/v1/gateway/verify", include_in_schema=False)
+@app.post("/api/v1/verify", include_in_schema=False)
 async def verify_alias(req: Request, bg: BackgroundTasks):
     from src.api.status import VerifyRequest
     body = await req.json()

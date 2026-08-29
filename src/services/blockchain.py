@@ -274,3 +274,92 @@ async def verify_onchain_transaction(network: str, txid: str, recipient_address:
 
     return False, f"Unsupported network '{network}' for on-chain verification", 0.0
 
+
+async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, float]:
+    """
+    Scans the configured merchant addresses across active blockchains to detect
+    any incoming transfers matching the session amount within micro-offset tolerance.
+    Returns: (found, network, txid, amount_received)
+    """
+    wallets = session.get("wallets", {})
+    expected_amount = float(session.get("amount", 0.0))
+    if expected_amount <= 0:
+        return False, "", "", 0.0
+
+    # 1. TRON USDT Scan
+    trc20_wallet = wallets.get("trc20", "")
+    if trc20_wallet and len(trc20_wallet) > 20:
+        try:
+            url = f"https://api.trongrid.io/v1/accounts/{trc20_wallet}/transactions/trc20?limit=10"
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    for tx in res.json().get("data", []):
+                        val = float(Decimal(tx.get("value", 0)) / Decimal(10**6))
+                        if abs(val - expected_amount) < 0.0005 or (val >= expected_amount and expected_amount > 0):
+                            txid = tx.get("transaction_id", "")
+                            if txid:
+                                return True, "USDT_TRC20", txid, val
+        except Exception:
+            pass
+
+    # 2. TON Native Scan
+    ton_wallet = wallets.get("ton", "")
+    if ton_wallet and len(ton_wallet) > 20:
+        try:
+            url = f"https://toncenter.com/api/v2/getTransactions?address={ton_wallet}&limit=10"
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    for tx in res.json().get("result", []):
+                        in_msg = tx.get("in_msg", {})
+                        nanotons = int(in_msg.get("value", 0))
+                        val = float(Decimal(nanotons) / Decimal(10**9))
+                        if abs(val - expected_amount) < 0.0005 or (val >= expected_amount and expected_amount > 0):
+                            txid = tx.get("transaction_id", {}).get("hash", "")
+                            if txid:
+                                return True, "TON", txid, val
+        except Exception:
+            pass
+
+    # 3. LTC Scan
+    ltc_wallet = wallets.get("ltc", "")
+    if ltc_wallet and len(ltc_wallet) > 20:
+        try:
+            url = f"https://litecoinspace.org/api/address/{ltc_wallet}/txs"
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    for tx in res.json():
+                        for vout in tx.get("vout", []):
+                            if vout.get("scriptpubkey_address", "").lower() == ltc_wallet.lower():
+                                val = float(Decimal(vout.get("value", 0)) / Decimal(10**8))
+                                if abs(val - expected_amount) < 0.00005 or (val >= expected_amount and expected_amount > 0):
+                                    txid = tx.get("txid", "")
+                                    if txid:
+                                        return True, "LTC", txid, val
+        except Exception:
+            pass
+
+    # 4. BTC Scan
+    btc_wallet = wallets.get("btc", "")
+    if btc_wallet and len(btc_wallet) > 20:
+        try:
+            url = f"https://mempool.space/api/address/{btc_wallet}/txs"
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                res = await client.get(url)
+                if res.status_code == 200:
+                    for tx in res.json():
+                        for vout in tx.get("vout", []):
+                            if vout.get("scriptpubkey_address", "").lower() == btc_wallet.lower():
+                                val = float(Decimal(vout.get("value", 0)) / Decimal(10**8))
+                                if abs(val - expected_amount) < 0.000005 or (val >= expected_amount and expected_amount > 0):
+                                    txid = tx.get("txid", "")
+                                    if txid:
+                                        return True, "BTC", txid, val
+        except Exception:
+            pass
+
+    return False, "", "", 0.0
+
+

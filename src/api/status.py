@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Request
 from src.core.security import verify_merchant_key
 from src.core.rate_limiter import check_rate_limit_async
 from src.database import get_db
-from src.services.blockchain import verify_onchain_transaction
+from src.services.blockchain import verify_onchain_transaction, auto_scan_session_payment
 from src.services.webhook_dispatcher import dispatch_webhook
 
 router = APIRouter()
@@ -63,7 +63,7 @@ async def get_session_status(session_id: str, merchant: dict = Depends(verify_me
 
 
 @router.get("/gateway/status/{session_id}", summary="Public Checkout Status Poll", include_in_schema=False)
-async def get_gateway_session_status(session_id: str):
+async def get_gateway_session_status(session_id: str, bg: BackgroundTasks):
     db = get_db()
     session = await db.payment_sessions.find_one({"session_id": session_id})
     if not session:
@@ -73,6 +73,49 @@ async def get_gateway_session_status(session_id: str):
     expires_at = session.get("expires_at", now)
     time_left = max(0, int((expires_at - now).total_seconds()))
     status = session.get("status", "pending")
+    
+    # Real-Time Automatic Blockchain Scanner on Poll
+    if status == "pending" and time_left > 0:
+        found, network, txid, amt = await auto_scan_session_payment(session)
+        if found and txid:
+            # Check claim
+            claim = await db.payment_tx_claims.find_one({"network": network, "txid": txid})
+            if not claim:
+                try:
+                    await db.payment_tx_claims.insert_one({
+                        "network": network,
+                        "txid": txid,
+                        "session_id": session_id,
+                        "amount": amt,
+                        "claimed_at": now
+                    })
+                except Exception:
+                    pass
+                
+                await db.payment_sessions.update_one(
+                    {"session_id": session_id, "status": "pending"},
+                    {
+                        "$set": {
+                            "status": "paid",
+                            "coin": network,
+                            "tx_hash": txid,
+                            "txid": txid,
+                            "amount_received": amt,
+                            "paid_at": now
+                        }
+                    }
+                )
+                session["status"] = "paid"
+                session["coin"] = network
+                session["tx_hash"] = txid
+                session["paid_at"] = now
+                session["amount_received"] = amt
+                status = "paid"
+
+                # Trigger webhook
+                if session.get("callback_url"):
+                    bg.add_task(dispatch_webhook, session, "payment.paid")
+
     if time_left == 0 and status == "pending":
         status = "expired"
 
@@ -123,7 +166,8 @@ async def verify_payment(req: VerifyRequest, request: Request, bg: BackgroundTas
         }
 
     now = datetime.utcnow()
-    if session.get("expires_at") and now > session["expires_at"]:
+    grace_period = timedelta(minutes=60)
+    if session.get("expires_at") and now > (session["expires_at"] + grace_period):
         await db.payment_sessions.update_one(
             {"session_id": req.session_id, "status": "pending"},
             {"$set": {"status": "expired"}}

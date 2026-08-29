@@ -290,6 +290,48 @@ export default function App() {
   const [underpaidInfo, setUnderpaidInfo] = useState(null);
   const [orderTime, setOrderTime] = useState('');
   const [redirectCountdown, setRedirectCountdown] = useState(5);
+  const [manualTxId, setManualTxId] = useState('');
+  const [isVerifyingManual, setIsVerifyingManual] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
+
+  const handleManualVerify = async (txToVerify) => {
+    const tx = (txToVerify || manualTxId || '').trim();
+    if (!tx || tx.length < 8) {
+      setVerifyError('Please enter a valid Transaction Hash / TxID');
+      return;
+    }
+    setIsVerifyingManual(true);
+    setVerifyError('');
+    setVerifyingStatus('Verifying transaction hash on-chain...');
+
+    try {
+      const res = await fetch('/api/v1/gateway/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          coin: selectedCoin?.id || 'USDT_BEP20',
+          txid: tx
+        })
+      });
+      const data = await res.json();
+      if (res.ok && (data.success || data.status === 'paid')) {
+        setTxDetails({
+          txid: data.tx_hash || tx,
+          amount_received: data.amount_received || initialAmount,
+          paid_at: new Date().toISOString()
+        });
+        setStep('success');
+        handleSuccessRedirect();
+      } else {
+        setVerifyError(data.detail || data.message || 'Transaction could not be verified on-chain yet. Please ensure the payment is confirmed.');
+      }
+    } catch (err) {
+      setVerifyError('Network error connecting to verification gateway. Please retry.');
+    } finally {
+      setIsVerifyingManual(false);
+    }
+  };
 
   useEffect(() => {
     document.body.classList.add('checkout-body');
@@ -956,6 +998,38 @@ export default function App() {
               <span>I have Paid & Sent Transfer →</span>
             </button>
 
+            {/* Instant TxID Paste & Verification Box */}
+            <div className="p-3.5 bg-blue-50/70 rounded-2xl border border-blue-200/80 space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-blue-950">
+                <span className="flex items-center gap-1.5">
+                  <Zap size={14} className="text-blue-600" />
+                  <span>Instant Hash Verification</span>
+                </span>
+                <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
+                  1-Sec Confirm
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Paste TxID / Hash (e.g. 0x427f...)"
+                  value={manualTxId}
+                  onChange={(e) => { setManualTxId(e.target.value); setVerifyError(''); }}
+                  className="flex-1 bg-white border border-blue-200 rounded-xl px-3 py-2 text-xs font-mono text-zinc-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                />
+                <button 
+                  onClick={() => handleManualVerify()}
+                  disabled={isVerifyingManual || !manualTxId.trim()}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold px-3.5 py-2 rounded-xl shrink-0 cursor-pointer shadow-sm transition-all"
+                >
+                  {isVerifyingManual ? 'Verifying...' : 'Verify ⚡'}
+                </button>
+              </div>
+              {verifyError && (
+                <div className="text-[11px] text-rose-600 font-medium">{verifyError}</div>
+              )}
+            </div>
+
           </div>
 
         </div>
@@ -970,7 +1044,11 @@ export default function App() {
           
           <div className="rzp-topbar">
             <div className="rzp-merchant-info">
-              {logoUrl ? <img src={logoUrl} alt="" className="rzp-logo-img" /> : <div className="rzp-logo-fallback">⚡</div>}
+              {logoUrl ? (
+                <img src={logoUrl} alt="" className="rzp-logo-img" onError={(e) => { e.target.src = "/assets/clusterpay-icon.png"; }} />
+              ) : (
+                <ClusterPayIcon className="w-8 h-8" />
+              )}
               <h1 className="rzp-merchant-title">{merchantName}</h1>
             </div>
             <button onClick={() => setStep('payment_details')} className="text-zinc-400 hover:text-black">
@@ -984,7 +1062,7 @@ export default function App() {
             <Spinning3DCoin size={120} />
 
             <h2 className="rzp-confirming-title">Confirming Payment</h2>
-            <p className="rzp-confirming-subtitle">This will only take a few seconds.</p>
+            <p className="rzp-confirming-subtitle">Scanning blockchain mempool for incoming transfer...</p>
 
             <div className="rzp-confirming-pill">
               <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full"></span>
@@ -1000,8 +1078,37 @@ export default function App() {
               </span>
             </div>
 
+            {/* Instant Manual TxID Input */}
+            <div className="w-full p-3.5 bg-blue-50/70 rounded-2xl border border-blue-200/80 space-y-2 mt-2">
+              <div className="flex items-center justify-between text-xs font-bold text-blue-950">
+                <span className="flex items-center gap-1.5">
+                  <Zap size={14} className="text-blue-600" />
+                  <span>Have Transaction Hash (TxID)?</span>
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Paste 0x... / TxID / Hash"
+                  value={manualTxId}
+                  onChange={(e) => { setManualTxId(e.target.value); setVerifyError(''); }}
+                  className="flex-1 bg-white border border-blue-200 rounded-xl px-3 py-2 text-xs font-mono text-zinc-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                />
+                <button 
+                  onClick={() => handleManualVerify()}
+                  disabled={isVerifyingManual || !manualTxId.trim()}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold px-3.5 py-2 rounded-xl shrink-0 cursor-pointer shadow-sm transition-all"
+                >
+                  {isVerifyingManual ? 'Verifying...' : 'Verify Now ⚡'}
+                </button>
+              </div>
+              {verifyError && (
+                <div className="text-[11px] text-rose-600 font-medium">{verifyError}</div>
+              )}
+            </div>
+
             <button 
-              className="rzp-cancel-button"
+              className="rzp-cancel-button mt-3"
               onClick={() => setStep('payment_details')}
             >
               Cancel
