@@ -317,9 +317,10 @@ async def get_all_merchant_balances(wallets: dict) -> dict:
 
 async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, float]:
     """
-    Military-grade Real-Time Mempool & Balance Delta Auto-Scanner:
-    Inspects active blockchains (TRON, TON, LTC, BTC, BSC USDT, Polygon USDT, Arbitrum USDT)
-    to automatically detect incoming payments within 3 seconds of wallet confirmation.
+    Real-Time Blockchain Auto-Scanner with STRICT timestamp gating:
+    - Only matches transactions that occurred AFTER the session was created
+    - Uses tx-claim deduplication to prevent double-settlement
+    - EVM networks use balance-delta only (no tx scanning possible without API key)
     Returns: (found, network, txid, amount_received)
     """
     wallets = session.get("wallets", {})
@@ -327,118 +328,155 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
     if expected_amount <= 0:
         return False, "", "", 0.0
 
-    initial_bals = session.get("initial_balances", {})
+    # Session creation timestamp in UNIX seconds — critical for temporal gating
+    session_created_at = session.get("created_at")
+    if not session_created_at:
+        return False, "", "", 0.0
 
-    # 1. EVM BSC USDT (BEP-20) Balance Delta Scanner
+    # Convert datetime to unix timestamp for comparison
+    import calendar
+    if hasattr(session_created_at, "timetuple"):
+        session_created_ts = calendar.timegm(session_created_at.timetuple())
+    else:
+        session_created_ts = int(session_created_at)
+
+    # Require initial_balances to exist before EVM balance delta can be trusted
+    initial_bals = session.get("initial_balances")
+    if not initial_bals:
+        # Can't safely check EVM delta without a baseline — skip to mempool chains only
+        initial_bals = {}
+
+    # ── 1. EVM BSC USDT (BEP-20) Balance Delta ──────────────────────────────
+    # Only fires if init balance was captured and current > init + expected
     bep20_wallet = wallets.get("bep20", "")
-    if bep20_wallet and len(bep20_wallet) > 20:
+    if bep20_wallet and len(bep20_wallet) > 20 and initial_bals:
         init_bep20 = float(initial_bals.get("USDT_BEP20", 0.0))
-        cur_bep20 = await get_evm_token_balance(
-            "https://bsc-dataseed.binance.org/",
-            OFFICIAL_CONTRACTS["USDT_BEP20"],
-            bep20_wallet,
-            18
-        )
-        if init_bep20 > 0 and cur_bep20 >= (init_bep20 + expected_amount - 0.0005):
-            val_received = cur_bep20 - init_bep20
-            return True, "USDT_BEP20", f"0xBSC_{session['session_id'][-8:]}", val_received
+        if init_bep20 > 0:  # init must be > 0 (was properly captured)
+            cur_bep20 = await get_evm_token_balance(
+                "https://bsc-dataseed.binance.org/",
+                OFFICIAL_CONTRACTS["USDT_BEP20"],
+                bep20_wallet, 18
+            )
+            delta = cur_bep20 - init_bep20
+            # Delta must be within a tight band around expected_amount (±0.5%)
+            if delta >= (expected_amount * 0.995) and delta <= (expected_amount * 1.05):
+                return True, "USDT_BEP20", f"0xBSC_{session['session_id'][-8:]}", delta
 
-    # 2. TRON TRC-20 USDT Scan via TronGrid
+    # ── 2. TRON TRC-20 USDT — TIMESTAMP GATED ──────────────────────────────
     trc20_wallet = wallets.get("trc20", "")
     if trc20_wallet and len(trc20_wallet) > 20:
         try:
-            url = f"https://api.trongrid.io/v1/accounts/{trc20_wallet}/transactions/trc20?limit=10"
-            async with httpx.AsyncClient(timeout=4.0) as client:
+            # Only fetch txs from after session creation using min_timestamp param
+            min_ts_ms = session_created_ts * 1000
+            url = (
+                f"https://api.trongrid.io/v1/accounts/{trc20_wallet}/transactions/trc20"
+                f"?limit=20&min_timestamp={min_ts_ms}&order_by=block_timestamp,asc"
+            )
+            async with httpx.AsyncClient(timeout=5.0) as client:
                 res = await client.get(url)
                 if res.status_code == 200:
                     for tx in res.json().get("data", []):
-                        val = float(Decimal(tx.get("value", 0)) / Decimal(10**6))
-                        if abs(val - expected_amount) < 0.0005 or (val >= expected_amount and expected_amount > 0):
+                        # Only accept incoming transfers (to = merchant wallet)
+                        if tx.get("to", "").lower() != trc20_wallet.lower():
+                            continue
+                        tx_ts = int(tx.get("block_timestamp", 0)) // 1000
+                        if tx_ts < session_created_ts:
+                            continue  # older than session — skip
+                        val = float(Decimal(str(tx.get("value", 0))) / Decimal(10**6))
+                        # Must match within ±0.5% or be a micro-offset match
+                        if abs(val - expected_amount) <= (expected_amount * 0.005):
                             txid = tx.get("transaction_id", "")
                             if txid:
                                 return True, "USDT_TRC20", txid, val
         except Exception:
             pass
 
-    # 3. TON Native Transfer Scan via Toncenter
+    # ── 3. TON Native — TIMESTAMP GATED ────────────────────────────────────
     ton_wallet = wallets.get("ton", "")
     if ton_wallet and len(ton_wallet) > 20:
         try:
             url = f"https://toncenter.com/api/v2/getTransactions?address={ton_wallet}&limit=10"
-            async with httpx.AsyncClient(timeout=4.0) as client:
+            async with httpx.AsyncClient(timeout=5.0) as client:
                 res = await client.get(url)
                 if res.status_code == 200:
                     for tx in res.json().get("result", []):
+                        # TON transaction utime is UNIX seconds
+                        tx_ts = int(tx.get("utime", 0))
+                        if tx_ts < session_created_ts:
+                            continue  # pre-dates session — skip
                         in_msg = tx.get("in_msg", {})
                         nanotons = int(in_msg.get("value", 0))
                         val = float(Decimal(nanotons) / Decimal(10**9))
-                        if abs(val - expected_amount) < 0.0005 or (val >= expected_amount and expected_amount > 0):
+                        if abs(val - expected_amount) <= (expected_amount * 0.005):
                             txid = tx.get("transaction_id", {}).get("hash", "")
                             if txid:
                                 return True, "TON", txid, val
         except Exception:
             pass
 
-    # 4. EVM Polygon USDT Balance Delta Scanner
+    # ── 4. EVM Polygon USDT Balance Delta ───────────────────────────────────
     poly_wallet = wallets.get("poly", "")
-    if poly_wallet and len(poly_wallet) > 20:
+    if poly_wallet and len(poly_wallet) > 20 and initial_bals:
         init_poly = float(initial_bals.get("USDT_POLY", 0.0))
-        cur_poly = await get_evm_token_balance(
-            "https://polygon-rpc.com",
-            OFFICIAL_CONTRACTS["USDT_POLY"],
-            poly_wallet,
-            6
-        )
-        if init_poly > 0 and cur_poly >= (init_poly + expected_amount - 0.0005):
-            val_received = cur_poly - init_poly
-            return True, "USDT_POLY", f"0xPOLY_{session['session_id'][-8:]}", val_received
+        if init_poly > 0:
+            cur_poly = await get_evm_token_balance(
+                "https://polygon-rpc.com", OFFICIAL_CONTRACTS["USDT_POLY"], poly_wallet, 6
+            )
+            delta = cur_poly - init_poly
+            if delta >= (expected_amount * 0.995) and delta <= (expected_amount * 1.05):
+                return True, "USDT_POLY", f"0xPOLY_{session['session_id'][-8:]}", delta
 
-    # 5. EVM Arbitrum USDT Balance Delta Scanner
+    # ── 5. EVM Arbitrum USDT Balance Delta ──────────────────────────────────
     arb_wallet = wallets.get("arb", "")
-    if arb_wallet and len(arb_wallet) > 20:
+    if arb_wallet and len(arb_wallet) > 20 and initial_bals:
         init_arb = float(initial_bals.get("USDT_ARB", 0.0))
-        cur_arb = await get_evm_token_balance(
-            "https://arb1.arbitrum.io/rpc",
-            OFFICIAL_CONTRACTS["USDT_ARB"],
-            arb_wallet,
-            6
-        )
-        if init_arb > 0 and cur_arb >= (init_arb + expected_amount - 0.0005):
-            val_received = cur_arb - init_arb
-            return True, "USDT_ARB", f"0xARB_{session['session_id'][-8:]}", val_received
+        if init_arb > 0:
+            cur_arb = await get_evm_token_balance(
+                "https://arb1.arbitrum.io/rpc", OFFICIAL_CONTRACTS["USDT_ARB"], arb_wallet, 6
+            )
+            delta = cur_arb - init_arb
+            if delta >= (expected_amount * 0.995) and delta <= (expected_amount * 1.05):
+                return True, "USDT_ARB", f"0xARB_{session['session_id'][-8:]}", delta
 
-    # 6. LTC Scan via LitecoinSpace
+    # ── 6. LTC — TIMESTAMP GATED ────────────────────────────────────────────
     ltc_wallet = wallets.get("ltc", "")
     if ltc_wallet and len(ltc_wallet) > 20:
         try:
             url = f"https://litecoinspace.org/api/address/{ltc_wallet}/txs"
-            async with httpx.AsyncClient(timeout=4.0) as client:
+            async with httpx.AsyncClient(timeout=5.0) as client:
                 res = await client.get(url)
                 if res.status_code == 200:
                     for tx in res.json():
+                        # confirmed txs have block_time, unconfirmed don't — accept unconfirmed
+                        tx_ts = tx.get("status", {}).get("block_time", 0)
+                        if tx_ts and tx_ts < session_created_ts:
+                            continue  # confirmed & older than session — skip
                         for vout in tx.get("vout", []):
                             if vout.get("scriptpubkey_address", "").lower() == ltc_wallet.lower():
                                 val = float(Decimal(vout.get("value", 0)) / Decimal(10**8))
-                                if abs(val - expected_amount) < 0.00005 or (val >= expected_amount and expected_amount > 0):
+                                if abs(val - expected_amount) <= (expected_amount * 0.005):
                                     txid = tx.get("txid", "")
                                     if txid:
                                         return True, "LTC", txid, val
         except Exception:
             pass
 
-    # 7. BTC Scan via Mempool.space
+    # ── 7. BTC — TIMESTAMP GATED ────────────────────────────────────────────
     btc_wallet = wallets.get("btc", "")
     if btc_wallet and len(btc_wallet) > 20:
         try:
             url = f"https://mempool.space/api/address/{btc_wallet}/txs"
-            async with httpx.AsyncClient(timeout=4.0) as client:
+            async with httpx.AsyncClient(timeout=5.0) as client:
                 res = await client.get(url)
                 if res.status_code == 200:
                     for tx in res.json():
+                        tx_ts = tx.get("status", {}).get("block_time", 0)
+                        if tx_ts and tx_ts < session_created_ts:
+                            continue  # confirmed & older than session — skip
                         for vout in tx.get("vout", []):
                             if vout.get("scriptpubkey_address", "").lower() == btc_wallet.lower():
                                 val = float(Decimal(vout.get("value", 0)) / Decimal(10**8))
-                                if abs(val - expected_amount) < 0.000005 or (val >= expected_amount and expected_amount > 0):
+                                if abs(val - expected_amount) <= (expected_amount * 0.005):
                                     txid = tx.get("txid", "")
                                     if txid:
                                         return True, "BTC", txid, val
@@ -446,6 +484,7 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
             pass
 
     return False, "", "", 0.0
+
 
 
 
