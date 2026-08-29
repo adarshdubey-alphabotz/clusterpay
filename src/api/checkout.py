@@ -1,10 +1,9 @@
 import uuid
-import secrets
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, Request, HTTPException
 from src.models.session import GatewayCheckoutRequest, DonateCheckoutRequest
 from src.core.security import verify_merchant_key
-from src.core.micro_offset import generate_micro_offset_amount
+from src.core.micro_offset import generate_unique_session_amount
 from src.core.currency import convert_to_usd
 from src.core.rate_limiter import check_rate_limit
 from src.config import settings
@@ -12,45 +11,48 @@ from src.database import get_db
 
 router = APIRouter()
 
+
 @router.post("/checkout", summary="Create Checkout Session")
 async def create_checkout_session(req: GatewayCheckoutRequest, request: Request, merchant: dict = Depends(verify_merchant_key)):
     """
     Creates a new high-precision cryptocurrency checkout invoice.
-    Generates a unique 6-decimal anti-theft micro-offset amount (1,000,000 unique entropy slots).
+    Generates a micro-offset amount guaranteed unique across all active (non-expired)
+    sessions for the same wallet addresses. No two live checkouts can share the same
+    exact decimal amount, so a payment can only ever settle one specific invoice.
     """
     merchant_id = merchant.get("telegram_id") or merchant.get("merchant_id")
     check_rate_limit(f"merchant_{merchant_id}")
 
     # Fiat conversion
     base_usd = await convert_to_usd(req.amount, req.currency or "USD")
-    
-    # Surcharge
+
+    # Optional surcharge
     if req.surcharge_percent and req.surcharge_percent > 0:
         base_usd = round(base_usd * (1 + req.surcharge_percent / 100.0), 2)
 
-    # Ensure at least 1 valid destination merchant crypto wallet address is explicitly provided in the request
+    # At least 1 explicit merchant wallet required (ClusterPay is non-custodial)
     wallets = req.wallets or {}
-    has_merchant_wallet = any(
+    has_wallet = any(
         isinstance(v, str) and len(v.strip()) > 8
-        for v in [
-            wallets.get("bep20"),
-            wallets.get("trc20"),
-            wallets.get("poly"),
-            wallets.get("arb"),
-            wallets.get("ton"),
-            wallets.get("ltc"),
-            wallets.get("btc"),
-            wallets.get("pol"),
-        ]
+        for v in [wallets.get(k) for k in ("bep20", "trc20", "poly", "arb", "ton", "ltc", "btc", "pol")]
     )
-    if not has_merchant_wallet:
+    if not has_wallet:
         raise HTTPException(
             status_code=400,
-            detail="At least 1 destination merchant wallet address is required in the request payload (e.g. wallets={'bep20': '0x...'} or wallets={'trc20': 'T...'}). ClusterPay is non-custodial and requires explicit merchant recipient addresses."
+            detail=(
+                "At least 1 destination merchant wallet address is required (e.g. wallets={'bep20': '0x...'}). "
+                "ClusterPay is non-custodial and requires explicit merchant recipient addresses."
+            )
         )
 
-    # 6-decimal anti-theft micro-offset
-    effective_amount = generate_micro_offset_amount(base_usd)
+    db = get_db()
+
+    # ── UNIQUE AMOUNT SLOT ────────────────────────────────────────────────────
+    # Generates a micro-offset amount that is provably unique across ALL currently
+    # active pending sessions for these wallet addresses. If two checkouts of $10.00
+    # are live simultaneously, they will have different exact amounts: $10.003421 and
+    # $10.007865. Once one expires its slot is freed and can be reused.
+    effective_amount = await generate_unique_session_amount(base_usd, wallets, db)
 
     session_id = f"cpay_{uuid.uuid4().hex[:20]}"
     now = datetime.utcnow()
@@ -72,7 +74,7 @@ async def create_checkout_session(req: GatewayCheckoutRequest, request: Request,
         "mode": req.mode or "hosted",
         "allowed_origins": req.allowed_origins or [],
         "allowed_ips": req.allowed_ips or [],
-        "wallets": req.wallets or {},
+        "wallets": wallets,
         "require_email": bool(req.require_email),
         "require_buyer_name": bool(req.require_buyer_name),
         "customer_email": req.customer_email or "",
@@ -84,7 +86,6 @@ async def create_checkout_session(req: GatewayCheckoutRequest, request: Request,
         "expires_at": expires_at
     }
 
-    db = get_db()
     await db.payment_sessions.insert_one(doc)
 
     payment_url = f"{settings.BASE_URL}/gateway/pay/{session_id}"
@@ -120,7 +121,8 @@ async def create_donate_checkout_session(req: DonateCheckoutRequest, request: Re
         "pol": settings.DEFAULT_POL_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
     }
 
-    effective_amount = generate_micro_offset_amount(req.amount)
+    db = get_db()
+    effective_amount = await generate_unique_session_amount(req.amount, dev_wallets, db)
     session_id = f"cpay_{uuid.uuid4().hex[:20]}"
     now = datetime.utcnow()
     expires_at = now + timedelta(minutes=20)
@@ -143,7 +145,6 @@ async def create_donate_checkout_session(req: DonateCheckoutRequest, request: Re
         "expires_at": expires_at
     }
 
-    db = get_db()
     await db.payment_sessions.insert_one(doc)
 
     payment_url = f"/gateway/pay/{session_id}"
@@ -155,4 +156,3 @@ async def create_donate_checkout_session(req: DonateCheckoutRequest, request: Re
         "currency": "USD",
         "payment_url": payment_url
     }
-

@@ -371,8 +371,9 @@ async def admin_list_sessions(
 async def admin_create_session(req: AdminCreateSessionRequest, _: bool = Depends(verify_admin_token)):
     if req.amount <= 0:
         raise HTTPException(status_code=400, detail="Amount must be > 0")
-    from src.core.micro_offset import generate_micro_offset_amount
-    effective_amount = generate_micro_offset_amount(req.amount)
+    from src.core.micro_offset import generate_unique_session_amount
+    db = get_db()
+    effective_amount = await generate_unique_session_amount(req.amount, req.wallets or {}, db)
     session_id      = f"cpay_{uuid.uuid4().hex[:16]}"
     now             = datetime.utcnow()
     exp_mins        = max(5, min(req.expiry_minutes or 15, 1440))
@@ -406,7 +407,6 @@ async def admin_create_session(req: AdminCreateSessionRequest, _: bool = Depends
         "expires_at":         expires_at,
     }
 
-    db = get_db()
     await db.payment_sessions.insert_one(doc)
 
     return {
