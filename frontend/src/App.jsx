@@ -26,7 +26,8 @@ import {
   Search,
   Lock,
   Home,
-  MoreVertical
+  MoreVertical,
+  AlertTriangle
 } from 'lucide-react';
 import { LANGUAGES, getTranslation } from './i18n';
 import { QRCodeSVG } from 'qrcode.react';
@@ -312,7 +313,7 @@ export default function App() {
   const [showLangDrawer, setShowLangDrawer] = useState(false);
   const [showMenuDrawer, setShowMenuDrawer] = useState(false);
   const [searchLangQuery, setSearchLangQuery] = useState('');
-  const t = (key) => getTranslation(currentLang, key);
+  const t = (key, params) => getTranslation(currentLang, key, params);
 
   useEffect(() => {
     if (theme === 'light') {
@@ -725,7 +726,15 @@ export default function App() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.06]">
+                {/* Clear, Non-Ignorable Dynamic Network Warning Banner */}
+                <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2 text-[11px] text-amber-800 dark:text-amber-200">
+                  <AlertTriangle size={15} className="text-amber-500 shrink-0 mt-0.5" />
+                  <p className="leading-snug">
+                    {t('network_loss_warning', { coin: `${selectedCoin.symbol} (${selectedCoin.network || selectedCoin.badge})`, chain: selectedCoin.network || selectedCoin.badge })}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/[0.06]">
                   <button 
                     className="cf-btn-primary"
                     onClick={() => {
@@ -1070,6 +1079,19 @@ export default function App() {
               </strong>
               <div className="text-[11px] text-zinc-500">
                 ${initialAmount.toFixed(2)} USD • {selectedCoin.network}
+              </div>
+            </div>
+
+            {/* Clear, Non-Ignorable Dynamic Network Warning Card */}
+            <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-2.5 text-xs text-amber-800 dark:text-amber-200 shadow-xs">
+              <AlertTriangle size={16} className="text-amber-500 shrink-0 mt-0.5" />
+              <div className="leading-snug space-y-0.5">
+                <strong className="font-bold block text-amber-900 dark:text-amber-100 text-xs">
+                  {t('important_network_rule')}
+                </strong>
+                <p className="text-[11px] opacity-90">
+                  {t('network_loss_warning', { coin: `${selectedCoin.symbol} (${selectedCoin.network || selectedCoin.badge})`, chain: selectedCoin.network || selectedCoin.badge })}
+                </p>
               </div>
             </div>
 

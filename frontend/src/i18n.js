@@ -67,6 +67,8 @@ export const TRANSLATIONS = {
     listening_mempool: "Listening for mempool transfer...",
     i_have_paid: "I have Paid & Sent Transfer →",
     exact_amount_warning: "Send the exact amount. Micro-offset verification ensures automated instant settlement.",
+    important_network_rule: "Important Network Warning",
+    network_loss_warning: "Only pay {coin} on {chain}. Sending any other asset may result in permanent loss.",
     confirming_payment: "Confirming Payment",
     confirming_subtitle: "Scanning blockchain mempool for incoming transfer...",
     scanning_mempool: "Scanning mempool and recent blocks...",
@@ -126,6 +128,8 @@ export const TRANSLATIONS = {
     listening_mempool: "正在监听区块链交易广播...",
     i_have_paid: "我已完成转账 →",
     exact_amount_warning: "请务必支付精确金额（含小数位），系统将秒级自动确认到账。",
+    important_network_rule: "重要网络与资产提醒",
+    network_loss_warning: "请务必仅在 {chain} 网络支付 {coin}。转入其他资产或错误网络将导致资金永久丢失无法找回。",
     confirming_payment: "正在确认支付",
     confirming_subtitle: "正在扫描区块链交易池与最新区块...",
     scanning_mempool: "正在检索内存池交易记录...",
@@ -185,6 +189,8 @@ export const TRANSLATIONS = {
     listening_mempool: "मेमपूल ट्रांसफर का इंतजार है...",
     i_have_paid: "मैंने भुगतान कर दिया है →",
     exact_amount_warning: "सटीक राशि भेजें। स्वचालित तत्काल निपटान सुनिश्चित होता है।",
+    important_network_rule: "महत्वपूर्ण नेटवर्क चेतावनी",
+    network_loss_warning: "केवल {chain} पर {coin} भेजें। किसी अन्य संपत्ति या नेटवर्क को भेजने पर राशि स्थायी रूप से खो सकती है।",
     confirming_payment: "भुगतान की पुष्टि हो रही है",
     confirming_subtitle: "ब्लॉकचेन मेमपूल स्कैन किया जा रहा है...",
     scanning_mempool: "मेमपूल और हालिया ब्लॉक स्कैन हो रहे हैं...",
@@ -244,6 +250,8 @@ export const TRANSLATIONS = {
     listening_mempool: "Esperando transferencia en mempool...",
     i_have_paid: "He pagado y enviado →",
     exact_amount_warning: "Envía la cantidad exacta para confirmación automática instantánea.",
+    important_network_rule: "Aviso importante de red",
+    network_loss_warning: "Solo paga {coin} en {chain}. Enviar cualquier otro activo puede resultar en una pérdida permanente.",
     confirming_payment: "Confirmando pago",
     confirming_subtitle: "Escaneando mempool de la blockchain...",
     scanning_mempool: "Escaneando mempool y bloques recientes...",
@@ -303,6 +311,8 @@ export const TRANSLATIONS = {
     listening_mempool: "Ожидание транзакции в мемпуле...",
     i_have_paid: "Я оплатил и отправил →",
     exact_amount_warning: "Отправьте точную сумму для автоматического мгновенного зачисления.",
+    important_network_rule: "Важное предупреждение о сети",
+    network_loss_warning: "Отправляйте только {coin} в сети {chain}. Отправка любых других активов может привести к безвозвратной потере.",
     confirming_payment: "Подтверждение платежа",
     confirming_subtitle: "Сканирование блокчейн-мемпула...",
     scanning_mempool: "Сканирование мемпула и последних блоков...",
@@ -362,6 +372,8 @@ export const TRANSLATIONS = {
     listening_mempool: "ブロックチェーン上の送金を待機中...",
     i_have_paid: "送金を完了しました →",
     exact_amount_warning: "自動即時着金のため、正確な金額を送金してください。",
+    important_network_rule: "重要なネットワーク警告",
+    network_loss_warning: "必ず {chain} ネットワークの {coin} を送金してください。他の資産を送金すると永久に失われる可能性があります。",
     confirming_payment: "支払いを照合中",
     confirming_subtitle: "メモリプールを確認しています...",
     scanning_mempool: "最新ブロックをスキャン中...",
@@ -421,6 +433,8 @@ export const TRANSLATIONS = {
     listening_mempool: "블록체인 전송 감지 대기 중...",
     i_have_paid: "송금을 완료했습니다 →",
     exact_amount_warning: "자동 즉시 정산을 위해 정확한 금액을 전송해 주세요.",
+    important_network_rule: "중요 네트워크 주의사항",
+    network_loss_warning: "반드시 {chain} 네트워크의 {coin}만 전송하세요. 다른 자산 전송 시 영구 유실될 수 있습니다.",
     confirming_payment: "결제 확인 중",
     confirming_subtitle: "블록체인 멤풀을 스캔하고 있습니다...",
     scanning_mempool: "멤풀 및 최근 블록 스캔 중...",
@@ -480,6 +494,8 @@ export const TRANSLATIONS = {
     listening_mempool: "في انتظار وصول التحويل عبر الشبكة...",
     i_have_paid: "لقد قمت بالدفع والإرسال ←",
     exact_amount_warning: "يرجى إرسال المبلغ بدقة لضمان التأكيد الفوري الآلي.",
+    important_network_rule: "تحذير هام بشأن الشبكة",
+    network_loss_warning: "يرجى دفع {coin} عبر شبكة {chain} فقط. إرسال أي أصل آخر قد يؤدي إلى خسارة دائمة للأموال.",
     confirming_payment: "جاري تأكيد الدفع",
     confirming_subtitle: "جاري فحص شبكة البلوكتشين...",
     scanning_mempool: "جاري فحص المعاملات والكتل الحديثة...",
@@ -539,6 +555,8 @@ export const TRANSLATIONS = {
     listening_mempool: "En attente du transfert sur la blockchain...",
     i_have_paid: "J'ai payé et envoyé le transfert →",
     exact_amount_warning: "Envoyez le montant exact pour un règlement instantané automatisé.",
+    important_network_rule: "Avertissement important sur le réseau",
+    network_loss_warning: "Payez uniquement en {coin} sur le réseau {chain}. Tout autre actif envoyé sera définitivement perdu.",
     confirming_payment: "Confirmation du paiement",
     confirming_subtitle: "Analyse du mempool en cours...",
     scanning_mempool: "Analyse des blocs récents...",
@@ -598,6 +616,8 @@ export const TRANSLATIONS = {
     listening_mempool: "Warten auf Blockchain-Transfer...",
     i_have_paid: "Ich habe überwiesen →",
     exact_amount_warning: "Senden Sie den exakten Betrag für eine sofortige automatische Bestätigung.",
+    important_network_rule: "Wichtiger Netzwerk- und Asset-Hinweis",
+    network_loss_warning: "Senden Sie nur {coin} über das {chain}-Netzwerk. Andere Assets gehen unwiderruflich verloren.",
     confirming_payment: "Zahlung wird bestätigt",
     confirming_subtitle: "Blockchain-Mempool wird gescannt...",
     scanning_mempool: "Mempool und Blöcke werden geprüft...",
@@ -618,7 +638,13 @@ export const TRANSLATIONS = {
   }
 };
 
-export const getTranslation = (langCode, key) => {
+export const getTranslation = (langCode, key, params = {}) => {
   const dict = TRANSLATIONS[langCode] || TRANSLATIONS['en'];
-  return dict[key] || TRANSLATIONS['en'][key] || key;
+  let str = dict[key] || TRANSLATIONS['en'][key] || key;
+  if (params && typeof str === 'string') {
+    Object.keys(params).forEach(k => {
+      str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), params[k]);
+    });
+  }
+  return str;
 };
