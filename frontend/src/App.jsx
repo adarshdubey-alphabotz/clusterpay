@@ -764,55 +764,55 @@ export default function App() {
           {/* Expandable Invoice Details Popup Drawer */}
           {showDetailsDrawer && (
             <div className="rzp-drawer-overlay" onClick={() => setShowDetailsDrawer(false)}>
-              <div className="rzp-drawer-card" onClick={e => e.stopPropagation()}>
+              <div className="rzp-drawer-card max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
                 <div className="flex justify-between items-center pb-2 border-b border-white/[0.06]">
-                  <h3 className="font-bold text-sm text-white">Order Summary</h3>
-                  <button onClick={() => setShowDetailsDrawer(false)} className="text-zinc-400 hover:text-zinc-300">
+                  <h3 className="font-bold text-sm text-white">{t('order_summary')}</h3>
+                  <button onClick={() => setShowDetailsDrawer(false)} className="text-zinc-400 hover:text-zinc-300 cursor-pointer">
                     <X size={16} />
                   </button>
                 </div>
                 <div className="space-y-2 py-3 text-xs font-mono">
                   <div className="flex justify-between text-zinc-500">
-                    <span>Merchant</span>
+                    <span>{t('merchant')}</span>
                     <span className="font-bold text-white">{merchantName}</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
-                    <span>Purpose</span>
+                    <span>{t('purpose')}</span>
                     <span className="text-white">{paymentPurpose}</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
-                    <span>Invoice Ref</span>
+                    <span>{t('invoice_ref')}</span>
                     <span className="font-bold text-white">{invoiceId}</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
-                    <span>Base Amount</span>
+                    <span>{t('base_amount')}</span>
                     <span className="text-white">${initialAmount.toFixed(2)} USD</span>
                   </div>
                   <div className="flex justify-between text-zinc-500">
-                    <span>ClusterPay Surcharge</span>
+                    <span>{t('gateway_fee')}</span>
                     <span className="font-bold text-emerald-600">$0.00 (0%)</span>
                   </div>
                   {customerName && (
                     <div className="flex justify-between text-zinc-500">
-                      <span>Buyer Name</span>
+                      <span>{t('buyer_name')}</span>
                       <span className="text-white font-semibold">{customerName}</span>
                     </div>
                   )}
                   {customerEmail && (
                     <div className="flex justify-between text-zinc-500">
-                      <span>Customer Email</span>
+                      <span>{t('customer_email')}</span>
                       <span className="text-white">{customerEmail}</span>
                     </div>
                   )}
                   {customNote && (
                     <div className="flex justify-between text-zinc-500">
-                      <span>Custom Note</span>
+                      <span>{t('custom_note')}</span>
                       <span className="text-white italic max-w-[200px] text-right truncate">{customNote}</span>
                     </div>
                   )}
                 </div>
                 <div className="pt-2 border-t border-white/[0.06] flex justify-between items-center text-sm font-bold text-white">
-                  <span>Total Payable</span>
+                  <span>{t('total_payable')}</span>
                   <span>${initialAmount.toFixed(2)} USD</span>
                 </div>
               </div>
@@ -920,22 +920,22 @@ export default function App() {
         <div className="rzp-screen">
           
           <div className="rzp-header-nav">
-            <button className="rzp-nav-back" onClick={() => setStep('select_option')}>
+            <button className="rzp-nav-back cursor-pointer" onClick={() => setStep('select_option')}>
               <ArrowLeft size={16} />
             </button>
-            <span className="rzp-nav-title">Select Payment Method</span>
+            <span className="rzp-nav-title">{t('choose_method')}</span>
             <div className="w-8" />
           </div>
 
           {/* Selected Option Card */}
-          <div className="p-4 bg-[#0F0F12] text-white rounded-2xl m-4 space-y-2">
-            <span className="text-[11px] text-zinc-400 uppercase font-semibold block">Selected Asset</span>
+          <div className="p-4 bg-[#17171C] text-white rounded-2xl m-4 space-y-2 border border-white/10">
+            <span className="text-[11px] text-zinc-400 uppercase font-semibold block">{t('select_coin')}</span>
             <div className="flex items-center gap-3">
               <selectedCoin.icon className="w-8 h-8" />
               <div>
                 <h3 className="font-bold text-base text-white">{selectedCoin.name}</h3>
                 <span className="text-xs text-zinc-300 font-mono">
-                  Send: <b>{currentExactAmount} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
+                  {t('send')}: <b>{currentExactAmount} {selectedCoin.symbol}</b> (${initialAmount.toFixed(2)} USD)
                 </span>
               </div>
             </div>
@@ -943,12 +943,12 @@ export default function App() {
 
           <div className="p-4 space-y-3">
             <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider block mb-1">
-              Choose Deposit Mode
+              {t('choose_method_desc')}
             </span>
 
             {/* Method 1: QR Code */}
             <div 
-              className="rzp-method-card"
+              className="rzp-method-card cursor-pointer"
               onClick={() => {
                 setSelectedSubMethod('qr');
                 setStep('payment_details');
@@ -958,15 +958,15 @@ export default function App() {
                 <QrCode3DIcon />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-sm text-white">Scan QR Code</h4>
-                <p className="text-xs text-zinc-500">Scan instantly with your mobile crypto wallet app</p>
+                <h4 className="font-bold text-sm text-white">{t('method_qr_title')}</h4>
+                <p className="text-xs text-zinc-500">{t('method_qr_desc')}</p>
               </div>
               <ChevronRight size={18} className="text-zinc-400" />
             </div>
 
             {/* Method 2: Monospace Address */}
             <div 
-              className="rzp-method-card"
+              className="rzp-method-card cursor-pointer"
               onClick={() => {
                 setSelectedSubMethod('address');
                 setStep('payment_details');
@@ -976,8 +976,8 @@ export default function App() {
                 <Crystal3DIcon />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-sm text-white">Payment Address</h4>
-                <p className="text-xs text-zinc-500">Copy destination wallet address & exact amount</p>
+                <h4 className="font-bold text-sm text-white">{t('method_addr_title')}</h4>
+                <p className="text-xs text-zinc-500">{t('method_addr_desc')}</p>
               </div>
               <ChevronRight size={18} className="text-zinc-400" />
             </div>
@@ -986,7 +986,7 @@ export default function App() {
           <div className="mt-auto p-4 text-center">
             <div className="rzp-secured-mark">
               <ShieldCheck size={14} className="text-blue-600" />
-              <span>Secured by <b>ClusterPay</b></span>
+              <span>{t('secured_by')} <b>ClusterPay</b></span>
             </div>
           </div>
 
@@ -1001,10 +1001,10 @@ export default function App() {
         <div className="rzp-screen pb-6">
           
           <div className="rzp-header-nav">
-            <button className="rzp-nav-back" onClick={() => setStep('choose_method')}>
+            <button className="rzp-nav-back cursor-pointer" onClick={() => setStep('choose_method')}>
               <ArrowLeft size={16} />
             </button>
-            <span className="rzp-nav-title">Pay with {selectedCoin.name}</span>
+            <span className="rzp-nav-title">{selectedCoin.name}</span>
             <div className="font-mono text-xs font-bold text-zinc-300 bg-[#252530] px-2 py-1 rounded-full">
               {formatTimer(timeLeft)}
             </div>
@@ -1014,7 +1014,7 @@ export default function App() {
             
             {/* Amount Banner */}
             <div className="text-center p-3 bg-[#1E1E24] rounded-2xl border border-white/10">
-              <span className="text-[11px] text-zinc-400 uppercase font-semibold block">Total Due</span>
+              <span className="text-[11px] text-zinc-400 uppercase font-semibold block">{t('exact_amount_to_transfer')}</span>
               <strong className="text-xl font-bold font-mono text-white">
                 {currentExactAmount} {selectedCoin.symbol}
               </strong>
@@ -1026,11 +1026,11 @@ export default function App() {
             {/* QR View */}
             {selectedSubMethod === 'qr' && (
               <div className="p-4 bg-[#17171C] rounded-2xl border border-white/10 text-center space-y-3 shadow-sm">
-                <div className="inline-block p-3 bg-[#17171C] rounded-2xl border border-white/10 shadow-2xs">
+                <div className="inline-block p-3 bg-white rounded-2xl border border-white/10 shadow-2xs">
                   <QRCodeSVG value={qrPayload} size={150} level="M" />
                 </div>
                 <div className="text-xs text-zinc-500 font-mono">
-                  Scan with Trust Wallet, MetaMask, SafePal or Tonkeeper
+                  Trust Wallet, MetaMask, SafePal, Tonkeeper
                 </div>
 
                 <div className="flex gap-2 justify-center pt-1">
@@ -1039,7 +1039,7 @@ export default function App() {
                     className="px-3 py-1.5 rounded-xl bg-[#252530] hover:bg-[#1E1E24] text-zinc-100 text-xs font-mono font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
                     {copiedAmount ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-zinc-500" />}
-                    <span>{copiedAmount ? 'Amount Copied' : 'Copy Amount'}</span>
+                    <span>{copiedAmount ? t('amount_copied') : `${t('copy')} ${t('base_amount')}`}</span>
                   </button>
 
                   <a
@@ -1072,7 +1072,7 @@ export default function App() {
             {selectedSubMethod === 'address' && (
               <div className="space-y-3">
                 <div className="p-3.5 bg-[#1E1E24] rounded-2xl border border-white/10 space-y-1.5">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase block">Deposit Address</span>
+                  <span className="text-[11px] font-bold text-zinc-500 uppercase block">{t('deposit_address')}</span>
                   <div className="p-2.5 bg-[#17171C] rounded-xl border border-white/10 font-mono text-xs text-white break-all flex items-center justify-between gap-2">
                     <span>{selectedCoin.address}</span>
                     <button 
@@ -1080,13 +1080,13 @@ export default function App() {
                       className="shrink-0 px-2.5 py-1 rounded-lg bg-[#0F0F12] text-white text-xs font-medium flex items-center gap-1 cursor-pointer"
                     >
                       {copiedAddress ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
-                      <span>{copiedAddress ? 'Copied' : 'Copy'}</span>
+                      <span>{copiedAddress ? t('copied') : t('copy')}</span>
                     </button>
                   </div>
                 </div>
 
                 <div className="p-3.5 bg-[#1E1E24] rounded-2xl border border-white/10 space-y-1.5">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase block">Exact Amount to Transfer</span>
+                  <span className="text-[11px] font-bold text-zinc-500 uppercase block">{t('exact_amount_to_transfer')}</span>
                   <div className="p-2.5 bg-[#17171C] rounded-xl border border-white/10 font-mono text-xs font-bold text-white flex items-center justify-between">
                     <span>{currentExactAmount} {selectedCoin.symbol}</span>
                     <button 
@@ -1094,13 +1094,13 @@ export default function App() {
                       className="px-2.5 py-1 rounded-lg bg-[#252530] text-zinc-100 text-xs font-medium flex items-center gap-1 cursor-pointer"
                     >
                       {copiedAmount ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
-                      <span>{copiedAmount ? 'Copied' : 'Copy'}</span>
+                      <span>{copiedAmount ? t('copied') : t('copy')}</span>
                     </button>
                   </div>
                 </div>
 
                 <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-800/50 text-[11px] text-amber-200 leading-snug">
-                  ⚠️ Send the exact amount (<b>{currentExactAmount} {selectedCoin.symbol}</b>). Micro-offset verification ensures automated instant settlement.
+                  ⚠️ {t('exact_amount_warning')}
                 </div>
               </div>
             )}
@@ -1113,7 +1113,7 @@ export default function App() {
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-950/200"></span>
                 </span>
                 <span className="text-xs font-semibold text-white">
-                  Listening for mempool transfer...
+                  {t('listening_mempool')}
                 </span>
               </div>
 
@@ -1127,8 +1127,8 @@ export default function App() {
             </div>
 
             {/* Action Button */}
-            <button className="rzp-primary-btn" onClick={handlePaidClick}>
-              <span>I have Paid & Sent Transfer →</span>
+            <button className="rzp-primary-btn cursor-pointer" onClick={handlePaidClick}>
+              <span>{t('i_have_paid')}</span>
             </button>
 
           </div>
@@ -1152,7 +1152,7 @@ export default function App() {
               )}
               <h1 className="rzp-merchant-title">{merchantName}</h1>
             </div>
-            <button onClick={() => setStep('payment_details')} className="text-zinc-400 hover:text-white">
+            <button onClick={() => setStep('payment_details')} className="text-zinc-400 hover:text-white cursor-pointer">
               <X size={20} />
             </button>
           </div>
@@ -1162,8 +1162,8 @@ export default function App() {
             {/* 3D Spinning Gold Crypto Coin with Halo */}
             <Spinning3DCoin size={120} />
 
-            <h2 className="rzp-confirming-title">Confirming Payment</h2>
-            <p className="rzp-confirming-subtitle">Scanning blockchain mempool for incoming transfer...</p>
+            <h2 className="rzp-confirming-title">{t('confirming_payment')}</h2>
+            <p className="rzp-confirming-subtitle">{t('confirming_subtitle')}</p>
 
             <div className="rzp-confirming-pill">
               <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full"></span>
@@ -1180,10 +1180,10 @@ export default function App() {
             </div>
 
             <button 
-              className="rzp-cancel-button mt-4"
+              className="rzp-cancel-button mt-4 cursor-pointer"
               onClick={() => setStep('payment_details')}
             >
-              Cancel
+              {t('cancel')}
             </button>
 
           </div>
@@ -1191,7 +1191,7 @@ export default function App() {
           <div className="mt-auto pb-4 text-center">
             <div className="rzp-secured-mark">
               <ShieldCheck size={14} className="text-blue-600" />
-              <span>Secured by <b>ClusterPay</b></span>
+              <span>{t('secured_by')} <b>ClusterPay</b></span>
             </div>
           </div>
 
@@ -1211,41 +1211,41 @@ export default function App() {
               <PaperReceiptGraphic />
             </div>
 
-            <h2 className="rzp-receipt-title">Payment Successful</h2>
-            <p className="text-xs text-zinc-500 mt-1">Zero-confirmation transaction verified on-chain.</p>
+            <h2 className="rzp-receipt-title">{t('payment_successful')}</h2>
+            <p className="text-xs text-zinc-500 mt-1">{t('payment_settled_onchain')}</p>
 
             {/* Payment Details Section */}
             <div className="rzp-receipt-section">
-              <h3 className="rzp-receipt-heading">Payment Details</h3>
+              <h3 className="rzp-receipt-heading">{t('payment_options_for')}</h3>
               <div className="rzp-receipt-table">
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Invoice Number</span>
+                  <span className="lbl">{t('invoice_ref')}</span>
                   <span className="sep">:</span>
                   <span className="val font-mono">{invoiceId}</span>
                 </div>
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Order Time</span>
+                  <span className="lbl">{t('time_settled')}</span>
                   <span className="sep">:</span>
                   <span className="val">{orderTime}</span>
                 </div>
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Payment Method</span>
+                  <span className="lbl">{t('payment_method')}</span>
                   <span className="sep">:</span>
                   <span className="val">{selectedCoin?.name || 'USDT (BEP-20)'}</span>
                 </div>
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Payment Status</span>
+                  <span className="lbl">Status</span>
                   <span className="sep">:</span>
                   <span className="val"><span className="rzp-green-pill">Successful</span></span>
                 </div>
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Amount Paid</span>
+                  <span className="lbl">{t('amount_paid')}</span>
                   <span className="sep">:</span>
                   <span className="val font-bold">${initialAmount.toFixed(2)} USD</span>
                 </div>
                 {txDetails.txid && (
                   <div className="rzp-receipt-row">
-                    <span className="lbl">Tx Hash</span>
+                    <span className="lbl">{t('transaction_hash')}</span>
                     <span className="sep">:</span>
                     <span className="val font-mono">
                       {selectedCoin?.explorerUrl ? (
@@ -1264,20 +1264,20 @@ export default function App() {
 
             {/* Product Details Section */}
             <div className="rzp-receipt-section">
-              <h3 className="rzp-receipt-heading">Product Details</h3>
+              <h3 className="rzp-receipt-heading">{t('order_summary')}</h3>
               <div className="rzp-receipt-table">
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Order Item</span>
+                  <span className="lbl">{t('purpose')}</span>
                   <span className="sep">:</span>
                   <span className="val">{paymentPurpose}</span>
                 </div>
                 <div className="rzp-receipt-row">
-                  <span className="lbl">Gateway Fee</span>
+                  <span className="lbl">{t('gateway_fee')}</span>
                   <span className="sep">:</span>
                   <span className="val font-bold text-emerald-600">$0.00</span>
                 </div>
                 <div className="rzp-receipt-row rzp-total-row">
-                  <span className="lbl">Total Settled</span>
+                  <span className="lbl">{t('total_payable')}</span>
                   <span className="sep">:</span>
                   <span className="val font-bold text-white">${initialAmount.toFixed(2)} USD</span>
                 </div>
@@ -1285,18 +1285,18 @@ export default function App() {
             </div>
 
             {/* Download PDF Button */}
-            <button className="rzp-download-btn" onClick={() => window.print()}>
-              <Download size={15} /> Download PDF Receipt
+            <button className="rzp-download-btn cursor-pointer" onClick={() => window.print()}>
+              <Download size={15} /> {t('download_receipt')}
             </button>
 
             {redirectUrl ? (
               <a href={redirectUrl} className="rzp-primary-btn mt-3 text-center">
-                <span>Return to Merchant ({redirectCountdown}s)</span>
+                <span>{t('close_finish')} ({redirectCountdown}s)</span>
                 <ArrowRight size={15} />
               </a>
             ) : (
               <div className="mt-3 p-2.5 bg-emerald-950/20 text-emerald-300 rounded-xl text-xs font-medium border border-emerald-800/40 text-center">
-                You may now safely close this window.
+                {t('close_finish')}
               </div>
             )}
 

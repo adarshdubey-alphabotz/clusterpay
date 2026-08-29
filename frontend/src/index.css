@@ -117,21 +117,64 @@ body.checkout-body.theme-light {
 /*                 LIGHT MODE OVERRIDES FOR CARDS & TEXT               */
 /* ═══════════════════════════════════════════════════════════════════ */
 
+.theme-light,
 .theme-light .rzp-wrapper,
 .theme-light .rzp-screen,
 .theme-light .cf-screen {
-  background: #F8F9FB !important;
+  background: #F4F5F8 !important;
   color: #0F172A !important;
 }
 
 .theme-light .cf-body {
-  background: #F8F9FB;
+  background: #F4F5F8 !important;
+}
+
+/* Light mode card text and borders */
+.theme-light .cf-body .text-white,
+.theme-light .rzp-screen .text-white,
+.theme-light .rzp-drawer-card .text-white {
+  color: #0F172A !important;
+}
+
+.theme-light .cf-body .text-zinc-100,
+.theme-light .cf-body .text-zinc-200,
+.theme-light .cf-body .text-zinc-300,
+.theme-light .rzp-drawer-card .text-zinc-100 {
+  color: #1E293B !important;
+}
+
+.theme-light .cf-body .text-zinc-400,
+.theme-light .cf-body .text-zinc-500,
+.theme-light .rzp-drawer-card .text-zinc-500 {
+  color: #64748B !important;
+}
+
+.theme-light .bg-\[\#17171C\],
+.theme-light .bg-\[\#1E1E24\],
+.theme-light .bg-\[\#252530\],
+.theme-light .bg-\[\#0F0F12\] {
+  background-color: #FFFFFF !important;
+}
+
+.theme-light .border-white\/10,
+.theme-light .border-white\/\[0\.06\],
+.theme-light .border-white\/\[0\.08\],
+.theme-light .border-white\/5 {
+  border-color: #E2E8F0 !important;
+}
+
+.theme-light .bg-white\/5,
+.theme-light .bg-white\/\[0\.03\],
+.theme-light .bg-white\/\[0\.06\],
+.theme-light .bg-white\/10 {
+  background-color: #F1F5F9 !important;
 }
 
 .theme-light .cf-offer-card,
 .theme-light .cf-carousel-card,
 .theme-light .cf-active-panel,
 .theme-light .rzp-request-card,
+.theme-light .rzp-method-card,
 .theme-light .rzp-confirming-amount-box,
 .theme-light .rzp-receipt-card,
 .theme-light .rzp-drawer-card {
@@ -141,10 +184,18 @@ body.checkout-body.theme-light {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
 }
 
+.theme-light .cf-carousel-card .cf-carousel-name {
+  color: #0F172A !important;
+}
+
 .theme-light .cf-carousel-card.selected {
   border-color: #2563EB !important;
   background: #EFF6FF !important;
   box-shadow: 0 0 0 2px #2563EB, 0 6px 16px rgba(37, 99, 235, 0.15) !important;
+}
+
+.theme-light .cf-carousel-card.selected .cf-carousel-name {
+  color: #2563EB !important;
 }
 
 .theme-light .cf-subbar {
@@ -166,6 +217,29 @@ body.checkout-body.theme-light {
   color: #2563EB !important;
 }
 
+.theme-light .rzp-topbar,
+.theme-light .rzp-header-nav {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+.theme-light .rzp-merchant-title,
+.theme-light .rzp-nav-title,
+.theme-light .rzp-confirming-title,
+.theme-light .rzp-receipt-title {
+  color: #0F172A !important;
+}
+
+.theme-light .rzp-confirming-subtitle {
+  color: #64748B !important;
+}
+
+.theme-light .rzp-confirming-pill {
+  background: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  color: #1E40AF !important;
+}
+
 .theme-light .rzp-bottom-bar {
   background: rgba(255, 255, 255, 0.98) !important;
   border-top: 1px solid #E2E8F0 !important;
@@ -176,7 +250,8 @@ body.checkout-body.theme-light {
 }
 
 .theme-light .rzp-continue-btn,
-.theme-light .cf-btn-primary {
+.theme-light .cf-btn-primary,
+.theme-light .rzp-primary-btn {
   background: #0F172A !important;
   color: #FFFFFF !important;
 }
@@ -194,6 +269,17 @@ body.checkout-body.theme-light {
 .theme-light .rzp-cancel-button {
   border-color: #CBD5E1 !important;
   color: #64748B !important;
+}
+
+/* Ensure Top Header keeps dark hero card */
+.theme-light .cf-header {
+  background: #0B0B0F !important;
+  color: #FFFFFF !important;
+}
+
+.theme-light .cf-header .text-white,
+.theme-light .cf-merchant-name {
+  color: #FFFFFF !important;
 }
 
 .gateway-card {
