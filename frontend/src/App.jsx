@@ -302,6 +302,8 @@ export default function App() {
   const [manualTxId, setManualTxId] = useState('');
   const [isVerifyingManual, setIsVerifyingManual] = useState(false);
   const [verifyError, setVerifyError] = useState('');
+  const [showManualTxInput, setShowManualTxInput] = useState(false);
+  const [activeCategoryTab, setActiveCategoryTab] = useState('all');
 
   // 🌐 Multilingual & ☀️/🌙 Theme Switcher State
   const [theme, setTheme] = useState(() => {
@@ -566,9 +568,11 @@ export default function App() {
   const qrPayload = selectedCoin ? selectedCoin.qrPayload(selectedCoin.address, currentExactAmount) : '';
   const invoiceId = customId ? `CPAY-${customId.toUpperCase()}` : `CPAY-${sessionId.slice(-8).toUpperCase()}`;
 
-  const stableCoins = displayCoins.filter(c => c.symbol === 'USDT');
-  const nativeCoins = displayCoins.filter(c => c.symbol !== 'USDT');
-  const [activeTab, setActiveTab] = useState('quick'); // 'quick' | 'stable' | 'native'
+  const filteredCoins = displayCoins.filter(c => {
+    if (activeCategoryTab === 'stable') return c.symbol === 'USDT' || c.symbol === 'USDC';
+    if (activeCategoryTab === 'layer1') return c.symbol !== 'USDT' && c.symbol !== 'USDC';
+    return true;
+  });
 
   return (
     <div className={`rzp-wrapper ${isEmbed ? 'embedded' : ''} ${theme === 'light' ? 'theme-light' : ''}`}>
@@ -576,7 +580,11 @@ export default function App() {
       {/* Top Browser Bar (URL Pill, Language Selector, Dark/Light Mode) */}
       <div className="cf-top-browser-bar">
         <div className="flex items-center gap-2">
-          <button className="cf-top-icon-btn" title="ClusterPay Non-Custodial">
+          <button 
+            className="cf-top-icon-btn cursor-pointer" 
+            onClick={() => setStep('select_option')}
+            title="Return to Checkout Home"
+          >
             <Home size={15} />
           </button>
         </div>
@@ -676,6 +684,27 @@ export default function App() {
           {/* Main Body */}
           <div className="cf-body">
             
+            {/* Category Filter Chips */}
+            <div className="flex gap-1.5 pb-2 overflow-x-auto no-scrollbar">
+              {[
+                { id: 'all', label: 'All Coins' },
+                { id: 'stable', label: 'Stablecoins' },
+                { id: 'layer1', label: 'Layer-1' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveCategoryTab(tab.id)}
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                    activeCategoryTab === tab.id
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-white/5 hover:bg-white/10 text-zinc-400 border border-white/[0.08]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
             {/* Horizontal Swipeable Carousel (Like Cashfree UPI Row) */}
             <div className="cf-section-header">
               <span className="cf-section-title">{t('select_coin')}</span>
@@ -686,7 +715,7 @@ export default function App() {
 
             <div className="cf-carousel-wrap">
               <div className="cf-carousel-track">
-                {displayCoins.map((c) => {
+                {filteredCoins.map((c) => {
                   const Icon = c.icon;
                   const isSelected = (selectedCoin?.id === c.id) || (!selectedCoin && c.id === 'USDT_BEP20');
                   const calcAmt = c.calcAmount();
@@ -1196,6 +1225,37 @@ export default function App() {
               >
                 <RefreshCw size={13} />
               </button>
+            </div>
+
+            {/* Manual TxID Verification Accordion */}
+            <div className="p-3 bg-[#1E1E24] rounded-2xl border border-white/10 space-y-2">
+              <button 
+                onClick={() => setShowManualTxInput(!showManualTxInput)} 
+                className="w-full flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer font-medium"
+              >
+                <span>Paid via Exchange / Wallet? Enter TxHash</span>
+                {showManualTxInput ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+
+              {showManualTxInput && (
+                <div className="pt-2 space-y-2 border-t border-white/[0.06]">
+                  <input 
+                    type="text" 
+                    placeholder="Paste blockchain transaction hash (TxID)..."
+                    value={manualTxId}
+                    onChange={(e) => setManualTxId(e.target.value)}
+                    className="w-full bg-[#17171C] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white placeholder-zinc-500 outline-none focus:border-blue-500"
+                  />
+                  {verifyError && <div className="text-[11px] text-rose-400">{verifyError}</div>}
+                  <button 
+                    onClick={() => handleManualVerify()}
+                    disabled={isVerifyingManual || !manualTxId.trim()}
+                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    {isVerifyingManual ? 'Verifying on-chain...' : 'Verify Hash On-Chain'}
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Action Button */}
