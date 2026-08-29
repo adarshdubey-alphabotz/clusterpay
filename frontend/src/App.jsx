@@ -824,16 +824,16 @@ export default function App() {
             <div className="rzp-bottom-left">
               <span className="rzp-bottom-price">${initialAmount.toFixed(2)}</span>
               <button 
-                className="rzp-details-btn"
+                className="rzp-details-btn cursor-pointer"
                 onClick={() => setShowDetailsDrawer(!showDetailsDrawer)}
               >
-                <span>{showDetailsDrawer ? 'Hide Details' : t('view_details')}</span>
+                <span>{showDetailsDrawer ? t('hide_details') : t('view_details')}</span>
                 {showDetailsDrawer ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
               </button>
             </div>
 
             <button 
-              className="rzp-continue-btn"
+              className="rzp-continue-btn cursor-pointer"
               onClick={() => {
                 setSelectedCoin(displayCoins[0]);
                 setStep('choose_method');
