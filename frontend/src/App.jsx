@@ -310,6 +310,7 @@ export default function App() {
     try { return localStorage.getItem('cpay_lang') || 'en'; } catch(e) { return 'en'; }
   });
   const [showLangDrawer, setShowLangDrawer] = useState(false);
+  const [showMenuDrawer, setShowMenuDrawer] = useState(false);
   const [searchLangQuery, setSearchLangQuery] = useState('');
   const t = (key) => getTranslation(currentLang, key);
 
@@ -601,7 +602,11 @@ export default function App() {
             {theme === 'dark' ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} className="text-indigo-600" />}
           </button>
 
-          <button className="cf-top-icon-btn" title="Options">
+          <button 
+            className="cf-top-icon-btn" 
+            onClick={() => setShowMenuDrawer(true)} 
+            title="About ClusterPay"
+          >
             <MoreVertical size={15} />
           </button>
         </div>
@@ -745,6 +750,15 @@ export default function App() {
                 </div>
               </div>
             )}
+
+            {/* Subtle Open Source Footer Line */}
+            <div className="text-center py-3 text-[10px] text-zinc-500 flex items-center justify-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity">
+              <span>Open Source</span>
+              <span>•</span>
+              <a href="https://clusterpay.cloud" target="_blank" rel="noreferrer" className="hover:underline">clusterpay.cloud</a>
+              <span>•</span>
+              <a href="https://github.com/adarshdubey-alphabotz/clusterpay" target="_blank" rel="noreferrer" className="hover:underline">GitHub</a>
+            </div>
           </div>
 
           {/* Expandable Invoice Details Popup Drawer */}
@@ -891,6 +905,56 @@ export default function App() {
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ℹ️ Open Source Info & Protocol Drawer */}
+      {showMenuDrawer && (
+        <div className="rzp-drawer-overlay" onClick={() => setShowMenuDrawer(false)}>
+          <div className="rzp-drawer-card max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center pb-3 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <ClusterPayIcon className="w-6 h-6" />
+                <div>
+                  <h3 className="font-bold text-sm text-white">ClusterPay Gateway</h3>
+                  <span className="text-[10px] text-zinc-400 font-mono">v2.4 • Non-Custodial Protocol</span>
+                </div>
+              </div>
+              <button onClick={() => setShowMenuDrawer(false)} className="p-1 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 cursor-pointer">
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="py-4 space-y-3 text-xs">
+              <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] space-y-1">
+                <div className="font-bold text-white">100% Non-Custodial & Decentralized</div>
+                <p className="text-zinc-400 text-[11px] leading-relaxed">
+                  Payments settle directly into merchant-configured wallets on-chain with zero middleman holding funds.
+                </p>
+              </div>
+
+              <div className="space-y-2 pt-1 font-mono text-xs">
+                <a 
+                  href="https://github.com/adarshdubey-alphabotz/clusterpay" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] text-white transition-colors"
+                >
+                  <span>GitHub Repository</span>
+                  <ArrowUpRight size={14} className="text-zinc-400" />
+                </a>
+                <a 
+                  href="https://clusterpay.cloud" 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] text-white transition-colors"
+                >
+                  <span>Documentation & SDKs</span>
+                  <ArrowUpRight size={14} className="text-zinc-400" />
+                </a>
+              </div>
             </div>
           </div>
         </div>
