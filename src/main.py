@@ -195,6 +195,18 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
     time_left = max(0, int((expires_at - now).total_seconds()))
     
     wallets = session.get("wallets", {})
+    if "initial_balances" not in session:
+        from src.services.blockchain import get_all_merchant_balances
+        try:
+            init_bals = await get_all_merchant_balances(wallets)
+            await db.payment_sessions.update_one(
+                {"session_id": session_id},
+                {"$set": {"initial_balances": init_bals}}
+            )
+            session["initial_balances"] = init_bals
+        except Exception:
+            pass
+
     bep20 = wallets.get("bep20", getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""))
     trc20 = wallets.get("trc20", getattr(settings, "DEFAULT_USDT_TRC20_WALLET", ""))
     poly = wallets.get("poly", getattr(settings, "DEFAULT_USDT_POLY_WALLET", ""))
