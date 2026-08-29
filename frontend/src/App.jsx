@@ -447,7 +447,7 @@ export default function App() {
 
   useEffect(() => {
     if (step === 'success' || step === 'expired') return;
-    const interval = setInterval(checkPaymentStatus, 4000);
+    const interval = setInterval(checkPaymentStatus, 2000);
     return () => clearInterval(interval);
   }, [step, sessionId]);
 
@@ -507,7 +507,7 @@ export default function App() {
       if (done || pollCount >= 60 || step === 'underpayment' || step === 'expired') {
         clearInterval(interval);
       }
-    }, 2800);
+    }, 1800);
   };
 
   const handleCopyAddress = (addr) => {
@@ -1225,37 +1225,6 @@ export default function App() {
               >
                 <RefreshCw size={13} />
               </button>
-            </div>
-
-            {/* Manual TxID Verification Accordion */}
-            <div className="p-3 bg-[#1E1E24] rounded-2xl border border-white/10 space-y-2">
-              <button 
-                onClick={() => setShowManualTxInput(!showManualTxInput)} 
-                className="w-full flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer font-medium"
-              >
-                <span>Paid via Exchange / Wallet? Enter TxHash</span>
-                {showManualTxInput ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              </button>
-
-              {showManualTxInput && (
-                <div className="pt-2 space-y-2 border-t border-white/[0.06]">
-                  <input 
-                    type="text" 
-                    placeholder="Paste blockchain transaction hash (TxID)..."
-                    value={manualTxId}
-                    onChange={(e) => setManualTxId(e.target.value)}
-                    className="w-full bg-[#17171C] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white placeholder-zinc-500 outline-none focus:border-blue-500"
-                  />
-                  {verifyError && <div className="text-[11px] text-rose-400">{verifyError}</div>}
-                  <button 
-                    onClick={() => handleManualVerify()}
-                    disabled={isVerifyingManual || !manualTxId.trim()}
-                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    {isVerifyingManual ? 'Verifying on-chain...' : 'Verify Hash On-Chain'}
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Action Button */}
