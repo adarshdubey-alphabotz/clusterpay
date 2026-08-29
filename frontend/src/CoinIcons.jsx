@@ -15,7 +15,7 @@ const COIN_IMAGES = {
   ARB: "https://assets.coingecko.com/coins/images/16547/large/arbitrum_logo.png"
 };
 
-// 1. Tether USDT
+// 1. Tether USDT (Generic)
 export const UsdtIcon = ({ className = "w-6 h-6" }) => (
   <img 
     src={COIN_IMAGES.USDT} 
@@ -24,6 +24,58 @@ export const UsdtIcon = ({ className = "w-6 h-6" }) => (
     onError={(e) => {
       e.target.onerror = null;
       e.target.src = "https://cryptologos.cc/logos/tether-usdt-logo.png";
+    }}
+  />
+);
+
+// 1a. USDT on TRON (Official TRON Red Logo)
+export const UsdtTrc20Icon = ({ className = "w-6 h-6" }) => (
+  <img 
+    src={COIN_IMAGES.TRX} 
+    alt="USDT TRON" 
+    className={`${className} rounded-full object-contain`} 
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = "https://cryptologos.cc/logos/tron-trx-logo.png";
+    }}
+  />
+);
+
+// 1b. USDT on Polygon (Official Polygon Purple Logo)
+export const UsdtPolyIcon = ({ className = "w-6 h-6" }) => (
+  <img 
+    src={COIN_IMAGES.POL} 
+    alt="USDT Polygon" 
+    className={`${className} rounded-full object-contain`} 
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = "https://cryptologos.cc/logos/polygon-matic-logo.png";
+    }}
+  />
+);
+
+// 1c. USDT on Arbitrum (Official Arbitrum Cyan Logo)
+export const UsdtArbIcon = ({ className = "w-6 h-6" }) => (
+  <img 
+    src={COIN_IMAGES.ARB} 
+    alt="USDT Arbitrum" 
+    className={`${className} rounded-full object-contain`} 
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = "https://cryptologos.cc/logos/arbitrum-arb-logo.png";
+    }}
+  />
+);
+
+// 1d. USDT on BSC (Official Binance Gold Logo)
+export const UsdtBep20Icon = ({ className = "w-6 h-6" }) => (
+  <img 
+    src={COIN_IMAGES.BNB} 
+    alt="USDT BSC" 
+    className={`${className} rounded-full object-contain`} 
+    onError={(e) => {
+      e.target.onerror = null;
+      e.target.src = "https://cryptologos.cc/logos/bnb-bnb-logo.png";
     }}
   />
 );

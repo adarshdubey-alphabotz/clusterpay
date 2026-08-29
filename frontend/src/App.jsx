@@ -25,6 +25,10 @@ import { QRCodeSVG } from 'qrcode.react';
 import StoreApp from './StoreApp';
 import { 
   UsdtIcon, 
+  UsdtTrc20Icon,
+  UsdtPolyIcon,
+  UsdtArbIcon,
+  UsdtBep20Icon,
   BnbIcon, 
   TrxIcon, 
   PolygonIcon, 
@@ -92,7 +96,7 @@ export default function App() {
       badge: 'BSC',
       description: 'Binance Smart Chain (0% Surcharge)',
       address: pData.USDT_WALLET_BEP20 || '',
-      icon: UsdtIcon,
+      icon: UsdtBep20Icon,
       netBadge: <BscBadge size={16} />,
       speed: 'Instant',
       fees: '0.1-0.3%',
@@ -134,7 +138,7 @@ export default function App() {
       badge: 'TRON',
       description: 'Tron Network Instant Transfer',
       address: pData.USDT_WALLET_TRC20 || '',
-      icon: UsdtIcon,
+      icon: UsdtTrc20Icon,
       netBadge: <TronBadge size={16} />,
       speed: 'Instant',
       fees: 'Network Fee',
@@ -154,7 +158,7 @@ export default function App() {
       badge: 'Polygon',
       description: 'Polygon Proof of Stake (Near-Zero Fee)',
       address: pData.USDT_WALLET_POLY || '',
-      icon: UsdtIcon,
+      icon: UsdtPolyIcon,
       netBadge: <PolygonBadge size={16} />,
       speed: 'Instant',
       fees: 'Near-Zero',
@@ -174,7 +178,7 @@ export default function App() {
       badge: 'Arbitrum',
       description: 'Arbitrum Layer 2 Instant Transfer',
       address: pData.USDT_WALLET_ARBITRUM || '',
-      icon: UsdtIcon,
+      icon: UsdtArbIcon,
       netBadge: <ArbBadge size={16} />,
       speed: 'Instant',
       fees: 'Low L2 Fee',
@@ -640,104 +644,6 @@ export default function App() {
                 </div>
               </div>
             )}
-
-            {/* Categorized Detailed Coins List (All Coins with Live Exact Amounts) */}
-            <div className="cf-section-header mt-4">
-              <span className="cf-section-title">All Supported Networks</span>
-            </div>
-
-            {/* Category 1: USDT Stablecoins (0% Slippage) */}
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block px-1">
-                💵 USDT Networks (0% Slippage)
-              </span>
-              <div className="cf-stacked-card">
-                {stableCoins.map((c, idx) => {
-                  const Icon = c.icon;
-                  const calcAmt = c.calcAmount();
-                  return (
-                    <React.Fragment key={c.id}>
-                      {idx > 0 && <div className="cf-divider" />}
-                      <div 
-                        className="cf-list-item"
-                        onClick={() => {
-                          setSelectedCoin(c);
-                          setStep('choose_method');
-                        }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <div className="font-bold text-sm text-zinc-900 flex items-center gap-1.5">
-                              <span>{c.name}</span>
-                              <span className="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">
-                                {c.badge}
-                              </span>
-                            </div>
-                            <div className="text-[11px] text-zinc-500 font-mono">
-                              {calcAmt} {c.symbol} • {c.fees}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-zinc-900">${initialAmount.toFixed(2)}</span>
-                          <ChevronRight size={18} className="text-zinc-400" />
-                        </div>
-                      </div>
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Category 2: Native Cryptocurrencies */}
-            <div className="space-y-2 mt-4">
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block px-1">
-                🪙 Native Layer-1 Blockchains
-              </span>
-              <div className="cf-stacked-card">
-                {nativeCoins.map((c, idx) => {
-                  const Icon = c.icon;
-                  const calcAmt = c.calcAmount();
-                  return (
-                    <React.Fragment key={c.id}>
-                      {idx > 0 && <div className="cf-divider" />}
-                      <div 
-                        className="cf-list-item"
-                        onClick={() => {
-                          setSelectedCoin(c);
-                          setStep('choose_method');
-                        }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center shrink-0">
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <div className="font-bold text-sm text-zinc-900 flex items-center gap-1.5">
-                              <span>{c.name}</span>
-                              <span className="text-[10px] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">
-                                {c.badge}
-                              </span>
-                            </div>
-                            <div className="text-[11px] text-zinc-500 font-mono">
-                              {calcAmt} {c.symbol} • {c.speed}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-zinc-900">{calcAmt} {c.symbol}</span>
-                          <ChevronRight size={18} className="text-zinc-400" />
-                        </div>
-                      </div>
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            </div>
-
           </div>
 
           {/* Expandable Invoice Details Popup Drawer */}
