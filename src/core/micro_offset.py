@@ -39,6 +39,7 @@ async def generate_unique_session_amount(base_usd: float, wallets: dict, db, max
                 "expires_at": {"$gt": now},
                 "$or": [
                     {"wallets.bep20": {"$in": wallet_addrs}},
+                    {"wallets.opbnb": {"$in": wallet_addrs}},
                     {"wallets.trc20": {"$in": wallet_addrs}},
                     {"wallets.poly": {"$in": wallet_addrs}},
                     {"wallets.arb": {"$in": wallet_addrs}},

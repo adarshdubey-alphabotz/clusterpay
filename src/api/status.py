@@ -10,7 +10,7 @@ from src.services.webhook_dispatcher import dispatch_webhook
 
 router = APIRouter()
 
-VALID_COINS = {"USDT", "USDT_BEP20", "USDT_TRC20", "USDT_POLY", "USDT_ARB", "TON", "LTC", "BTC", "POL"}
+VALID_COINS = {"USDT", "USDT_BEP20", "USDT_OPBNB", "OPBNB", "USDT_TRC20", "USDT_POLY", "USDT_ARB", "TON", "LTC", "BTC", "POL"}
 
 
 class VerifyRequest(BaseModel):
@@ -188,8 +188,10 @@ async def verify_payment(req: VerifyRequest, request: Request, bg: BackgroundTas
     # 2. Get Merchant Destination Wallet
     wallets = session.get("wallets", {})
     recipient_map = {
-        "USDT":       wallets.get("bep20", ""),
-        "USDT_BEP20": wallets.get("bep20", ""),
+        "USDT":       wallets.get("bep20", "") or wallets.get("opbnb", ""),
+        "USDT_BEP20": wallets.get("bep20", "") or wallets.get("opbnb", ""),
+        "USDT_OPBNB": wallets.get("opbnb", "") or wallets.get("bep20", ""),
+        "OPBNB":      wallets.get("opbnb", "") or wallets.get("bep20", ""),
         "USDT_TRC20": wallets.get("trc20", ""),
         "USDT_POLY":  wallets.get("poly", ""),
         "USDT_ARB":   wallets.get("arb", ""),

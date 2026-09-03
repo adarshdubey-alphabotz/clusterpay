@@ -34,7 +34,7 @@ async def create_checkout_session(req: GatewayCheckoutRequest, request: Request,
     wallets = req.wallets or {}
     has_wallet = any(
         isinstance(v, str) and len(v.strip()) > 8
-        for v in [wallets.get(k) for k in ("bep20", "trc20", "poly", "arb", "ton", "ltc", "btc", "pol")]
+        for v in [wallets.get(k) for k in ("bep20", "opbnb", "trc20", "poly", "arb", "ton", "ltc", "btc", "pol")]
     )
     if not has_wallet:
         raise HTTPException(

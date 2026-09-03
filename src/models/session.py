@@ -6,6 +6,7 @@ from datetime import datetime
 # Maximum wallet address lengths per chain (generous but bounded)
 _WALLET_MAX_LEN = {
     "bep20": 44,   # EVM 0x + 40 hex
+    "opbnb": 44,   # EVM 0x + 40 hex
     "trc20": 36,   # TRON base58
     "poly":  44,   # EVM
     "arb":   44,   # EVM
