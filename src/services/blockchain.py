@@ -19,23 +19,30 @@ OFFICIAL_CONTRACTS = {
 EVM_RPCS = {
     "BSC": [
         "https://bsc-dataseed.binance.org",
-        "https://binance.llamarpc.com",
-        "https://bsc.meowrpc.com",
-        "https://1rpc.io/bnb"
+        "https://bsc-dataseed1.defibit.io",
+        "https://bsc-dataseed1.ninicoin.io",
+        "https://bsc-rpc.publicnode.com",
+        "https://1rpc.io/bnb",
+        "https://binance.drpc.org",
+        "https://bsc.meowrpc.com"
     ],
     "OPBNB": [
         "https://opbnb-mainnet-rpc.bnbchain.org",
-        "https://opbnb.publicnode.com",
+        "https://opbnb-rpc.publicnode.com",
+        "https://opbnb.drpc.org",
         "https://1rpc.io/opbnb"
     ],
     "POLYGON": [
-        "https://polygon-rpc.com",
-        "https://polygon.llamarpc.com",
-        "https://1rpc.io/matic"
+        "https://1rpc.io/matic",
+        "https://polygon-bor-rpc.publicnode.com",
+        "https://polygon.drpc.org",
+        "https://polygon.gateway.tenderly.co"
     ],
     "ARBITRUM": [
         "https://arb1.arbitrum.io/rpc",
-        "https://arbitrum.llamarpc.com"
+        "https://arbitrum-one-rpc.publicnode.com",
+        "https://arbitrum.drpc.org",
+        "https://1rpc.io/arb"
     ]
 }
 
@@ -140,6 +147,7 @@ async def verify_tron_usdt(txid: str, recipient: str, expected_amount: float) ->
 async def verify_evm_native(chain: str, txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
     """
     Verifies native EVM cryptocurrency transfers (BNB on BSC, POL on Polygon).
+    Automatically converts USD invoice target to native crypto with price volatility tolerance.
     """
     tx = await _evm_rpc_call(chain, "eth_getTransactionByHash", [txid])
     if not tx:
@@ -160,10 +168,19 @@ async def verify_evm_native(chain: str, txid: str, recipient: str, expected_amou
     raw_val = int(tx.get("value", "0x0"), 16)
     amount_found = float(Decimal(raw_val) / Decimal(10 ** 18))
 
-    if abs(amount_found - expected_amount) < 0.000005 or amount_found >= expected_amount:
-        return True, f"{chain} native transfer verified successfully", amount_found
+    # Calculate expected native coin amount from USD
+    from src.core.currency import get_crypto_prices
+    crypto_prices = await get_crypto_prices()
+    coin_symbol = "BNB" if chain.upper() == "BSC" else "POL"
+    coin_price = crypto_prices.get(coin_symbol, 600.0 if coin_symbol == "BNB" else 0.45)
 
-    return False, f"Amount mismatch: expected {expected_amount:.6f}, received {amount_found:.6f}", amount_found
+    expected_native = expected_amount / coin_price if coin_price > 0 else expected_amount
+    tol = max(0.0001, expected_native * 0.04)  # 4% price movement tolerance
+
+    if (amount_found >= (expected_native - tol)) or abs(amount_found - expected_native) < 0.000005 or amount_found >= expected_amount:
+        return True, f"{chain} native {coin_symbol} transfer verified successfully", amount_found
+
+    return False, f"Amount mismatch: expected ~{expected_native:.6f} {coin_symbol} (${expected_amount:.2f}), received {amount_found:.6f} {coin_symbol}", amount_found
 
 
 async def verify_btc_transfer(txid: str, recipient: str, expected_amount: float) -> Tuple[bool, str, float]:
@@ -272,13 +289,13 @@ async def verify_onchain_transaction(network: str, txid: str, recipient_address:
         return await verify_evm_usdt("OPBNB", "USDT_OPBNB", txid, recipient_address, expected_amount)
     elif net in ("USDT_TRC20", "TRON", "TRC20"):
         return await verify_tron_usdt(txid, recipient_address, expected_amount)
-    elif net in ("USDT_POLY", "POLYGON", "MATIC"):
+    elif net in ("USDT_POLY", "POLYGON", "MATIC_USDT"):
         return await verify_evm_usdt("POLYGON", "USDT_POLY", txid, recipient_address, expected_amount)
     elif net in ("USDT_ARB", "ARBITRUM"):
         return await verify_evm_usdt("ARBITRUM", "USDT_ARB", txid, recipient_address, expected_amount)
     elif net in ("BNB", "BNB_BSC"):
         return await verify_evm_native("BSC", txid, recipient_address, expected_amount)
-    elif net in ("POL", "MATIC_NATIVE"):
+    elif net in ("POL", "MATIC", "MATIC_NATIVE"):
         return await verify_evm_native("POLYGON", txid, recipient_address, expected_amount)
     elif net in ("BTC", "BITCOIN"):
         return await verify_btc_transfer(txid, recipient_address, expected_amount)
@@ -290,45 +307,56 @@ async def verify_onchain_transaction(network: str, txid: str, recipient_address:
     return False, f"Unsupported network '{network}' for on-chain verification", 0.0
 
 
-async def get_evm_token_balance(chain_rpc: str, token_contract: str, address: str, decimals: int = 18) -> float:
+async def get_evm_native_balance(chain: str, address: str) -> float:
+    """Fetch native coin balance (e.g. BNB, POL) via high-availability RPC fallback."""
+    if not address or len(address.strip()) < 20:
+        return 0.0
+    res = await _evm_rpc_call(chain, "eth_getBalance", [address, "latest"])
+    if res:
+        try:
+            return float(Decimal(int(res, 16)) / Decimal(10 ** 18))
+        except Exception:
+            pass
+    return 0.0
+
+
+async def get_evm_token_balance(chain: str, token_contract: str, address: str, decimals: int = 18) -> float:
+    """Fetch ERC-20 token balance (e.g. USDT) via high-availability RPC fallback."""
     if not address or len(address.strip()) < 20:
         return 0.0
     clean_addr = address.lower().replace("0x", "").zfill(64)
     data = "0x70a08231" + clean_addr
-    payload = {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "eth_call",
-        "params": [{"to": token_contract, "data": data}, "latest"]
-    }
-    try:
-        async with httpx.AsyncClient(timeout=4.0) as client:
-            res = await client.post(chain_rpc, json=payload)
-            if res.status_code == 200:
-                val_hex = res.json().get("result", "0x0")
-                return float(Decimal(int(val_hex, 16)) / Decimal(10 ** decimals))
-    except Exception:
-        pass
+    res = await _evm_rpc_call(chain, "eth_call", [{"to": token_contract, "data": data}, "latest"])
+    if res:
+        try:
+            return float(Decimal(int(res, 16)) / Decimal(10 ** decimals))
+        except Exception:
+            pass
     return 0.0
 
 
 async def get_all_merchant_balances(wallets: dict) -> dict:
+    import asyncio
     bep20 = wallets.get("bep20", "") or wallets.get("opbnb", "")
-    poly = wallets.get("poly", "")
-    arb = wallets.get("arb", "")
+    poly = wallets.get("poly", "") or bep20
+    arb = wallets.get("arb", "") or bep20
     
-    bal_bep20, bal_opbnb, bal_poly, bal_arb = await asyncio.gather(
-        get_evm_token_balance("https://bsc-dataseed.binance.org/", OFFICIAL_CONTRACTS["USDT_BEP20"], bep20, 18),
-        get_evm_token_balance("https://opbnb-mainnet-rpc.bnbchain.org", OFFICIAL_CONTRACTS["USDT_OPBNB"], bep20, 18),
-        get_evm_token_balance("https://polygon-rpc.com", OFFICIAL_CONTRACTS["USDT_POLY"], poly, 6),
-        get_evm_token_balance("https://arb1.arbitrum.io/rpc", OFFICIAL_CONTRACTS["USDT_ARB"], arb, 6),
+    bal_bep20, bal_opbnb, bal_poly, bal_arb, bal_bnb, bal_pol = await asyncio.gather(
+        get_evm_token_balance("BSC", OFFICIAL_CONTRACTS["USDT_BEP20"], bep20, 18),
+        get_evm_token_balance("OPBNB", OFFICIAL_CONTRACTS["USDT_OPBNB"], bep20, 18),
+        get_evm_token_balance("POLYGON", OFFICIAL_CONTRACTS["USDT_POLY"], poly, 6),
+        get_evm_token_balance("ARBITRUM", OFFICIAL_CONTRACTS["USDT_ARB"], arb, 6),
+        get_evm_native_balance("BSC", bep20),
+        get_evm_native_balance("POLYGON", poly),
         return_exceptions=True
     )
     return {
         "USDT_BEP20": bal_bep20 if isinstance(bal_bep20, float) else 0.0,
         "USDT_OPBNB": bal_opbnb if isinstance(bal_opbnb, float) else 0.0,
         "USDT_POLY": bal_poly if isinstance(bal_poly, float) else 0.0,
-        "USDT_ARB": bal_arb if isinstance(bal_arb, float) else 0.0
+        "USDT_ARB": bal_arb if isinstance(bal_arb, float) else 0.0,
+        "BNB": bal_bnb if isinstance(bal_bnb, float) else 0.0,
+        "POL": bal_pol if isinstance(bal_pol, float) else 0.0
     }
 
 
@@ -336,7 +364,7 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
     """
     Real-Time Multi-Chain Blockchain Auto-Scanner with STRICT timestamp gating:
     - Automatically scans mempool & on-chain blocks for matching micro-offset deposits
-    - Supports TRON, TON, BSC (BEP20), opBNB, Polygon, Arbitrum, Litecoin, and Bitcoin
+    - Supports TRON, TON, BSC (BEP20 & Native BNB), opBNB, Polygon (USDT & POL), Arbitrum, Litecoin, and Bitcoin
     - Uses tx-claim deduplication to prevent double-settlement
     Returns: (found, network, txid, amount_received)
     """
@@ -362,11 +390,7 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
     bep20_wallet = wallets.get("bep20", "") or wallets.get("opbnb", "")
     if bep20_wallet and len(bep20_wallet) > 20:
         try:
-            cur_bep20 = await get_evm_token_balance(
-                "https://bsc-dataseed.binance.org/",
-                OFFICIAL_CONTRACTS["USDT_BEP20"],
-                bep20_wallet, 18
-            )
+            cur_bep20 = await get_evm_token_balance("BSC", OFFICIAL_CONTRACTS["USDT_BEP20"], bep20_wallet, 18)
             init_bep20 = float(initial_bals.get("USDT_BEP20", 0.0)) if initial_bals else 0.0
             delta = cur_bep20 - init_bep20
             # Accept if delta matches expected amount within 0.5% tolerance or <= 0.025 fee deduction
@@ -379,11 +403,7 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
 
         # ── 1b. EVM opBNB USDT Balance Delta (Cross-Chain EVM Check) ────────
         try:
-            cur_opbnb = await get_evm_token_balance(
-                "https://opbnb-mainnet-rpc.bnbchain.org",
-                OFFICIAL_CONTRACTS["USDT_OPBNB"],
-                bep20_wallet, 18
-            )
+            cur_opbnb = await get_evm_token_balance("OPBNB", OFFICIAL_CONTRACTS["USDT_OPBNB"], bep20_wallet, 18)
             init_opbnb = float(initial_bals.get("USDT_OPBNB", 0.0)) if initial_bals else 0.0
             delta_op = cur_opbnb - init_opbnb
             if (delta_op >= (expected_amount * 0.995) or (0 <= (expected_amount - delta_op) <= 0.025)) and delta_op <= (expected_amount * 1.05):
@@ -392,6 +412,25 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
                 return True, "USDT_OPBNB", f"0xOPBNB_{session['session_id'][-8:]}", cur_opbnb
         except Exception as e:
             logger.warning(f"opBNB auto-scan error: {e}")
+
+        # ── 1c. EVM BSC Native BNB Balance Delta ─────────────────────────────
+        try:
+            from src.core.currency import get_crypto_prices
+            crypto_prices = await get_crypto_prices()
+            bnb_price = crypto_prices.get("BNB", 600.0)
+            expected_bnb = expected_amount / bnb_price if bnb_price > 0 else expected_amount
+
+            cur_bnb = await get_evm_native_balance("BSC", bep20_wallet)
+            init_bnb = float(initial_bals.get("BNB", 0.0)) if initial_bals else 0.0
+            delta_bnb = cur_bnb - init_bnb
+            tol_bnb = max(0.0001, expected_bnb * 0.04)
+
+            if delta_bnb >= (expected_bnb - tol_bnb) and delta_bnb <= (expected_bnb * 1.15):
+                return True, "BNB", f"0xBNB_{session['session_id'][-8:]}", delta_bnb
+            if init_bnb == 0.0 and cur_bnb >= (expected_bnb - tol_bnb) and cur_bnb <= (expected_bnb * 1.15):
+                return True, "BNB", f"0xBNB_{session['session_id'][-8:]}", cur_bnb
+        except Exception as e:
+            logger.warning(f"BNB native auto-scan error: {e}")
 
     # ── 2. TRON TRC-20 USDT — Instant Event & Transfer Scanner ──────────────
     trc20_wallet = wallets.get("trc20", "")
@@ -441,18 +480,17 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
         except Exception as e:
             logger.warning(f"TON auto-scan error: {e}")
 
-    # ── 4. EVM Polygon USDT Balance Delta ───────────────────────────────────
+    # ── 4. EVM Polygon USDT Balance Delta & POL Native ─────────────────────
     poly_wallet = wallets.get("poly", "") or wallets.get("bep20", "")
     if poly_wallet and len(poly_wallet) > 20:
         try:
-            cur_poly = await get_evm_token_balance(
-                "https://polygon-rpc.com", OFFICIAL_CONTRACTS["USDT_POLY"], poly_wallet, 6
-            )
+            cur_poly = await get_evm_token_balance("POLYGON", OFFICIAL_CONTRACTS["USDT_POLY"], poly_wallet, 6)
             init_poly = float(initial_bals.get("USDT_POLY", 0.0)) if initial_bals else 0.0
             delta = cur_poly - init_poly
-            if delta >= (expected_amount * 0.995) and delta <= (expected_amount * 1.05):
+            fee_diff = expected_amount - delta
+            if (delta >= (expected_amount * 0.995) or (0 <= fee_diff <= 0.025)) and delta <= (expected_amount * 1.05):
                 return True, "USDT_POLY", f"0xPOLY_{session['session_id'][-8:]}", delta
-            if init_poly == 0.0 and cur_poly >= (expected_amount * 0.995) and cur_poly <= (expected_amount * 1.05):
+            if init_poly == 0.0 and (cur_poly >= (expected_amount * 0.995) or (0 <= (expected_amount - cur_poly) <= 0.025)) and cur_poly <= (expected_amount * 1.05):
                 return True, "USDT_POLY", f"0xPOLY_{session['session_id'][-8:]}", cur_poly
         except Exception as e:
             logger.warning(f"Polygon auto-scan error: {e}")
@@ -461,9 +499,7 @@ async def auto_scan_session_payment(session: dict) -> Tuple[bool, str, str, floa
     arb_wallet = wallets.get("arb", "") or wallets.get("bep20", "")
     if arb_wallet and len(arb_wallet) > 20:
         try:
-            cur_arb = await get_evm_token_balance(
-                "https://arb1.arbitrum.io/rpc", OFFICIAL_CONTRACTS["USDT_ARB"], arb_wallet, 6
-            )
+            cur_arb = await get_evm_token_balance("ARBITRUM", OFFICIAL_CONTRACTS["USDT_ARB"], arb_wallet, 6)
             init_arb = float(initial_bals.get("USDT_ARB", 0.0)) if initial_bals else 0.0
             delta = cur_arb - init_arb
             if delta >= (expected_amount * 0.995) and delta <= (expected_amount * 1.05):

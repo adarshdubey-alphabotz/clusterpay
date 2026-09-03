@@ -10,7 +10,10 @@ from src.services.webhook_dispatcher import dispatch_webhook
 
 router = APIRouter()
 
-VALID_COINS = {"USDT", "USDT_BEP20", "USDT_OPBNB", "OPBNB", "USDT_TRC20", "USDT_POLY", "USDT_ARB", "TON", "LTC", "BTC", "POL"}
+VALID_COINS = {
+    "USDT", "USDT_BEP20", "USDT_OPBNB", "OPBNB", "USDT_TRC20",
+    "USDT_POLY", "USDT_ARB", "BNB", "BNB_BSC", "TON", "LTC", "BTC", "POL", "MATIC"
+}
 
 
 class VerifyRequest(BaseModel):
@@ -193,12 +196,15 @@ async def verify_payment(req: VerifyRequest, request: Request, bg: BackgroundTas
         "USDT_OPBNB": wallets.get("opbnb", "") or wallets.get("bep20", ""),
         "OPBNB":      wallets.get("opbnb", "") or wallets.get("bep20", ""),
         "USDT_TRC20": wallets.get("trc20", ""),
-        "USDT_POLY":  wallets.get("poly", ""),
-        "USDT_ARB":   wallets.get("arb", ""),
+        "USDT_POLY":  wallets.get("poly", "") or wallets.get("bep20", ""),
+        "USDT_ARB":   wallets.get("arb", "") or wallets.get("bep20", ""),
+        "BNB":        wallets.get("bep20", "") or wallets.get("bnb", ""),
+        "BNB_BSC":    wallets.get("bep20", "") or wallets.get("bnb", ""),
         "TON":        wallets.get("ton", ""),
         "LTC":        wallets.get("ltc", ""),
         "BTC":        wallets.get("btc", ""),
-        "POL":        wallets.get("pol", "")
+        "POL":        wallets.get("poly", "") or wallets.get("pol", "") or wallets.get("bep20", ""),
+        "MATIC":      wallets.get("poly", "") or wallets.get("pol", "") or wallets.get("bep20", "")
     }
     recipient_address = recipient_map.get(coin, "") or session.get("recipient_address", "")
     expected_amount   = float(session.get("amount", 0.0))
