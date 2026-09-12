@@ -207,14 +207,14 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
         except Exception:
             pass
 
-    bep20 = wallets.get("bep20", getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""))
+    bep20 = wallets.get("bep20", "") or wallets.get("bnb", "") or getattr(settings, "DEFAULT_USDT_BEP20_WALLET", "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5")
     trc20 = wallets.get("trc20", "") or wallets.get("trx", "") or getattr(settings, "DEFAULT_USDT_TRC20_WALLET", "TY6Ed9vBjNv8bfHdQVzyC9zR5cLMh1RHdA")
-    poly = wallets.get("poly", getattr(settings, "DEFAULT_USDT_POLY_WALLET", ""))
-    arb = wallets.get("arb", getattr(settings, "DEFAULT_USDT_ARB_WALLET", ""))
+    poly = wallets.get("poly", "") or getattr(settings, "DEFAULT_USDT_POLY_WALLET", "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5")
+    arb = wallets.get("arb", "") or getattr(settings, "DEFAULT_USDT_ARB_WALLET", "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5")
     ton = wallets.get("ton", "") or wallets.get("usdt_ton", "") or wallets.get("gram", "") or getattr(settings, "DEFAULT_TON_WALLET", "UQCBElGHJJcYEOwtA6G2tI_8GRbswHB-0oh3dKXsG5jiWnky")
     ltc = wallets.get("ltc", getattr(settings, "DEFAULT_LTC_WALLET", ""))
     btc = wallets.get("btc", getattr(settings, "DEFAULT_BTC_WALLET", ""))
-    pol = wallets.get("pol", getattr(settings, "DEFAULT_POL_WALLET", ""))
+    pol = wallets.get("pol", "") or wallets.get("poly", "") or getattr(settings, "DEFAULT_POL_WALLET", "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5")
     
     crypto_prices = await get_crypto_prices()
     

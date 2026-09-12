@@ -192,22 +192,22 @@ async def verify_payment(req: VerifyRequest, request: Request, bg: BackgroundTas
     wallets = session.get("wallets", {})
     recipient_map = {
         "USDT":       wallets.get("bep20", "") or wallets.get("opbnb", ""),
-        "USDT_BEP20": wallets.get("bep20", "") or wallets.get("opbnb", ""),
-        "USDT_OPBNB": wallets.get("opbnb", "") or wallets.get("bep20", ""),
-        "OPBNB":      wallets.get("opbnb", "") or wallets.get("bep20", ""),
+        "USDT_BEP20": wallets.get("bep20", "") or wallets.get("opbnb", "") or getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""),
+        "USDT_OPBNB": wallets.get("opbnb", "") or wallets.get("bep20", "") or getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""),
+        "OPBNB":      wallets.get("opbnb", "") or wallets.get("bep20", "") or getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""),
         "USDT_TRC20": wallets.get("trc20", "") or wallets.get("trx", "") or getattr(settings, "DEFAULT_USDT_TRC20_WALLET", ""),
         "TRX":        wallets.get("trx", "") or wallets.get("trc20", "") or getattr(settings, "DEFAULT_TRX_WALLET", "") or getattr(settings, "DEFAULT_USDT_TRC20_WALLET", ""),
-        "USDT_POLY":  wallets.get("poly", "") or wallets.get("bep20", ""),
-        "USDT_ARB":   wallets.get("arb", "") or wallets.get("bep20", ""),
-        "BNB":        wallets.get("bep20", "") or wallets.get("bnb", ""),
-        "BNB_BSC":    wallets.get("bep20", "") or wallets.get("bnb", ""),
+        "USDT_POLY":  wallets.get("poly", "") or wallets.get("bep20", "") or getattr(settings, "DEFAULT_USDT_POLY_WALLET", ""),
+        "USDT_ARB":   wallets.get("arb", "") or wallets.get("bep20", "") or getattr(settings, "DEFAULT_USDT_ARB_WALLET", ""),
+        "BNB":        wallets.get("bep20", "") or wallets.get("bnb", "") or getattr(settings, "DEFAULT_BNB_WALLET", "") or getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""),
+        "BNB_BSC":    wallets.get("bep20", "") or wallets.get("bnb", "") or getattr(settings, "DEFAULT_BNB_WALLET", "") or getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""),
         "TON":        wallets.get("ton", "") or wallets.get("usdt_ton", "") or wallets.get("gram", "") or getattr(settings, "DEFAULT_TON_WALLET", ""),
         "USDT_TON":   wallets.get("usdt_ton", "") or wallets.get("ton", "") or getattr(settings, "DEFAULT_TON_WALLET", ""),
         "GRAM":       wallets.get("gram", "") or wallets.get("ton", "") or getattr(settings, "DEFAULT_TON_WALLET", ""),
         "LTC":        wallets.get("ltc", ""),
         "BTC":        wallets.get("btc", ""),
-        "POL":        wallets.get("poly", "") or wallets.get("pol", "") or wallets.get("bep20", ""),
-        "MATIC":      wallets.get("poly", "") or wallets.get("pol", "") or wallets.get("bep20", "")
+        "POL":        wallets.get("poly", "") or wallets.get("pol", "") or wallets.get("bep20", "") or getattr(settings, "DEFAULT_POL_WALLET", ""),
+        "MATIC":      wallets.get("poly", "") or wallets.get("pol", "") or wallets.get("bep20", "") or getattr(settings, "DEFAULT_POL_WALLET", "")
     }
     recipient_address = recipient_map.get(coin, "") or session.get("recipient_address", "")
     expected_amount   = float(session.get("amount", 0.0))

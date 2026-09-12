@@ -111,16 +111,17 @@ async def create_donate_checkout_session(req: DonateCheckoutRequest, request: Re
     Routes funds directly to developer non-custodial multi-chain addresses.
     """
     dev_wallets = {
-        "bep20": settings.DEFAULT_USDT_BEP20_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
+        "bep20": settings.DEFAULT_USDT_BEP20_WALLET or "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5",
+        "bnb": getattr(settings, "DEFAULT_BNB_WALLET", "") or settings.DEFAULT_USDT_BEP20_WALLET or "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5",
         "trc20": settings.DEFAULT_USDT_TRC20_WALLET or "TY6Ed9vBjNv8bfHdQVzyC9zR5cLMh1RHdA",
         "trx": getattr(settings, "DEFAULT_TRX_WALLET", "") or settings.DEFAULT_USDT_TRC20_WALLET or "TY6Ed9vBjNv8bfHdQVzyC9zR5cLMh1RHdA",
-        "poly": settings.DEFAULT_USDT_POLY_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
-        "arb": settings.DEFAULT_USDT_ARB_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
+        "poly": settings.DEFAULT_USDT_POLY_WALLET or "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5",
+        "pol": getattr(settings, "DEFAULT_POL_WALLET", "") or "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5",
+        "arb": settings.DEFAULT_USDT_ARB_WALLET or "0x9B06dB0cA318BFa2fd79c438fc11ef84F38E93F5",
         "ton": settings.DEFAULT_TON_WALLET or "UQCBElGHJJcYEOwtA6G2tI_8GRbswHB-0oh3dKXsG5jiWnky",
         "usdt_ton": getattr(settings, "DEFAULT_USDT_TON_WALLET", "") or settings.DEFAULT_TON_WALLET or "UQCBElGHJJcYEOwtA6G2tI_8GRbswHB-0oh3dKXsG5jiWnky",
         "ltc": settings.DEFAULT_LTC_WALLET or "ltc1qlpc2j7ns2qvp67f3vfxmye96tmtmlls0n5dq6h",
         "btc": settings.DEFAULT_BTC_WALLET or "bc1qmfuaulr37cevx2s0rs94mxafgnrel6nekn4w26",
-        "pol": settings.DEFAULT_POL_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
     }
 
     db = get_db()
