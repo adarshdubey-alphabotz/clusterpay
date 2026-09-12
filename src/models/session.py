@@ -11,6 +11,8 @@ _WALLET_MAX_LEN = {
     "poly":  44,   # EVM
     "arb":   44,   # EVM
     "ton":   68,   # TON base64url
+    "usdt_ton": 68,# TON USDT Jetton
+    "gram":  68,   # TON Gram token
     "ltc":   50,   # Litecoin (bech32 ltc1... is up to 43 chars)
     "btc":   66,   # Bitcoin (bech32 is up to 62)
     "pol":   44,   # EVM (native POL)
