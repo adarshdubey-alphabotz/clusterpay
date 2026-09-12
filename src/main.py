@@ -208,7 +208,7 @@ async def serve_checkout_page(session_id: str, embed: bool = False):
             pass
 
     bep20 = wallets.get("bep20", getattr(settings, "DEFAULT_USDT_BEP20_WALLET", ""))
-    trc20 = wallets.get("trc20", getattr(settings, "DEFAULT_USDT_TRC20_WALLET", ""))
+    trc20 = wallets.get("trc20", "") or wallets.get("trx", "") or getattr(settings, "DEFAULT_USDT_TRC20_WALLET", "TY6Ed9vBjNv8bfHdQVzyC9zR5cLMh1RHdA")
     poly = wallets.get("poly", getattr(settings, "DEFAULT_USDT_POLY_WALLET", ""))
     arb = wallets.get("arb", getattr(settings, "DEFAULT_USDT_ARB_WALLET", ""))
     ton = wallets.get("ton", "") or wallets.get("usdt_ton", "") or wallets.get("gram", "") or getattr(settings, "DEFAULT_TON_WALLET", "UQCBElGHJJcYEOwtA6G2tI_8GRbswHB-0oh3dKXsG5jiWnky")

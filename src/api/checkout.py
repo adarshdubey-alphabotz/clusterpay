@@ -112,7 +112,8 @@ async def create_donate_checkout_session(req: DonateCheckoutRequest, request: Re
     """
     dev_wallets = {
         "bep20": settings.DEFAULT_USDT_BEP20_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
-        "trc20": settings.DEFAULT_USDT_TRC20_WALLET or "TZE6RPaSQkECYpPkqKgE4DTTcjyneMCXpw",
+        "trc20": settings.DEFAULT_USDT_TRC20_WALLET or "TY6Ed9vBjNv8bfHdQVzyC9zR5cLMh1RHdA",
+        "trx": getattr(settings, "DEFAULT_TRX_WALLET", "") or settings.DEFAULT_USDT_TRC20_WALLET or "TY6Ed9vBjNv8bfHdQVzyC9zR5cLMh1RHdA",
         "poly": settings.DEFAULT_USDT_POLY_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
         "arb": settings.DEFAULT_USDT_ARB_WALLET or "0x4288f46725514671d3CA0974A4869d88ecbCE150",
         "ton": settings.DEFAULT_TON_WALLET or "UQCBElGHJJcYEOwtA6G2tI_8GRbswHB-0oh3dKXsG5jiWnky",
